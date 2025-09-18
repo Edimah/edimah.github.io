@@ -13,3 +13,8 @@ _scripts/*
 
 # Ignore Google verification HTML files
 google*.html
+
+website-minima-backup/**
+personal-projects/**
+node_modules/**
+dist/**
