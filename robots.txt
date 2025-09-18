@@ -1,4 +1,4 @@
 User-agent: *
 Disallow:
 
-Sitemap: https://edimah.github.io/website//sitemap.xml
+Sitemap: https://edimah.github.io/sitemap.xml
