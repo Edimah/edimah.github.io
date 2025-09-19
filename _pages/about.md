@@ -2,7 +2,7 @@
 layout: about
 title: about
 permalink: /
-subtitle: Coming soon...
+subtitle: More content coming soon...
 
 profile:
   align: right

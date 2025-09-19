@@ -1,1 +1,0 @@
-My name is Edimah SYNESIUS SONGO, I graduated with Applied Mathematics BSc. and MSc. in Paris with various minors. Here, I try to explore this interdisciplinarity further.
