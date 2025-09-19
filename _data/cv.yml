@@ -12,7 +12,7 @@
     - title: Year 2 MSc. in Mathematics & Machine Learning (M2 MASH)
       institution: Université PSL, Paris
       year: 2023
-     
+
     - title: Year 1 MSc. in Applied Mathematics - Statistics major (M1 Statistiques)
       institution: Université Paris-Dauphine, Paris
       year: 2022
@@ -46,7 +46,6 @@
       description:
         - Patient attendance data & trend analysis.
         - Development of interactive dashboards in R.
-
 
 - title: Other Interests
   type: list
