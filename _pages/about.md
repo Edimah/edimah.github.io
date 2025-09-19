@@ -24,4 +24,4 @@ latest_posts:
   limit: 3 # leave blank to include all the blog posts
 ---
 
-I like exploring the intersections of maths, AI, and data with other fields  through notes, projects, and experiments.
+I like exploring the intersections of maths, AI, and data with other fields through notes, projects, and experiments.
