@@ -30,10 +30,7 @@
       "startDate": "2023-11-01",
       "endDate": "2024-06-30",
       "summary": "Research on sensitivity and explainability methods in complex system modeling.",
-      "highlights": [
-        "Development of sensitivity and explainability indices in R and Python",
-        "Uncertainty analysis for complex systems"
-      ]
+      "highlights": ["Development of sensitivity and explainability indices in R and Python", "Uncertainty analysis for complex systems"]
     },
     {
       "name": "EDF R&D",
@@ -54,10 +51,7 @@
       "startDate": "2022-07-01",
       "endDate": "2022-08-31",
       "summary": "Healthcare data analytics for patient management.",
-      "highlights": [
-        "Patient attendance data & trend analysis",
-        "Development of interactive dashboards in R"
-      ]
+      "highlights": ["Patient attendance data & trend analysis", "Development of interactive dashboards in R"]
     }
   ],
 
@@ -115,40 +109,19 @@
       "name": "Programming & Data Science",
       "level": "",
       "icon": "",
-      "keywords": [
-        "R",
-        "Python",
-        "C++",
-        "Git",
-        "LaTeX",
-        "Markdown",
-        "R Shiny",
-        "Jupyter"
-      ]
+      "keywords": ["R", "Python", "C++", "Git", "LaTeX", "Markdown", "R Shiny", "Jupyter"]
     },
     {
       "name": "Mathematics & Machine Learning",
       "level": "",
       "icon": "",
-      "keywords": [
-        "Statistical Learning",
-        "Deep Learning",
-        "Optimisation",
-        "Stochastic Processes",
-        "Numerical Methods"
-      ]
+      "keywords": ["Statistical Learning", "Deep Learning", "Optimisation", "Stochastic Processes", "Numerical Methods"]
     },
     {
       "name": "Statistics & Uncertainty Quantification",
       "level": "",
       "icon": "",
-      "keywords": [
-        "Sensitivity Analysis",
-        "Uncertainty Quantification",
-        "Bayesian Inference",
-        "Computational Statistics",
-        "Time Series Analysis"
-      ]
+      "keywords": ["Sensitivity Analysis", "Uncertainty Quantification", "Bayesian Inference", "Computational Statistics", "Time Series Analysis"]
     }
   ],
   "languages": [
@@ -176,5 +149,4 @@
     }
   ],
   "projects": []
-
 }
