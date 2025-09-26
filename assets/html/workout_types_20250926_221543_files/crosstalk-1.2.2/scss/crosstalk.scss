@@ -19,7 +19,7 @@ body > .container-fluid.crosstalk-bscols {
   vertical-align: top;
 }
 
-@media only screen and (max-width:480px) {
+@media only screen and (max-width: 480px) {
   .crosstalk-input-checkboxgroup .crosstalk-options-group .crosstalk-options-column {
     display: block;
     padding-right: inherit;
@@ -44,7 +44,7 @@ body > .container-fluid.crosstalk-bscols {
     margin-top: 10px;
     margin-bottom: 10px;
   }
-  .checkbox > label{
+  .checkbox > label {
     padding-left: 20px;
     margin-bottom: 0;
     font-weight: 400;

@@ -4,6 +4,6 @@ correctly with ioslides.
 see https://github.com/ropensci/plotly/issues/463
 */
 
-slide:not(.current) .plotly.html-widget{
+slide:not(.current) .plotly.html-widget {
   display: none;
 }
