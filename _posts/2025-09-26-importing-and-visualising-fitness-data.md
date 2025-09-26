@@ -43,12 +43,11 @@ I then cleaned the data by:
 
 I basically used `tidyR` to make tidier datasets (pun intended). All clean and ready for analysis and visualisation.
 
-## Talking about visualisation...
-
 ## Visualising activity types
 
 To top off this short tutorial, here is a **bar plot of activity type distributions** from my cleaned `workouts.csv`. It was made using `ggplot2` and `plotly`, and hovering over each bar should show counts for each workout type !
 
+<!-- markdownlint-disable-next-line MD033 -->
 <iframe src="/assets/html/workout_types_20250926_221543.html" width="100%" height="600" frameborder="0"></iframe>
 
 ---
