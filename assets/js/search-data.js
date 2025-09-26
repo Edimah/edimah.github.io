@@ -37,7 +37,18 @@ ninja.data = [{
           handler: () => {
             window.location.href = "/cv/";
           },
-        },{
+        },{id: "post-importing-and-visualising-apple-health-data-with-r",
+        
+          title: "Importing and visualising Apple Health data with R",
+        
+        description: "I imported and visualised 20 months of Apple Health data to get a broader view of how I trained.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2025/importing-and-visualising-fitness-data/";
+          
+        },
+      },{
         id: 'social-email',
         title: 'email',
         section: 'Socials',
