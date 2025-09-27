@@ -22,7 +22,7 @@ Though this graph doesn't say much about trends and performances, I'm surprised 
 
 Looks like I could benefit from going outside more, though. Unless plotting my workout data against time shows unexpected trends...
 
-*TBC.* 
+_TBC._
 
 This quick visual is the first in a series of short posts exploring my own Apple Health metrics through a holistic lense: descriptive, inferential and predictive statistics.
 
