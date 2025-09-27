@@ -7,9 +7,9 @@ first_name: Edimah
 middle_name:
 last_name: SYNESIUS SONGO
 contact_note: >
-  I am reachable on these platforms.
+  💌
 description: > # the ">" symbol means to ignore newlines until "footer_text:"
-  A personal website exploring some of my interests and their intersections. Often with a bit of maths or code.
+  A personal website combining my projects, and bits and pieces to share my understanding of many fields.
 footer_text: >
   Powered by <a href="https://jekyllrb.com/" target="_blank">Jekyll</a> with <a href="https://github.com/alshedivat/al-folio">al-folio</a> theme.
   Hosted by <a href="https://pages.github.com/" target="_blank">GitHub Pages</a>.
@@ -86,8 +86,8 @@ bing_site_verification: # out your bing-site-verification ID (Bing Webmaster)
 # Blog
 # -----------------------------------------------------------------------------
 
-blog_name: Blog # blog_name will be displayed in your blog page
-blog_description: Short posts about data, code, and their applications to other interests. # blog_description will be displayed below your blog_name
+blog_name: Bits n' pieces # blog_name will be displayed in your blog page
+blog_description: Short posts about data, code, and their applications to other fields. # blog_description will be displayed below your blog_name
 permalink: /blog/:year/:title/
 lsi: false # produce an index for related posts
 
