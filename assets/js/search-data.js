@@ -41,7 +41,7 @@ ninja.data = [{
         
           title: "Importing and visualising Apple Health data with R",
         
-        description: "I imported and visualised 20 months of Apple Health data to get a broader view of how I trained.",
+        description: "I imported and visualised 20 months of Apple Health data 🏃🏿‍♀️ to get a broader view of how I trained.",
         section: "Posts",
         handler: () => {
           
