@@ -2,7 +2,7 @@
 layout: page
 title: Apple Health Data through R
 description: Explore 20 months of personal Apple Health metrics through R visualisations 🏃🏿‍♀️📊
-img: assets/img/apple_health_cover.jpg
+img:
 importance: 1
 category: fitness
 related_publications: false
