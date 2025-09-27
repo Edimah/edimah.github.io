@@ -24,4 +24,4 @@ latest_posts:
   limit: 3 # leave blank to include all the blog posts
 ---
 
-I try to explore interdisciplinarity through notes, projects, and experiments.
+My interests include but are not limited to maths, music theory, and chess. And I try to explore this interdisciplinarity through short notes, projects, and experiments.

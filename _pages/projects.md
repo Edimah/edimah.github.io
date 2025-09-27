@@ -2,10 +2,10 @@
 layout: page
 title: projects
 permalink: /projects/
-description: A growing collection of projects.
+description: A modest but growing list of personal projects
 nav: true
 nav_order: 3
-display_categories:
+display_categories: [chess, fitness, music]
 horizontal: false
 ---
 
