@@ -2,7 +2,7 @@
 layout: about
 title: about
 permalink: /
-subtitle: More content coming soon...
+subtitle: A place for interdisciplinarity 🧩
 
 profile:
   align: right
@@ -24,4 +24,6 @@ latest_posts:
   limit: 3 # leave blank to include all the blog posts
 ---
 
-My interests include but are not limited to maths, music theory, and chess. And I try to explore this interdisciplinarity through short notes, projects, and experiments.
+I did applied maths in school. Now I spend a lot of my time practicing music, fitness and chess.
+
+Here, I lightly explore their intersections, through short notes, projects, and experiments.
