@@ -29,14 +29,20 @@ From the Apple Health app.
 
 Unzipping it reveals this folder.
 
-![ZIP file content](/assets/img/apple_health_export_folder.png "Health Export Folder")
+<img src="/assets/img/apple_health_export_folder.png"
+     alt="Health Export Folder"
+     title="Health Export Folder"
+     style="max-width: 100%; height: auto;">
 
 It's full of workout logs, heart rates, activity summaries, ECGs, GPS routes… A treasure trove as I said. But not very readable by the human eye so far.
 
 The meat of the export is in the two XML files which both contain the same information (`export_cda.xml` just follows _Clinical Data Architecture_ standards favoured by some administrations).
 The file `export.xml` is a good place to start. Only issue is, it looks like this :
 
-![XML export](/assets/img/apple_health_xml_preview.png "Export XML preview")
+<img src="/assets/img/apple_health_xml_preview.png"
+     alt="Export XML preview"
+     title="Export XML preview"
+     style="max-width: 100%; height: auto;">
 
 ---
 
