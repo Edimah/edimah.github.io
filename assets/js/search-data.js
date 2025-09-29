@@ -37,11 +37,11 @@ ninja.data = [{
           handler: () => {
             window.location.href = "/cv/";
           },
-        },{id: "post-importing-and-visualising-apple-health-data-with-r",
+        },{id: "post-how-to-import-and-parse-apple-health-data-with-r",
         
-          title: "Importing and visualising Apple Health data with R",
+          title: "How to import and parse Apple Health data with R",
         
-        description: "I imported and visualised 20 months of Apple Health data 🏃🏿‍♀️ to get a broader view of how I trained.",
+        description: "I imported and parsed 20 months of Apple Health data 🏃🏿‍♀️ to get a broader view of how I trained.",
         section: "Posts",
         handler: () => {
           
