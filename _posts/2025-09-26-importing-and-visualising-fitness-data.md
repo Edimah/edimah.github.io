@@ -45,6 +45,7 @@ The file `export.xml` is a good place to start. Only issue is, it looks like thi
      style="max-width: 100%; height: auto;">
 
 Yeah.
+
 ---
 
 ### 2. Parse & clean it
@@ -52,10 +53,11 @@ Yeah.
 Thankfully, R has appropriate tools to deal with this format and extract information from this word soup. The R script `01_import_health_data.R` does the following :
 
 - Parse the XML with `xml2`.
-- Isolate the nodes of interest (I picked `Workout`, `WorkoutStatistics`, and `ActivitySummary`).
-- Convert them into **tibbles** dataframes.
-- Transform dates and numbers into proper date-time and numeric R objects.
-- Clean up the names by removing useless prefixes (e.g. `HKWorkoutActivityTypeYoga` → `Yoga`).
+  - Isolate the nodes of interest (I picked `Workout`, `WorkoutStatistics`, and `ActivitySummary`).
+  - Convert them into **tibbles** dataframes.
+- Clean the dataframes.
+  - Transform dates and numbers into proper date-time and numeric R objects.
+  - Simplify the names by removing useless prefixes (e.g. `HKWorkoutActivityTypeYoga` → `Yoga`).
 
 There. Megabytes of XML file neatly distilled into a few tidy CSV files, a format R handles well. It also saves us the pain & computing power from having to "import-parse-clean" the data all over again.
 
