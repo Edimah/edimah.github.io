@@ -2,7 +2,7 @@
 layout: about
 title: about
 permalink: /
-subtitle: A place for interdisciplinarity 🧩
+subtitle: 🍃
 
 profile:
   align: right
@@ -24,6 +24,6 @@ latest_posts:
   limit: 3 # leave blank to include all the blog posts
 ---
 
-I did applied maths in school. Now I spend a lot of my time practicing music, fitness and chess.
+I did applied maths in school. Now I spend some of my time practicing music, fitness and chess.
 
-Here, I lightly explore their intersections, through short notes, projects, and experiments.
+Here, I lightly explore their intersections, through notes, projects, and experiments.
