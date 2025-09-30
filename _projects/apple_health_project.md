@@ -8,13 +8,9 @@ category: fitness
 related_publications: false
 ---
 
-# Apple Health Data Visualisation
+This project showcases some visuals from my own **Apple Health data**, collected over **twenty months**, parsed, cleaned, and visualised using **R**.
 
-This project showcases my own **Apple Health data** collected over **twenty months**, parsed, cleaned, and visualised using **R**.
-
-I explored workout types, activity summaries, and workout statistics to gain a **holistic view** of my training and health trends.
-
-You can use your own `export.xml` from Apple Health to reproduce the analyses. The associated GitHub repo contains R scripts to import, clean, and visualise your data: [Apple Health Data GitHub](https://github.com/Edimah/apple-health-data)
+The associated GitHub repo contains the corresponding R scripts: [Apple Health Data GitHub](https://github.com/Edimah/apple-health-data)
 
 ## Feature Gallery
 
