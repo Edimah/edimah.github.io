@@ -1,8 +1,8 @@
 ---
 layout: post
-title: How to import and parse Apple Health data with R
+title: How to import and use Apple Health data with R
 date: 2025-09-26 22:34:16
-description: I imported and parsed 20 months of Apple Health data 🏃🏿‍♀️ to get a broader view of how I trained.
+description: I imported 20 months of Apple Health data 🏃🏿‍♀️ to get a broader view of how I trained.
 tags: dataviz fitness health
 categories: posts
 ---
@@ -32,7 +32,7 @@ Unzipping it reveals this folder.
 <img src="/assets/img/apple_health_export_folder.png"
      alt="Health Export Folder"
      title="Health Export Folder"
-     style="max-width: 100%; height: auto;">
+     style="max-width: 50%; height: auto;">
 
 It's full of workout logs, heart rates, activity summaries, ECGs, GPS routes… A treasure trove as I said. But not very readable by the human eye so far.
 
@@ -42,7 +42,7 @@ The file `export.xml` is a good place to start. Only issue is, it looks like thi
 <img src="/assets/img/apple_health_xml_preview.png"
      alt="Export XML preview"
      title="Export XML preview"
-     style="max-width: 100%; height: auto;">
+     style="max-width: 50%; height: auto;">
 
 Yeah.
 
