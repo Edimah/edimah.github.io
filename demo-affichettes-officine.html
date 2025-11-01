@@ -1,477 +1,480 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <title>Démo – Générateur d'affiche officine</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <head>
+    <meta charset="UTF-8" />
+    <title>Démo – Générateur d'affiche officine</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- police -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- police -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
-  <style>
-    :root {
-      --green: #0A7F5A;
-      --green-light: #e9f5ef;
-    }
-    * { box-sizing: border-box; }
-
-    body {
-      font-family: "Poppins", Arial, sans-serif;
-      background: #f5f5f5;
-      margin: 0;
-      padding: 10px;
-      display: flex;
-      gap: 16px;
-      align-items: flex-start;
-      flex-wrap: wrap;
-    }
-
-    .controls {
-      width: 330px;
-      background: #fff;
-      padding: 14px;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.04);
-    }
-    .controls h2 {
-      margin-top: 0;
-      color: var(--green);
-      font-size: 1rem;
-    }
-    .controls label {
-      display: block;
-      font-weight: 600;
-      font-size: 0.75rem;
-      margin-top: 8px;
-    }
-    .controls input[type="text"],
-    .controls input[type="file"] {
-      width: 100%;
-      padding: 6px 8px;
-      margin-top: 4px;
-      border: 1px solid #e5e5e5;
-      border-radius: 6px;
-      font-size: 0.78rem;
-    }
-    .controls button {
-      width: 100%;
-      margin-top: 12px;
-      background: var(--green);
-      border: none;
-      color: #fff;
-      padding: 8px;
-      border-radius: 8px;
-      font-weight: 600;
-      cursor: pointer;
-      font-size: 0.8rem;
-    }
-    .controls button.secondary {
-      background: #fff;
-      color: var(--green);
-      border: 1px solid rgba(10,127,90,.2);
-    }
-    #sloganResults .slogan-option {
-      background: #ffffff;
-      border: 1px solid rgba(10,127,90,.15);
-      border-radius: 10px;
-      padding: 6px 8px;
-      font-size: 0.72rem;
-      line-height: 1.3;
-      cursor: pointer;
-      transition: 0.15s ease;
-      word-break: break-word;
-      margin-top: 6px;
-    }
-    #sloganResults .slogan-option:hover {
-      background: rgba(10,127,90,0.06);
-    }
-
-    .preview-container {
-      flex: 1;
-      min-width: 620px;
-      display: flex;
-      justify-content: center;
-    }
-
-    .affiche {
-      width: 600px;
-      height: 800px;
-      background: radial-gradient(circle at top, #ffffff 0%, var(--green-light) 40%, #d7ece1 100%);
-      border-radius: 16px;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 6px 15px rgba(0,0,0,0.12);
-    }
-
-    /* bandeau haut */
-    .header-left {
-      position: absolute;
-      top: 0;
-      left: 0;
-      background: var(--green);
-      color: #fff;
-      padding: 14px 18px 16px 22px;
-      border-bottom-right-radius: 26px;
-      max-width: 70%;
-      clip-path: polygon(0 0, 100% 0, 90% 100%, 0 100%);
-      z-index: 3;
-    }
-    .header-left .promo-title {
-      font-size: 1.05rem;
-      font-weight: 700;
-      margin: 0;
-    }
-    .header-left .promo-date {
-      font-size: 0.7rem;
-      margin: 4px 0 0 0;
-      opacity: .9;
-    }
-
-    .logo {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      width: 110px;
-      height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 12px;
-      background: transparent;
-      overflow: hidden;
-      z-index: 3;
-    }
-    .logo img {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
-    }
-    .logo .placeholder {
-      font-size: 0.65rem;
-      color: rgba(0,0,0,0.4);
-      background: rgba(255,255,255,0.3);
-      padding: 4px 6px;
-      border-radius: 6px;
-    }
-
-    /* gommette */
-    .gommette {
-      position: absolute;
-      top: 120px;
-      right: 35px;
-      width: 150px;
-      height: 150px;
-      background: radial-gradient(circle, #ff9a7a 0%, #ff7b5a 45%, #ff5c32 100%);
-      border-radius: 50%;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      font-weight: 700;
-      font-size: 1.3rem;
-      box-shadow: 0 8px 18px rgba(255, 123, 90, 0.42);
-      z-index: 3;
-      isolation: isolate;
-    }
-    .gommette::after {
-      content: "";
-      position: absolute;
-      inset: -16px;
-      background: radial-gradient(circle, rgba(255,123,90,0.35) 0%, rgba(255,123,90,0) 70%);
-      filter: blur(12px);
-      z-index: -1;
-    }
-
-    /* zone produit + watermark DÉMO */
-    .product-image {
-      position: absolute;
-      top: 235px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 360px;
-      height: 280px;
-      background: transparent;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      z-index: 1;
-    }
-    .product-image img {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
-      background: transparent;
-    }
-    .product-placeholder {
-      color: rgba(10,127,90,0.5);
-      text-align: center;
-      font-size: 0.85rem;
-      opacity: 0.6;
-      background: rgba(255,255,255,0.25);
-      padding: 8px 10px;
-      border-radius: 999px;
-    }
-    /* watermark diagonal */
-    .product-image::after {
-      content: "DÉMO";
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 4rem;
-      font-weight: 700;
-      color: rgba(10,127,90,0.08);
-      transform: rotate(-28deg);
-      pointer-events: none;
-      letter-spacing: 0.5rem;
-      text-transform: uppercase;
-    }
-
-    /* bandeau bas */
-    .footer-band {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background: linear-gradient(120deg, #0A7F5A 0%, #088c6a 100%);
-      color: white;
-      padding: 18px 22px 26px 22px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      clip-path: polygon(0 16%, 100% 0, 100% 100%, 0 100%);
-      z-index: 2;
-    }
-    .footer-title {
-      font-size: 1.25rem;
-      font-weight: 700;
-    }
-    .footer-subtitle {
-      font-size: 0.78rem;
-      opacity: 0.85;
-    }
-
-    /* mobile */
-    @media (max-width: 1050px) {
-      .preview-container {
-        min-width: 100%;
+    <style>
+      :root {
+        --green: #0a7f5a;
+        --green-light: #e9f5ef;
       }
-      .affiche {
-        transform: scale(.9);
-        transform-origin: top center;
+      * {
+        box-sizing: border-box;
       }
-    }
-    @media (max-width: 780px) {
+
       body {
-        flex-direction: column;
+        font-family: "Poppins", Arial, sans-serif;
+        background: #f5f5f5;
+        margin: 0;
+        padding: 10px;
+        display: flex;
+        gap: 16px;
+        align-items: flex-start;
+        flex-wrap: wrap;
       }
+
       .controls {
+        width: 330px;
+        background: #fff;
+        padding: 14px;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+      }
+      .controls h2 {
+        margin-top: 0;
+        color: var(--green);
+        font-size: 1rem;
+      }
+      .controls label {
+        display: block;
+        font-weight: 600;
+        font-size: 0.75rem;
+        margin-top: 8px;
+      }
+      .controls input[type="text"],
+      .controls input[type="file"] {
         width: 100%;
+        padding: 6px 8px;
+        margin-top: 4px;
+        border: 1px solid #e5e5e5;
+        border-radius: 6px;
+        font-size: 0.78rem;
       }
+      .controls button {
+        width: 100%;
+        margin-top: 12px;
+        background: var(--green);
+        border: none;
+        color: #fff;
+        padding: 8px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        font-size: 0.8rem;
+      }
+      .controls button.secondary {
+        background: #fff;
+        color: var(--green);
+        border: 1px solid rgba(10, 127, 90, 0.2);
+      }
+      #sloganResults .slogan-option {
+        background: #ffffff;
+        border: 1px solid rgba(10, 127, 90, 0.15);
+        border-radius: 10px;
+        padding: 6px 8px;
+        font-size: 0.72rem;
+        line-height: 1.3;
+        cursor: pointer;
+        transition: 0.15s ease;
+        word-break: break-word;
+        margin-top: 6px;
+      }
+      #sloganResults .slogan-option:hover {
+        background: rgba(10, 127, 90, 0.06);
+      }
+
+      .preview-container {
+        flex: 1;
+        min-width: 620px;
+        display: flex;
+        justify-content: center;
+      }
+
       .affiche {
-        transform: scale(.85);
+        width: 600px;
+        height: 800px;
+        background: radial-gradient(circle at top, #ffffff 0%, var(--green-light) 40%, #d7ece1 100%);
+        border-radius: 16px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
       }
-    }
-  </style>
-</head>
-<body>
 
-  <div class="controls">
-    <h2>Démo affiches IA (prototype)</h2>
-    <p style="font-size:0.72rem; color:#555;">
-      Remplissez les champs ci-dessous et mettez à jour l’affiche.  
-      Cette version est une démo : vos images ne sont pas stockées.
-    </p>
+      /* bandeau haut */
+      .header-left {
+        position: absolute;
+        top: 0;
+        left: 0;
+        background: var(--green);
+        color: #fff;
+        padding: 14px 18px 16px 22px;
+        border-bottom-right-radius: 26px;
+        max-width: 70%;
+        clip-path: polygon(0 0, 100% 0, 90% 100%, 0 100%);
+        z-index: 3;
+      }
+      .header-left .promo-title {
+        font-size: 1.05rem;
+        font-weight: 700;
+        margin: 0;
+      }
+      .header-left .promo-date {
+        font-size: 0.7rem;
+        margin: 4px 0 0 0;
+        opacity: 0.9;
+      }
 
-    <label>Titre de la promo</label>
-    <input id="promoTitle" type="text" placeholder="Promo d'automne - Vitamine D" />
+      .logo {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        width: 110px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        background: transparent;
+        overflow: hidden;
+        z-index: 3;
+      }
+      .logo img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+      }
+      .logo .placeholder {
+        font-size: 0.65rem;
+        color: rgba(0, 0, 0, 0.4);
+        background: rgba(255, 255, 255, 0.3);
+        padding: 4px 6px;
+        border-radius: 6px;
+      }
 
-    <label>Date / période</label>
-    <input id="promoDate" type="text" placeholder="Du 1er au 15 novembre" />
+      /* gommette */
+      .gommette {
+        position: absolute;
+        top: 120px;
+        right: 35px;
+        width: 150px;
+        height: 150px;
+        background: radial-gradient(circle, #ff9a7a 0%, #ff7b5a 45%, #ff5c32 100%);
+        border-radius: 50%;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        font-weight: 700;
+        font-size: 1.3rem;
+        box-shadow: 0 8px 18px rgba(255, 123, 90, 0.42);
+        z-index: 3;
+        isolation: isolate;
+      }
+      .gommette::after {
+        content: "";
+        position: absolute;
+        inset: -16px;
+        background: radial-gradient(circle, rgba(255, 123, 90, 0.35) 0%, rgba(255, 123, 90, 0) 70%);
+        filter: blur(12px);
+        z-index: -1;
+      }
 
-    <label>Texte promo (gommette)</label>
-    <input id="promoBadge" type="text" placeholder="-20% / 2=3 / Offre Fidélité" />
+      /* zone produit + watermark DÉMO */
+      .product-image {
+        position: absolute;
+        top: 235px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 360px;
+        height: 280px;
+        background: transparent;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        z-index: 1;
+      }
+      .product-image img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        background: transparent;
+      }
+      .product-placeholder {
+        color: rgba(10, 127, 90, 0.5);
+        text-align: center;
+        font-size: 0.85rem;
+        opacity: 0.6;
+        background: rgba(255, 255, 255, 0.25);
+        padding: 8px 10px;
+        border-radius: 999px;
+      }
+      /* watermark diagonal */
+      .product-image::after {
+        content: "DÉMO";
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 4rem;
+        font-weight: 700;
+        color: rgba(10, 127, 90, 0.08);
+        transform: rotate(-28deg);
+        pointer-events: none;
+        letter-spacing: 0.5rem;
+        text-transform: uppercase;
+      }
 
-    <label>Nom du produit</label>
-    <input id="productName" type="text" placeholder="Vitamine D3 Senior 1000 UI" />
+      /* bandeau bas */
+      .footer-band {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: linear-gradient(120deg, #0a7f5a 0%, #088c6a 100%);
+        color: white;
+        padding: 18px 22px 26px 22px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        clip-path: polygon(0 16%, 100% 0, 100% 100%, 0 100%);
+        z-index: 2;
+      }
+      .footer-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+      }
+      .footer-subtitle {
+        font-size: 0.78rem;
+        opacity: 0.85;
+      }
 
-    <label>Texte complémentaire</label>
-    <input id="productSubtitle" type="text" placeholder="Demandez conseil à votre pharmacien" />
+      /* mobile */
+      @media (max-width: 1050px) {
+        .preview-container {
+          min-width: 100%;
+        }
+        .affiche {
+          transform: scale(0.9);
+          transform-origin: top center;
+        }
+      }
+      @media (max-width: 780px) {
+        body {
+          flex-direction: column;
+        }
+        .controls {
+          width: 100%;
+        }
+        .affiche {
+          transform: scale(0.85);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="controls">
+      <h2>Démo affiches IA (prototype)</h2>
+      <p style="font-size: 0.72rem; color: #555">
+        Remplissez les champs ci-dessous et mettez à jour l’affiche. Cette version est une démo : vos images ne sont pas stockées.
+      </p>
 
-    <label>Slogan généré</label>
-    <input id="sloganField" type="text" placeholder="Votre slogan ici" />
+      <label>Titre de la promo</label>
+      <input id="promoTitle" type="text" placeholder="Promo d'automne - Vitamine D" />
 
-    <label>Logo pharmacie</label>
-    <input id="logoInput" type="file" accept="image/*" />
+      <label>Date / période</label>
+      <input id="promoDate" type="text" placeholder="Du 1er au 15 novembre" />
 
-    <label>Photo produit</label>
-    <input id="productInput" type="file" accept="image/*" />
+      <label>Texte promo (gommette)</label>
+      <input id="promoBadge" type="text" placeholder="-20% / 2=3 / Offre Fidélité" />
 
-    <button id="updateBtn">Mettre à jour l'affiche</button>
-    <button id="sloganBtn" class="secondary">💡 Proposer des slogans</button>
+      <label>Nom du produit</label>
+      <input id="productName" type="text" placeholder="Vitamine D3 Senior 1000 UI" />
 
-    <div id="sloganResults" style="margin-top:10px;"></div>
-  </div>
+      <label>Texte complémentaire</label>
+      <input id="productSubtitle" type="text" placeholder="Demandez conseil à votre pharmacien" />
 
-  <div class="preview-container">
-    <div class="affiche" id="affiche">
-      <div class="header-left">
-        <p class="promo-title" id="afficheTitle">Promo d'automne - Vitamine D</p>
-        <p class="promo-date" id="afficheDate">Du 1er au 15 novembre</p>
-      </div>
+      <label>Slogan généré</label>
+      <input id="sloganField" type="text" placeholder="Votre slogan ici" />
 
-      <div class="logo" id="afficheLogo">
-        <span class="placeholder">logo</span>
-      </div>
+      <label>Logo pharmacie</label>
+      <input id="logoInput" type="file" accept="image/*" />
 
-      <div class="gommette" id="afficheBadge">-20%</div>
+      <label>Photo produit</label>
+      <input id="productInput" type="file" accept="image/*" />
 
-      <div class="product-image" id="afficheProduct">
-        <div class="product-placeholder">Photo du produit<br/>ici</div>
-      </div>
+      <button id="updateBtn">Mettre à jour l'affiche</button>
+      <button id="sloganBtn" class="secondary">💡 Proposer des slogans</button>
 
-      <div class="footer-band">
-        <div class="footer-title" id="afficheProductName">Vitamine D3 Senior 1000 UI</div>
-        <div class="footer-subtitle" id="afficheProductSubtitle">Demandez conseil à votre pharmacien</div>
+      <div id="sloganResults" style="margin-top: 10px"></div>
+    </div>
+
+    <div class="preview-container">
+      <div class="affiche" id="affiche">
+        <div class="header-left">
+          <p class="promo-title" id="afficheTitle">Promo d'automne - Vitamine D</p>
+          <p class="promo-date" id="afficheDate">Du 1er au 15 novembre</p>
+        </div>
+
+        <div class="logo" id="afficheLogo">
+          <span class="placeholder">logo</span>
+        </div>
+
+        <div class="gommette" id="afficheBadge">-20%</div>
+
+        <div class="product-image" id="afficheProduct">
+          <div class="product-placeholder">Photo du produit<br />ici</div>
+        </div>
+
+        <div class="footer-band">
+          <div class="footer-title" id="afficheProductName">Vitamine D3 Senior 1000 UI</div>
+          <div class="footer-subtitle" id="afficheProductSubtitle">Demandez conseil à votre pharmacien</div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <script>
-    // inputs
-    const titleInput = document.getElementById('promoTitle');
-    const dateInput = document.getElementById('promoDate');
-    const badgeInput = document.getElementById('promoBadge');
-    const productNameInput = document.getElementById('productName');
-    const productSubtitleInput = document.getElementById('productSubtitle');
-    const sloganField = document.getElementById('sloganField');
-    const logoInput = document.getElementById('logoInput');
-    const productInput = document.getElementById('productInput');
+    <script>
+      // inputs
+      const titleInput = document.getElementById("promoTitle");
+      const dateInput = document.getElementById("promoDate");
+      const badgeInput = document.getElementById("promoBadge");
+      const productNameInput = document.getElementById("productName");
+      const productSubtitleInput = document.getElementById("productSubtitle");
+      const sloganField = document.getElementById("sloganField");
+      const logoInput = document.getElementById("logoInput");
+      const productInput = document.getElementById("productInput");
 
-    // cibles
-    const afficheTitle = document.getElementById('afficheTitle');
-    const afficheDate = document.getElementById('afficheDate');
-    const afficheBadge = document.getElementById('afficheBadge');
-    const afficheProductName = document.getElementById('afficheProductName');
-    const afficheProductSubtitle = document.getElementById('afficheProductSubtitle');
-    const afficheLogo = document.getElementById('afficheLogo');
-    const afficheProduct = document.getElementById('afficheProduct');
-    const sloganResults = document.getElementById('sloganResults');
+      // cibles
+      const afficheTitle = document.getElementById("afficheTitle");
+      const afficheDate = document.getElementById("afficheDate");
+      const afficheBadge = document.getElementById("afficheBadge");
+      const afficheProductName = document.getElementById("afficheProductName");
+      const afficheProductSubtitle = document.getElementById("afficheProductSubtitle");
+      const afficheLogo = document.getElementById("afficheLogo");
+      const afficheProduct = document.getElementById("afficheProduct");
+      const sloganResults = document.getElementById("sloganResults");
 
-    // détourage simple par couleur (local)
-    async function removeBackgroundFromDataURL(dataURL) {
-      return new Promise((resolve) => {
-        const img = new Image();
-        img.onload = function() {
-          const canvas = document.createElement('canvas');
-          const ctx = canvas.getContext('2d');
-          canvas.width = img.width;
-          canvas.height = img.height;
-          ctx.drawImage(img, 0, 0);
-          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-          const data = imageData.data;
+      // détourage simple par couleur (local)
+      async function removeBackgroundFromDataURL(dataURL) {
+        return new Promise((resolve) => {
+          const img = new Image();
+          img.onload = function () {
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img, 0, 0);
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imageData.data;
 
-          const r0 = data[0], g0 = data[1], b0 = data[2];
-          const threshold = 40;
+            const r0 = data[0],
+              g0 = data[1],
+              b0 = data[2];
+            const threshold = 40;
 
-          for (let i = 0; i < data.length; i += 4) {
-            const r = data[i], g = data[i+1], b = data[i+2];
-            if (Math.abs(r - r0) < threshold && Math.abs(g - g0) < threshold && Math.abs(b - b0) < threshold) {
-              data[i+3] = 0;
+            for (let i = 0; i < data.length; i += 4) {
+              const r = data[i],
+                g = data[i + 1],
+                b = data[i + 2];
+              if (Math.abs(r - r0) < threshold && Math.abs(g - g0) < threshold && Math.abs(b - b0) < threshold) {
+                data[i + 3] = 0;
+              }
             }
-          }
-          ctx.putImageData(imageData, 0, 0);
-          resolve(canvas.toDataURL("image/png"));
-        };
-        img.src = dataURL;
-      });
-    }
+            ctx.putImageData(imageData, 0, 0);
+            resolve(canvas.toDataURL("image/png"));
+          };
+          img.src = dataURL;
+        });
+      }
 
-    async function loadImageToContainer(fileInput, container, {removeBg=false} = {}) {
-      const file = fileInput.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = async function(e) {
-        const dataURL = e.target.result;
-        container.innerHTML = "";
-        const img = document.createElement('img');
+      async function loadImageToContainer(fileInput, container, { removeBg = false } = {}) {
+        const file = fileInput.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = async function (e) {
+          const dataURL = e.target.result;
+          container.innerHTML = "";
+          const img = document.createElement("img");
 
-        if (removeBg) {
-          try {
-            const res = await removeBackgroundFromDataURL(dataURL);
-            img.src = res;
-          } catch (err) {
+          if (removeBg) {
+            try {
+              const res = await removeBackgroundFromDataURL(dataURL);
+              img.src = res;
+            } catch (err) {
+              img.src = dataURL;
+            }
+          } else {
             img.src = dataURL;
           }
-        } else {
-          img.src = dataURL;
-        }
-        container.appendChild(img);
-      };
-      reader.readAsDataURL(file);
-    }
-
-    document.getElementById('updateBtn').addEventListener('click', () => {
-      afficheTitle.textContent = titleInput.value || "Promotion en pharmacie";
-      afficheDate.textContent = dateInput.value || "Période de l'offre";
-      afficheBadge.textContent = badgeInput.value || "-20%";
-      afficheProductName.textContent = productNameInput.value || "Nom du produit";
-      afficheProductSubtitle.textContent =
-        sloganField.value ||
-        productSubtitleInput.value ||
-        "Demandez conseil à votre pharmacien";
-
-      if (logoInput.files.length > 0) {
-        loadImageToContainer(logoInput, afficheLogo, {removeBg:false});
-      }
-      if (productInput.files.length > 0) {
-        loadImageToContainer(productInput, afficheProduct, {removeBg:true});
-      }
-    });
-
-    // génération locale de slogans
-    const OPENERS = [
-      "Prenez soin de vous avec",
-      "Cette semaine à l'officine :",
-      "Offre spéciale",
-      "Votre pharmacie vous propose",
-      "À ne pas manquer :"
-    ];
-    const CALLS = [
-      "Demandez conseil à l’équipe 💊",
-      "Disponible dès maintenant 🌿",
-      "Quantités limitées",
-      "Simple, efficace, validé officine",
-      "Pour toute la famille"
-    ];
-    function rand(n) { return Math.floor(Math.random() * n); }
-
-    document.getElementById('sloganBtn').addEventListener('click', () => {
-      const p = (productNameInput.value || "ce produit").trim();
-      const promo = (badgeInput.value || "").trim();
-      const pharmacie = "votre pharmacie";
-
-      const s1 = `${OPENERS[rand(OPENERS.length)]} ${p}${promo ? " ("+promo+")" : ""}`;
-      const s2 = `${p} : ${promo ? promo + " – " : ""}${CALLS[rand(CALLS.length)]}`;
-      const s3 = `${p} dispo à ${pharmacie} ✅${promo ? " → " + promo : ""}`;
-
-      sloganResults.innerHTML = "";
-      [s1, s2, s3].forEach(slogan => {
-        const div = document.createElement('div');
-        div.className = "slogan-option";
-        div.textContent = slogan;
-        div.onclick = () => {
-          sloganField.value = slogan;
-          afficheProductSubtitle.textContent = slogan;
+          container.appendChild(img);
         };
-        sloganResults.appendChild(div);
+        reader.readAsDataURL(file);
+      }
+
+      document.getElementById("updateBtn").addEventListener("click", () => {
+        afficheTitle.textContent = titleInput.value || "Promotion en pharmacie";
+        afficheDate.textContent = dateInput.value || "Période de l'offre";
+        afficheBadge.textContent = badgeInput.value || "-20%";
+        afficheProductName.textContent = productNameInput.value || "Nom du produit";
+        afficheProductSubtitle.textContent = sloganField.value || productSubtitleInput.value || "Demandez conseil à votre pharmacien";
+
+        if (logoInput.files.length > 0) {
+          loadImageToContainer(logoInput, afficheLogo, { removeBg: false });
+        }
+        if (productInput.files.length > 0) {
+          loadImageToContainer(productInput, afficheProduct, { removeBg: true });
+        }
       });
-    });
-  </script>
-</body>
+
+      // génération locale de slogans
+      const OPENERS = [
+        "Prenez soin de vous avec",
+        "Cette semaine à l'officine :",
+        "Offre spéciale",
+        "Votre pharmacie vous propose",
+        "À ne pas manquer :",
+      ];
+      const CALLS = [
+        "Demandez conseil à l’équipe 💊",
+        "Disponible dès maintenant 🌿",
+        "Quantités limitées",
+        "Simple, efficace, validé officine",
+        "Pour toute la famille",
+      ];
+      function rand(n) {
+        return Math.floor(Math.random() * n);
+      }
+
+      document.getElementById("sloganBtn").addEventListener("click", () => {
+        const p = (productNameInput.value || "ce produit").trim();
+        const promo = (badgeInput.value || "").trim();
+        const pharmacie = "votre pharmacie";
+
+        const s1 = `${OPENERS[rand(OPENERS.length)]} ${p}${promo ? " (" + promo + ")" : ""}`;
+        const s2 = `${p} : ${promo ? promo + " – " : ""}${CALLS[rand(CALLS.length)]}`;
+        const s3 = `${p} dispo à ${pharmacie} ✅${promo ? " → " + promo : ""}`;
+
+        sloganResults.innerHTML = "";
+        [s1, s2, s3].forEach((slogan) => {
+          const div = document.createElement("div");
+          div.className = "slogan-option";
+          div.textContent = slogan;
+          div.onclick = () => {
+            sloganField.value = slogan;
+            afficheProductSubtitle.textContent = slogan;
+          };
+          sloganResults.appendChild(div);
+        });
+      });
+    </script>
+  </body>
 </html>
