@@ -14,5 +14,4 @@ J'offre des services de conseil en modélisation statistiques et IA pour les pet
 - **Ateliers** pratiques autour de l'IA pour les particuliers et les professionnels.
 - Cours particuliers en **probabilité**, **statistiques** et **Machine Learning**.
 
-Pour une version personnalisée à votre pharmacie (logo, charte, onglet d’actualités), contactez-moi :  
-📧 edimah.synesius-songo@proton.me
+Pour une version personnalisée à votre pharmacie (logo, charte, onglet d’actualités), [contactez-moi par email 📧](edimah.synesius-songo@proton.me).
