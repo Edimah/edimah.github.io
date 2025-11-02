@@ -1,6 +1,8 @@
 ---
 layout: page
 title: Conseil en Statistiques, IA & autour de la Data
+nav: true
+nav_order: 5
 permalink: /freelance/
 ---
 
