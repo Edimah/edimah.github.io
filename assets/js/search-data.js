@@ -30,6 +30,13 @@ ninja.data = [{
           handler: () => {
             window.location.href = "/repositories/";
           },
+        },{id: "nav-conseil-en-statistiques-ia-amp-autour-de-la-data",
+          title: "Conseil en Statistiques, IA &amp; autour de la Data",
+          description: "",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/freelance/";
+          },
         },{id: "nav-cv",
           title: "CV",
           description: "Curriculum Vitae",
