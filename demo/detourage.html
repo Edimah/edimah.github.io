@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Démo détourage IA</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 2rem;
+      display: flex;
+      justify-content: center;
+      background: radial-gradient(circle at top, #f0f4ff, #e4ecff 36%, #fff);
+      min-height: 100vh;
+    }
+
+    .card {
+      width: min(960px, 100%);
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 1rem;
+      padding: 2rem;
+      box-shadow: 0 1rem 3rem rgba(15, 23, 42, 0.15);
+      backdrop-filter: blur(8px);
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+    }
+
+    p {
+      line-height: 1.5;
+      color: #475569;
+    }
+
+    label {
+      display: flex;
+      flex-direction: column;
+      margin-block: 1rem;
+      gap: 0.5rem;
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    input[type="file"] {
+      padding: 0.6rem;
+      border: 1px dashed #cbd5f5;
+      border-radius: 0.75rem;
+      background-color: #f8fafc;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: #2563eb;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+
+    .preview {
+      margin-top: 2rem;
+      border-radius: 1rem;
+      border: 1px solid #e2e8f0;
+      background: repeating-conic-gradient(rgba(148, 163, 184, 0.2) 0% 25%,
+          transparent 0% 50%) 50% / 20px 20px;
+      padding: 1rem;
+      min-height: 320px;
+      position: relative;
+    }
+
+    .preview img {
+      max-width: 100%;
+      display: block;
+      margin: 0 auto;
+      object-fit: contain;
+    }
+
+    .spinner {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      background: rgba(248, 250, 252, 0.85);
+      border-radius: 0.85rem;
+      font-weight: 600;
+      color: #1d4ed8;
+      gap: 0.5rem;
+    }
+
+    .spinner.hidden {
+      display: none;
+    }
+
+    .spinner::after {
+      content: "";
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
+      border: 4px solid rgba(37, 99, 235, 0.25);
+      border-top-color: #2563eb;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    button {
+      border: none;
+      background: #2563eb;
+      color: white;
+      padding: 0.85rem 1.6rem;
+      border-radius: 999px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 0.75rem 1.5rem rgba(37, 99, 235, 0.35);
+      width: 100%;
+    }
+
+    button:disabled {
+      background: #94a3b8;
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+
+    button:not(:disabled):hover {
+      transform: translateY(-2px);
+    }
+
+    .status {
+      margin-top: 0.5rem;
+      font-size: 0.95rem;
+      color: #475569;
+    }
+
+    .alpha-preview {
+      margin-top: 1rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+
+    .alpha-preview figure {
+      margin: 0;
+      text-align: center;
+    }
+
+    .alpha-preview img {
+      width: 100%;
+      border-radius: 0.75rem;
+      border: 1px solid #e2e8f0;
+      background: repeating-conic-gradient(rgba(148, 163, 184, 0.2) 0% 25%,
+          transparent 0% 50%) 50% / 10px 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="card">
+    <h1>Détourage IA (U²-Net)</h1>
+    <p>
+      Prototype léger pour tester le pipeline de suppression d’arrière-plan
+      dans le navigateur (WebGPU/WebGL/WASM). Chargez une image, ajustez la
+      transition des bords, et téléchargez le PNG détouré.
+    </p>
+
+    <label>
+      Image source
+      <input type="file" id="fileInput" accept="image/*" />
+    </label>
+
+    <div class="controls">
+      <label>
+        Feather (px)
+        <input type="range" id="featherSlider" min="0" max="4" step="0.1" value="1.5" />
+        <span id="featherValue">1.5</span>
+      </label>
+
+      <label>
+        Threshold
+        <input type="range" id="thresholdSlider" min="0.4" max="0.9" step="0.01" value="0.7" />
+        <span id="thresholdValue">0.70</span>
+      </label>
+    </div>
+
+    <button id="downloadBtn" disabled>Télécharger le PNG détouré</button>
+    <div class="status" id="status">Prêt à charger un modèle…</div>
+
+    <section class="preview">
+      <div class="spinner hidden" id="spinner">
+        <span id="spinnerLabel">Initialisation…</span>
+      </div>
+      <img id="resultImage" alt="Résultat détouré" hidden />
+    </section>
+
+    <section class="alpha-preview" id="alphaPreview" hidden>
+      <figure>
+        <figcaption>Masque alpha</figcaption>
+        <img id="alphaImage" alt="Masque alpha" />
+      </figure>
+    </section>
+  </main>
+
+  <script type="module">
+    import { initU2Net, removeBgFromFile } from '../assets/js/bgremoval.mjs';
+    await initU2Net({ modelUrl: "../models/u2net.onnx",
+                    providers: ['webgpu','webgl','wasm'] });
+
+    const fileInput = document.getElementById('fileInput');
+    const featherSlider = document.getElementById('featherSlider');
+    const thresholdSlider = document.getElementById('thresholdSlider');
+    const featherValue = document.getElementById('featherValue');
+    const thresholdValue = document.getElementById('thresholdValue');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const statusEl = document.getElementById('status');
+    const spinner = document.getElementById('spinner');
+    const spinnerLabel = document.getElementById('spinnerLabel');
+    const resultImage = document.getElementById('resultImage');
+    const alphaSection = document.getElementById('alphaPreview');
+    const alphaImage = document.getElementById('alphaImage');
+
+    let activeFile = null;
+    let lastResult = null;
+
+    function showSpinner(message) {
+      spinnerLabel.textContent = message;
+      spinner.classList.remove('hidden');
+    }
+
+    function hideSpinner() {
+      spinner.classList.add('hidden');
+    }
+
+    function formatThreshold(value) {
+      return Number(value).toFixed(2);
+    }
+
+    function updateSliderLabels() {
+      featherValue.textContent = Number(featherSlider.value).toFixed(1);
+      thresholdValue.textContent = formatThreshold(thresholdSlider.value);
+    }
+
+    async function ensureModel() {
+      try {
+        showSpinner('Chargement du modèle…');
+        await initU2Net();
+        statusEl.textContent = 'Modèle prêt. Importez une image pour commencer.';
+      } catch (err) {
+        statusEl.textContent = `Erreur de chargement: ${err.message}`;
+      } finally {
+        hideSpinner();
+      }
+    }
+
+    async function runInference() {
+      if (!activeFile) return;
+      updateSliderLabels();
+      showSpinner('Inférence en cours…');
+      statusEl.textContent = 'Calcul du masque…';
+      downloadBtn.disabled = true;
+      resultImage.hidden = true;
+      alphaSection.hidden = true;
+
+      try {
+        const result = await removeBgFromFile(activeFile, {
+          feather: Number(featherSlider.value),
+          threshold: Number(thresholdSlider.value),
+        });
+        lastResult = result;
+        resultImage.src = result.rgbaDataURL;
+        resultImage.hidden = false;
+        alphaImage.src = result.alphaMask;
+        alphaSection.hidden = false;
+        downloadBtn.disabled = false;
+        statusEl.textContent = `Inférence terminée (provider: ${result.provider ?? 'n/a'})`;
+      } catch (err) {
+        console.error(err);
+        statusEl.textContent = `Erreur d'inférence: ${err.message}`;
+      } finally {
+        hideSpinner();
+      }
+    }
+
+    fileInput.addEventListener('change', (event) => {
+      activeFile = event.target.files?.[0] ?? null;
+      if (!activeFile) {
+        statusEl.textContent = 'Fichier invalide.';
+        return;
+      }
+      statusEl.textContent = `Image chargée (${Math.round(activeFile.size / 1024)} kB).`;
+      runInference();
+    });
+
+    featherSlider.addEventListener('input', () => {
+      updateSliderLabels();
+    });
+    thresholdSlider.addEventListener('input', () => {
+      updateSliderLabels();
+    });
+
+    featherSlider.addEventListener('change', runInference);
+    thresholdSlider.addEventListener('change', runInference);
+
+    downloadBtn.addEventListener('click', () => {
+      if (!lastResult) return;
+      const link = document.createElement('a');
+      const name = activeFile?.name?.replace(/\.[^.]+$/, '') ?? 'detourage';
+      link.href = lastResult.rgbaDataURL;
+      link.download = `${name}-bg-removed.png`;
+      link.click();
+    });
+
+    ensureModel();
+  </script>
+</body>
+
+</html>
