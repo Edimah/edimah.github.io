@@ -215,8 +215,11 @@
 
   <script type="module">
     import { initU2Net, removeBgFromFile } from '../assets/js/bgremoval.mjs';
-    await initU2Net({ modelUrl: "../models/u2net.onnx",
-                    providers: ['webgpu','webgl','wasm'] });
+    const MODEL_CONFIG = {
+      modelUrl: new URL('../models/u2net.onnx', import.meta.url).href,
+      providers: ['webgpu', 'webgl', 'wasm'],
+    };
+    await initU2Net(MODEL_CONFIG);
 
     const fileInput = document.getElementById('fileInput');
     const featherSlider = document.getElementById('featherSlider');
@@ -255,7 +258,7 @@
     async function ensureModel() {
       try {
         showSpinner('Chargement du modèle…');
-        await initU2Net();
+        await initU2Net(MODEL_CONFIG);
         statusEl.textContent = 'Modèle prêt. Importez une image pour commencer.';
       } catch (err) {
         statusEl.textContent = `Erreur de chargement: ${err.message}`;

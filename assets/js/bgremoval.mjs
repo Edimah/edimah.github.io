@@ -13,6 +13,7 @@ let ortLoadPromise;
 let ortModule;
 let sessionPromise;
 let cachedProviderName;
+let currentSessionSignature;
 
 /**
  * Injects the onnxruntime-web bundle on demand so the host page does not have
@@ -56,10 +57,24 @@ export async function initU2Net({
   modelUrl = DEFAULT_MODEL_URL,
   providers = DEFAULT_PROVIDERS,
 } = {}) {
-  if (sessionPromise) {
+  const signature = JSON.stringify({ modelUrl, providers });
+  if (sessionPromise && signature === currentSessionSignature) {
     return sessionPromise;
   }
 
+  if (sessionPromise && signature !== currentSessionSignature) {
+    sessionPromise
+      .then((session) => {
+        if (session && typeof session.release === 'function') {
+          session.release();
+        }
+      })
+      .catch(() => { /* previous session init failed, nothing to release */ });
+    sessionPromise = null;
+    cachedProviderName = undefined;
+  }
+
+  currentSessionSignature = signature;
   sessionPromise = (async () => {
     const ort = await ensureOrt();
     let lastError;
@@ -83,7 +98,10 @@ export async function initU2Net({
         ? `Unable to initialise U²-Net session. Last error: ${lastError.message}`
         : 'Unable to initialise U²-Net session.',
     );
-  })();
+  })().catch((error) => {
+    currentSessionSignature = undefined;
+    throw error;
+  });
 
   return sessionPromise;
 }

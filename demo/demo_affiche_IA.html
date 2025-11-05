@@ -182,6 +182,37 @@
       margin: 0;
     }
 
+    .model-choice {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 6px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, .65);
+      border: 1px dashed rgba(10, 127, 90, .18);
+      margin-top: 4px;
+    }
+
+    .model-choice span {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .model-choice label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .74rem;
+      font-weight: 500;
+      color: #395247;
+    }
+
+    .model-choice small {
+      font-size: .68rem;
+      color: #7a8a81;
+    }
+
     .detourage-status {
       margin-top: 6px;
       font-size: .7rem;
@@ -655,6 +686,17 @@
         <label for="toleranceRange">Tolérance <span id="toleranceValue">40</span></label>
         <input type="range" id="toleranceRange" min="0" max="60" value="40" />
       </div>
+      <div class="model-choice">
+        <span>Modèle IA</span>
+        <label>
+          <input type="radio" name="u2netModel" value="u2netp.onnx" checked />
+          <span>u2netp.onnx <small>(fond uni)</small></span>
+        </label>
+        <label>
+          <input type="radio" name="u2netModel" value="u2net.onnx" />
+          <span>u2net.onnx <small>(images encombrées)</small></span>
+        </label>
+      </div>
       <p class="detourage-note">Les images restent sur votre appareil.</p>
     </fieldset>
 
@@ -761,10 +803,11 @@
   <script type="module">
     // --- Constantes & chemins dynamiques ---
     const DETOUR_MODE = Object.freeze({ AUTO: 'auto', IA: 'ia', COLOR: 'color' });
-    const MODEL_CHOICE = 'u2netp.onnx'; // Permet de basculer rapidement vers u2net.onnx si besoin
+    const DEFAULT_MODEL_CHOICE = 'u2netp.onnx';
     const resolveAssetUrl = (relativePath) => new URL(relativePath, import.meta.url).href;
     const MODULE_PATH = resolveAssetUrl('../assets/js/bgremoval.mjs');
-    const MODEL_URL = resolveAssetUrl(`../models/${MODEL_CHOICE}`);
+    let modelChoice = DEFAULT_MODEL_CHOICE;
+    const getModelUrl = () => resolveAssetUrl(`../models/${modelChoice}`);
 
     // --- Références DOM ---
     const titleInput = document.getElementById('promoTitle');
@@ -782,6 +825,7 @@
     const toleranceValue = document.getElementById('toleranceValue');
     const toleranceContainer = document.getElementById('toleranceControl');
     const detourageModeInputs = document.querySelectorAll('input[name="detourageMode"]');
+    const modelChoiceInputs = document.querySelectorAll('input[name="u2netModel"]');
 
     const updateBtn = document.getElementById('updateBtn');
     const sloganBtn = document.getElementById('sloganBtn');
@@ -812,6 +856,11 @@
       lastProductMode: null,
       logoManualColor: null,
     };
+
+    const selectedModelInput = document.querySelector('input[name="u2netModel"]:checked');
+    if (selectedModelInput?.value) {
+      modelChoice = selectedModelInput.value;
+    }
 
     // --- UI helpers ---
     const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
@@ -845,6 +894,9 @@
     };
     setDetourageStatus("Initialisation du modèle IA…", 'loading');
 
+    let u2netInitPromise;
+    let providerLogged = false;
+
     const getSelectedDetourMode = () => {
       const checked = document.querySelector('input[name="detourageMode"]:checked');
       return (checked?.value || DETOUR_MODE.AUTO);
@@ -858,6 +910,20 @@
       });
     });
 
+    modelChoiceInputs.forEach((input) => {
+      input.addEventListener('change', () => {
+        if (!input.checked) return;
+        if (!input.value || input.value === modelChoice) return;
+        modelChoice = input.value;
+        providerLogged = false;
+        u2netInitPromise = null;
+        setDetourageStatus('Initialisation du modèle IA…', 'loading');
+        ensureU2NetReady().catch(() => {
+          // status already handled in ensureU2NetReady
+        });
+      });
+    });
+
     // --- Module IA ---
     let initU2Net;
     let removeBgFromFile;
@@ -868,8 +934,6 @@
       setDetourageStatus('Module IA introuvable, utilisez "Couleur".', 'error');
     }
 
-    let u2netInitPromise;
-    let providerLogged = false;
     const ensureU2NetReady = async () => {
       if (!initU2Net) {
         throw new Error('Module IA non disponible.');
@@ -877,7 +941,7 @@
       if (!u2netInitPromise) {
         setDetourageStatus('Initialisation du modèle IA…', 'loading');
         u2netInitPromise = initU2Net({
-          modelUrl: MODEL_URL,
+          modelUrl: getModelUrl(),
           providers: ['webgpu', 'webgl', 'wasm'],
         })
           .then((session) => {
