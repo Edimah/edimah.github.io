@@ -110,6 +110,30 @@
       animation: spin 1s linear infinite;
     }
 
+    .progress {
+      width: 100%;
+      height: 0.6rem;
+      border-radius: 999px;
+      overflow: hidden;
+      background: #e2e8f0;
+      border: none;
+      display: block;
+    }
+
+    .progress::-webkit-progress-bar {
+      background: transparent;
+    }
+
+    .progress::-webkit-progress-value {
+      background: linear-gradient(90deg, #60a5fa, #2563eb);
+      border-radius: 999px;
+    }
+
+    .progress::-moz-progress-bar {
+      background: linear-gradient(90deg, #60a5fa, #2563eb);
+      border-radius: 999px;
+    }
+
     @keyframes spin {
       to {
         transform: rotate(360deg);
@@ -201,6 +225,7 @@
     <section class="preview">
       <div class="spinner hidden" id="spinner">
         <span id="spinnerLabel">Initialisation…</span>
+        <progress id="modelProgress" class="progress" max="100" value="0" hidden></progress>
       </div>
       <img id="resultImage" alt="Résultat détouré" hidden />
     </section>
@@ -215,12 +240,11 @@
 
   <script type="module">
     import { initU2Net, removeBgFromFile } from '../assets/js/bgremoval.mjs';
+    const MODEL_DISPLAY_NAME = 'U²-Net (images encombrées)';
     const MODEL_CONFIG = {
       modelUrl: 'https://huggingface.co/edimah/u2net/resolve/main/u2net.onnx',
       providers: ['webgpu', 'webgl', 'wasm'],
     };
-    await initU2Net(MODEL_CONFIG);
-
     const fileInput = document.getElementById('fileInput');
     const featherSlider = document.getElementById('featherSlider');
     const thresholdSlider = document.getElementById('thresholdSlider');
@@ -230,12 +254,21 @@
     const statusEl = document.getElementById('status');
     const spinner = document.getElementById('spinner');
     const spinnerLabel = document.getElementById('spinnerLabel');
+    const modelProgress = document.getElementById('modelProgress');
     const resultImage = document.getElementById('resultImage');
     const alphaSection = document.getElementById('alphaPreview');
     const alphaImage = document.getElementById('alphaImage');
 
     let activeFile = null;
     let lastResult = null;
+
+    function resetModelProgress() {
+      if (!modelProgress) return;
+      modelProgress.hidden = true;
+      modelProgress.value = 0;
+      modelProgress.max = 100;
+      modelProgress.setAttribute('value', 0);
+    }
 
     function showSpinner(message) {
       spinnerLabel.textContent = message;
@@ -244,6 +277,7 @@
 
     function hideSpinner() {
       spinner.classList.add('hidden');
+      resetModelProgress();
     }
 
     function formatThreshold(value) {
@@ -255,13 +289,52 @@
       thresholdValue.textContent = formatThreshold(thresholdSlider.value);
     }
 
-    async function ensureModel() {
+    function handleModelProgress(info) {
+      if (!modelProgress) return;
+      const { percent = 0, total = 0, fromCache = false } = info ?? {};
+      const completedDownload = total && percent >= 100 && !fromCache;
+
+      if (fromCache) {
+        resetModelProgress();
+        const cachedMsg = `Modèle ${MODEL_DISPLAY_NAME} déjà disponible (cache).`;
+        spinnerLabel.textContent = cachedMsg;
+        statusEl.textContent = cachedMsg;
+        return;
+      }
+
+      if (completedDownload) {
+        resetModelProgress();
+        const initMsg = `Téléchargement terminé. Initialisation du modèle ${MODEL_DISPLAY_NAME}…`;
+        spinnerLabel.textContent = initMsg;
+        statusEl.textContent = initMsg;
+        return;
+      }
+
+      modelProgress.hidden = false;
+      if (total) {
+        modelProgress.max = 100;
+        modelProgress.value = percent;
+        modelProgress.setAttribute('value', percent);
+      } else {
+        modelProgress.removeAttribute('value');
+      }
+      const progressMsg = `Téléchargement du modèle ${MODEL_DISPLAY_NAME}… ${percent}%`;
+      spinnerLabel.textContent = total ? progressMsg : `Téléchargement du modèle ${MODEL_DISPLAY_NAME}…`;
+      statusEl.textContent = spinnerLabel.textContent;
+    }
+
+    async function loadModelIfNeeded() {
       try {
-        showSpinner('Chargement du modèle…');
-        await initU2Net(MODEL_CONFIG);
-        statusEl.textContent = 'Modèle prêt. Importez une image pour commencer.';
+        showSpinner(`Préparation du modèle ${MODEL_DISPLAY_NAME}…`);
+        statusEl.textContent = `Téléchargement du modèle ${MODEL_DISPLAY_NAME}…`;
+        await initU2Net({
+          ...MODEL_CONFIG,
+          onProgress: handleModelProgress,
+        });
+        statusEl.textContent = `Modèle ${MODEL_DISPLAY_NAME} prêt. Importez une image pour commencer.`;
+        resetModelProgress();
       } catch (err) {
-        statusEl.textContent = `Erreur de chargement: ${err.message}`;
+        statusEl.textContent = `Erreur de chargement du modèle: ${err.message}`;
       } finally {
         hideSpinner();
       }
@@ -325,7 +398,7 @@
       link.click();
     });
 
-    ensureModel();
+    await loadModelIfNeeded();
   </script>
 </body>
 
