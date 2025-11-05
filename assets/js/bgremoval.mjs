@@ -14,6 +14,89 @@ let ortModule;
 let sessionPromise;
 let cachedProviderName;
 let currentSessionSignature;
+const modelCache = new Map();
+
+async function downloadModel(modelUrl, onProgress) {
+  if (modelCache.has(modelUrl)) {
+    const cached = modelCache.get(modelUrl);
+    if (onProgress) {
+      onProgress({
+        loaded: cached.byteLength,
+        total: cached.byteLength,
+        percent: 100,
+        modelUrl,
+        fromCache: true,
+      });
+    }
+    return cached.buffer;
+  }
+
+  const response = await fetch(modelUrl, { mode: 'cors' });
+  if (!response.ok) {
+    throw new Error(`Failed to download model: ${response.status} ${response.statusText}`);
+  }
+
+  const total = Number(response.headers.get('content-length')) || 0;
+  const reader = response.body?.getReader();
+
+  if (!reader) {
+    const buffer = await response.arrayBuffer();
+    const byteLength = buffer.byteLength;
+    modelCache.set(modelUrl, { buffer, byteLength });
+    if (onProgress) {
+      onProgress({
+        loaded: byteLength,
+        total: byteLength,
+        percent: 100,
+        modelUrl,
+        fromCache: false,
+      });
+    }
+    return buffer;
+  }
+
+  const chunks = [];
+  let loaded = 0;
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    if (value) {
+      chunks.push(value);
+      loaded += value.length;
+      if (onProgress) {
+        onProgress({
+          loaded,
+          total,
+          percent: total ? Math.min(100, Math.round((loaded / total) * 100)) : 0,
+          modelUrl,
+          fromCache: false,
+        });
+      }
+    }
+  }
+
+  const totalLength = loaded;
+  const bytes = new Uint8Array(totalLength);
+  let offset = 0;
+  for (const chunk of chunks) {
+    bytes.set(chunk, offset);
+    offset += chunk.length;
+  }
+
+  const buffer = bytes.buffer;
+  modelCache.set(modelUrl, { buffer, byteLength: totalLength });
+  if (onProgress) {
+    onProgress({
+      loaded: totalLength,
+      total: total || totalLength,
+      percent: 100,
+      modelUrl,
+      fromCache: false,
+    });
+  }
+  return buffer;
+}
 
 /**
  * Injects the onnxruntime-web bundle on demand so the host page does not have
@@ -24,10 +107,18 @@ async function ensureOrt() {
 
   if (globalThis.ort) {
     ortModule = globalThis.ort;
+    configureOrtEnvironment(ortModule);
     return ortModule;
   }
 
   if (!ortLoadPromise) {
+    const bootstrapOrt = globalThis.ort ?? {};
+    if (!bootstrapOrt.env) bootstrapOrt.env = {};
+    if (!bootstrapOrt.env.wasm) bootstrapOrt.env.wasm = {};
+    configureOrtEnvironment(bootstrapOrt);
+    bootstrapOrt.env.wasm.wasmPaths = WASM_ASSETS;
+    globalThis.ort = bootstrapOrt;
+
     ortLoadPromise = new Promise((resolve, reject) => {
       const script = document.createElement('script');
       script.src = ORT_CDN;
@@ -38,8 +129,7 @@ async function ensureOrt() {
           reject(new Error('onnxruntime-web loaded but global "ort" is missing.'));
           return;
         }
-        // Ensure WASM backend knows where to find its worker + wasm artifacts.
-        ortModule.env.wasm.wasmPaths = WASM_ASSETS;
+        configureOrtEnvironment(ortModule);
         resolve(ortModule);
       };
       script.onerror = () => reject(new Error('Failed to load onnxruntime-web from CDN.'));
@@ -50,12 +140,34 @@ async function ensureOrt() {
   return ortLoadPromise;
 }
 
+function configureOrtEnvironment(ort) {
+  if (!ort) return;
+  if (!ort.env) ort.env = {};
+  if (!ort.env.wasm) ort.env.wasm = {};
+  const wasmEnv = ort.env.wasm;
+
+  if (!globalThis.crossOriginIsolated) {
+    wasmEnv.numThreads = 1;
+    wasmEnv.simd = false;
+  }
+
+  if (typeof navigator !== 'undefined' && /Safari/i.test(navigator.userAgent) && !/Chrome/i.test(navigator.userAgent)) {
+    wasmEnv.numThreads = 1;
+    wasmEnv.simd = false;
+  }
+
+  if (!wasmEnv.wasmPaths) {
+    wasmEnv.wasmPaths = WASM_ASSETS;
+  }
+}
+
 /**
  * Creates (or reuses) a single shared inference session.
  */
 export async function initU2Net({
   modelUrl = DEFAULT_MODEL_URL,
   providers = DEFAULT_PROVIDERS,
+  onProgress = null,
 } = {}) {
   const signature = JSON.stringify({ modelUrl, providers });
   if (sessionPromise && signature === currentSessionSignature) {
@@ -78,10 +190,14 @@ export async function initU2Net({
   sessionPromise = (async () => {
     const ort = await ensureOrt();
     let lastError;
+    let modelBuffer;
 
     for (const provider of providers) {
       try {
-        const session = await ort.InferenceSession.create(modelUrl, {
+        if (!modelBuffer) {
+          modelBuffer = await downloadModel(modelUrl, onProgress);
+        }
+        const session = await ort.InferenceSession.create(modelBuffer, {
           executionProviders: [provider],
           graphOptimizationLevel: 'all',
         });

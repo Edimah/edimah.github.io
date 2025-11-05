@@ -243,6 +243,30 @@
       animation: none;
     }
 
+    .progress {
+      width: 100%;
+      height: 0.6rem;
+      border-radius: 999px;
+      overflow: hidden;
+      background: #e2e8f0;
+      border: none;
+      display: block;
+    }
+
+    .progress::-webkit-progress-bar {
+      background: transparent;
+    }
+
+    .progress::-webkit-progress-value {
+      background: linear-gradient(90deg, #60a5fa, #2563eb);
+      border-radius: 999px;
+    }
+
+    .progress::-moz-progress-bar {
+      background: linear-gradient(90deg, #60a5fa, #2563eb);
+      border-radius: 999px;
+    }
+
     .controls button.secondary {
       background: #fff;
       color: var(--green);
@@ -701,6 +725,7 @@
     </fieldset>
 
     <div class="detourage-status" id="detourageStatus">Initialisation de l'IA…</div>
+    <progress id="detourageProgress" class="progress" max="100" value="0" hidden></progress>
 
     <button id="updateBtn">Mettre à jour l'affiche</button>
     <button id="sloganBtn" class="secondary">💡 Proposer des slogans</button>
@@ -812,7 +837,12 @@
       'u2netp.onnx': resolveAssetUrl('../models/u2netp.onnx'),
       'u2net.onnx': U2NET_RELEASE_URL,
     };
+    const MODEL_LABELS = {
+      'u2netp.onnx': 'U²-Net (fond uni)',
+      'u2net.onnx': 'U²-Net (images encombrées)',
+    };
     const getModelUrl = () => MODEL_URLS[modelChoice] || MODEL_URLS[DEFAULT_MODEL_CHOICE];
+    const getModelLabel = () => MODEL_LABELS[modelChoice] || modelChoice;
 
     // --- Références DOM ---
     const titleInput = document.getElementById('promoTitle');
@@ -826,6 +856,7 @@
     const logoScaleRange = document.getElementById('logoScaleRange');
     const logoScaleValue = document.getElementById('logoScaleValue');
     const detourageStatusEl = document.getElementById('detourageStatus');
+    const detourProgress = document.getElementById('detourageProgress');
     const toleranceRange = document.getElementById('toleranceRange');
     const toleranceValue = document.getElementById('toleranceValue');
     const toleranceContainer = document.getElementById('toleranceControl');
@@ -890,6 +921,47 @@
       });
     }
 
+    const resetDetourProgress = () => {
+      if (!detourProgress) return;
+      detourProgress.hidden = true;
+      detourProgress.max = 100;
+      detourProgress.value = 0;
+      detourProgress.setAttribute('value', 0);
+    };
+
+    const handleModelDownloadProgress = (info) => {
+      if (!detourProgress) return;
+      const { percent = 0, total = 0, fromCache = false } = info ?? {};
+      const label = getModelLabel();
+      const completedDownload = total && percent >= 100 && !fromCache;
+
+      if (fromCache) {
+        resetDetourProgress();
+        setDetourageStatus(`Modèle ${label} déjà prêt (cache).`, 'idle');
+        return;
+      }
+
+      if (completedDownload) {
+        resetDetourProgress();
+        setDetourageStatus(`Téléchargement terminé. Initialisation du modèle ${label}…`, 'loading');
+        return;
+      }
+
+      detourProgress.hidden = false;
+      if (total) {
+        detourProgress.max = 100;
+        detourProgress.value = percent;
+        detourProgress.setAttribute('value', percent);
+      } else {
+        detourProgress.removeAttribute('value');
+      }
+      const message = total
+        ? `Téléchargement du modèle ${label}… ${percent}%`
+        : `Téléchargement du modèle ${label}…`;
+      setDetourageStatus(message, 'loading');
+    };
+    resetDetourProgress();
+
     const setDetourageStatus = (text, state = 'idle') => {
       if (!detourageStatusEl) return;
       detourageStatusEl.textContent = text;
@@ -897,7 +969,7 @@
       detourageStatusEl.classList.toggle('error', state === 'error');
       detourageStatusEl.classList.toggle('idle', state === 'idle');
     };
-    setDetourageStatus("Initialisation du modèle IA…", 'loading');
+    setDetourageStatus(`Initialisation du modèle ${getModelLabel()}…`, 'loading');
 
     let u2netInitPromise;
     let providerLogged = false;
@@ -922,7 +994,8 @@
         modelChoice = input.value;
         providerLogged = false;
         u2netInitPromise = null;
-        setDetourageStatus('Initialisation du modèle IA…', 'loading');
+        resetDetourProgress();
+        setDetourageStatus(`Préparation du modèle ${getModelLabel()}…`, 'loading');
         ensureU2NetReady().catch(() => {
           // status already handled in ensureU2NetReady
         });
@@ -944,18 +1017,22 @@
         throw new Error('Module IA non disponible.');
       }
       if (!u2netInitPromise) {
-        setDetourageStatus('Initialisation du modèle IA…', 'loading');
+        resetDetourProgress();
+        setDetourageStatus(`Initialisation du modèle ${getModelLabel()}…`, 'loading');
         u2netInitPromise = initU2Net({
           modelUrl: getModelUrl(),
           providers: ['webgpu', 'webgl', 'wasm'],
+          onProgress: handleModelDownloadProgress,
         })
           .then((session) => {
             console.log('[Détourage] Session U²-Net initialisée.');
-            setDetourageStatus('IA prête 🟢');
+            resetDetourProgress();
+            setDetourageStatus(`IA prête (${getModelLabel()}) 🟢`, 'idle');
             return session;
           })
           .catch((err) => {
             console.error('initU2Net error', err);
+            resetDetourProgress();
             setDetourageStatus('IA indisponible, essayez "Couleur".', 'error');
             throw err;
           });
@@ -1178,15 +1255,20 @@
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0);
         const { data } = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        let mid = 0;
+
         let total = 0;
+        let nearOpaque = 0;
+        let nearTransparent = 0;
         for (let i = 0; i < data.length; i += 4) {
           const alpha = data[i];
-          if (alpha > 15 && alpha < 240) mid += 1;
+          if (alpha >= 240) nearOpaque += 1;
+          else if (alpha <= 15) nearTransparent += 1;
           total += 1;
         }
         if (!total) return true;
-        return (mid / total) < 0.01;
+        const ratioOpaque = nearOpaque / total;
+        const ratioTransparent = nearTransparent / total;
+        return ratioOpaque > 0.995 || ratioTransparent > 0.995;
       } catch {
         return false;
       }
