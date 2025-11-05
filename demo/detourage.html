@@ -216,7 +216,7 @@
   <script type="module">
     import { initU2Net, removeBgFromFile } from '../assets/js/bgremoval.mjs';
     const MODEL_CONFIG = {
-      modelUrl: new URL('../models/u2net.onnx', import.meta.url).href,
+      modelUrl: 'https://huggingface.co/edimah/u2net/resolve/main/u2net.onnx',
       providers: ['webgpu', 'webgl', 'wasm'],
     };
     await initU2Net(MODEL_CONFIG);

@@ -804,10 +804,15 @@
     // --- Constantes & chemins dynamiques ---
     const DETOUR_MODE = Object.freeze({ AUTO: 'auto', IA: 'ia', COLOR: 'color' });
     const DEFAULT_MODEL_CHOICE = 'u2netp.onnx';
+    const U2NET_RELEASE_URL = 'https://huggingface.co/edimah/u2net/resolve/main/u2net.onnx';
     const resolveAssetUrl = (relativePath) => new URL(relativePath, import.meta.url).href;
     const MODULE_PATH = resolveAssetUrl('../assets/js/bgremoval.mjs');
     let modelChoice = DEFAULT_MODEL_CHOICE;
-    const getModelUrl = () => resolveAssetUrl(`../models/${modelChoice}`);
+    const MODEL_URLS = {
+      'u2netp.onnx': resolveAssetUrl('../models/u2netp.onnx'),
+      'u2net.onnx': U2NET_RELEASE_URL,
+    };
+    const getModelUrl = () => MODEL_URLS[modelChoice] || MODEL_URLS[DEFAULT_MODEL_CHOICE];
 
     // --- Références DOM ---
     const titleInput = document.getElementById('promoTitle');
