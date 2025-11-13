@@ -26,6 +26,7 @@
       --logo-scale: 1;
       --footer-depth: 140px;
       --footer-notch: 8%;
+      --band-color: #0c8b64;
       --header-shift-x: 0px;
       --header-shift-y: 0px;
       --footer-shift-x: 0px;
@@ -128,6 +129,14 @@
       font-size: .85rem;
     }
 
+    .controls button.download-btn {
+      background: #c62828;
+    }
+
+    .controls button.download-btn:hover {
+      background: #b71c1c;
+    }
+
     .editor-hint {
       font-size: .75rem;
       color: #4a5b55;
@@ -185,6 +194,78 @@
       font-weight: 500;
       color: #0a7f5a;
       font-size: .75rem;
+    }
+
+    .action-card {
+      background: #fff;
+      border: 1px solid rgba(9, 60, 45, .12);
+      border-radius: 12px;
+      padding: 16px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, .05);
+    }
+
+    .action-title {
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #0b4434;
+      margin: 0;
+    }
+
+    .action-number {
+      background: rgba(10, 127, 90, .12);
+      color: var(--green);
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    .action-instructions {
+      margin: 0;
+      font-size: .8rem;
+      color: #42534c;
+      line-height: 1.4;
+    }
+
+    .action-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .band-color-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .band-color-panel label {
+      font-size: .78rem;
+      font-weight: 600;
+      color: #1f3b32;
+    }
+
+    .band-color-panel input[type="color"],
+    .band-color-panel input[type="range"] {
+      width: 100%;
+    }
+
+    #bandAlphaValue {
+      font-weight: 500;
+      color: #0a7f5a;
     }
 
     .bg-mode {
@@ -547,9 +628,12 @@
       position: absolute;
       top: 0;
       left: 0;
-      background: #0c8b64;
-      /* plus clair que #0a7f5a */
-      color: white;
+      background:
+        linear-gradient(120deg,
+          rgba(255, 255, 255, .15),
+          rgba(255, 255, 255, 0) 65%),
+        var(--band-color, #0c8b64);
+      color: #fff;
       width: clamp(45%, var(--header-width), 95%);
       min-height: clamp(90px, var(--header-depth), 280px);
       padding: clamp(12px, calc(var(--header-depth) * 0.15), 32px) 18px clamp(18px, calc(var(--header-depth) * 0.35), 48px) 22px;
@@ -569,9 +653,9 @@
       inset: -18px;
       background:
         linear-gradient(110deg,
-          rgba(10, 127, 90, .65) 6%,
-          rgba(10, 127, 90, .4) 15%,
-          rgba(10, 127, 90, 0) 20%);
+          rgba(255, 255, 255, .35) 6%,
+          rgba(255, 255, 255, .15) 20%,
+          rgba(255, 255, 255, 0) 40%);
       clip-path: polygon(0 0, 100% 0, var(--header-angle) 100%, 0 100%);
       filter: blur(18px);
       opacity: .75;
@@ -606,6 +690,8 @@
       overflow: hidden;
       border: none;
       z-index: 4;
+      transform: translate(var(--logo-shift-x, 0px), var(--logo-shift-y, 0px));
+      transition: transform .25s ease;
     }
 
     .logo img {
@@ -762,10 +848,10 @@
       min-height: clamp(90px, var(--footer-depth), 320px);
       background:
         linear-gradient(120deg,
-          #0A7F5A 0%,
-          rgba(8, 140, 106, .92) 60%,
-          rgba(8, 140, 106, 0) 100%),
-        #0A7F5A;
+          rgba(255, 255, 255, .12) 0%,
+          rgba(0, 0, 0, .08) 60%,
+          rgba(0, 0, 0, 0) 100%),
+        var(--band-color, #0A7F5A);
       color: #fff;
       padding: clamp(14px, calc(var(--footer-depth) * 0.25), 38px) 24px clamp(20px, calc(var(--footer-depth) * 0.45), 58px);
       display: flex;
@@ -785,9 +871,9 @@
       inset: -24px;
       background:
         linear-gradient(120deg,
-          rgba(8, 140, 106, .7) 0%,
-          rgba(8, 140, 106, .45) 55%,
-          rgba(8, 140, 106, 0) 100%);
+          rgba(255, 255, 255, .25) 0%,
+          rgba(255, 255, 255, .05) 55%,
+          rgba(255, 255, 255, 0) 100%);
       clip-path: polygon(0 var(--footer-notch), 100% 0, 100% 100%, 0 100%);
       filter: blur(26px);
       opacity: .8;
@@ -811,56 +897,51 @@
 
   <!-- COLONNE GAUCHE -->
   <div class="controls">
-    <h2>Arrière-plan</h2>
-    <div class="bg-mode">
-      <label class="bg-mode-option"><input type="radio" name="bgMode" value="solid" />Couleur unie</label>
-      <input type="color" id="solidBgColor" value="#eaf7f1" />
-
-      <label class="bg-mode-option"><input type="radio" name="bgMode" value="image" />Image modèle</label>
-      <input type="file" id="bgImageInput" accept="image/*" />
-      <button type="button" id="bgImageClearBtn" class="secondary" disabled>Retirer l'image</button>
-
-      <label class="bg-mode-option"><input type="radio" name="bgMode" value="generated" checked />Fond généré</label>
-      <select id="bgStyleSelect">
-        <option value="bubbles">Bulles</option>
-        <option value="waves">Ondes</option>
-        <option value="dots">Pointillé</option>
-        <option value="cross">Motif croix</option>
-      </select>
-
-      <div class="palette-choice">
-        <label><input type="radio" name="bgPaletteMode" value="logo" checked />Palette du logo</label>
-        <label><input type="radio" name="bgPaletteMode" value="custom" />Dégradé personnalisé</label>
+    <div class="action-card">
+      <h2 class="action-title"><span class="action-number">1.</span>Importer un logo</h2>
+      <p class="action-instructions">Chargez le logo (PNG/JPG) puis ajustez sa taille.</p>
+      <input id="logoInput" type="file" accept="image/*" />
+      <div class="range-control">
+        <label for="logoScaleRange">Taille logo <span id="logoScaleValue">100%</span></label>
+        <input id="logoScaleRange" type="range" min="50" max="150" value="100" />
       </div>
-      <div class="custom-palette-fields" id="customPaletteFields">
-        <input type="color" id="customColorA" value="#0A7F5A" />
-        <input type="color" id="customColorB" value="#A4D4AE" />
-      </div>
-      <button type="button" id="bgRandomBtn" class="secondary">Aléatoire</button>
     </div>
 
-    <h2>Texte & Style</h2>
-    <p class="editor-hint">Cliquez directement sur les textes de l'affiche pour les modifier. Utilisez les réglages
-      ci-dessous pour ajuster la police, la taille ou la couleur du bloc actuellement sélectionné.</p>
-    <div class="editor-status" id="editorStatus">Sélectionnez un bloc de texte.</div>
-    <div class="style-panel">
-      <label for="fontFamilySelect">Police</label>
-      <select id="fontFamilySelect">
-        <option value="Poppins">Poppins</option>
-        <option value="Playfair Display">Playfair Display</option>
-        <option value="Montserrat">Montserrat</option>
-        <option value="Source Serif Pro">Source Serif Pro</option>
-        <option value="Raleway">Raleway</option>
-      </select>
+    <div class="action-card">
+      <h2 class="action-title"><span class="action-number">2.</span>Importer l'image produit</h2>
+      <p class="action-instructions">Sélectionnez la photo du produit et appliquez le détourage.</p>
+      <input id="productInput" type="file" accept="image/*" />
 
-      <label for="fontSizeRange">Taille <span id="fontSizeValue">24px</span></label>
-      <input type="range" id="fontSizeRange" min="14" max="64" value="24" />
-
-      <label for="fontColorInput">Couleur</label>
-      <input type="color" id="fontColorInput" value="#0a7f5a" />
+      <fieldset class="detourage-panel">
+        <legend>🪄 Détourage</legend>
+        <div class="detourage-modes">
+          <label><input type="radio" name="detourageMode" value="auto" checked />Auto (recommandé)</label>
+          <label><input type="radio" name="detourageMode" value="ia" />Forcer IA (U²-Net)</label>
+          <label><input type="radio" name="detourageMode" value="color" />Forcer détourage Couleur</label>
+        </div>
+        <div class="tolerance-control" id="toleranceControl">
+          <label for="toleranceRange">Tolérance <span id="toleranceValue">40</span></label>
+          <input type="range" id="toleranceRange" min="0" max="60" value="40" />
+        </div>
+        <div class="model-choice">
+          <span>Modèle IA</span>
+          <label>
+            <input type="radio" name="u2netModel" value="u2netp.onnx" checked />
+            <span>u2netp.onnx <small>(fond uni)</small></span>
+          </label>
+          <label>
+            <input type="radio" name="u2netModel" value="u2net.onnx" />
+            <span>u2net.onnx <small>(images encombrées)</small></span>
+          </label>
+        </div>
+        <p class="detourage-note">Les images restent sur votre appareil.</p>
+      </fieldset>
+      <div class="detourage-status" id="detourageStatus">Initialisation de l'IA…</div>
+      <progress id="detourageProgress" class="progress" max="100" value="0" hidden></progress>
     </div>
   </div>
 
+  <!-- PREVIEW CENTRE -->
   <!-- PREVIEW CENTRE -->
   <div class="preview-container">
     <div class="affiche" id="affiche">
@@ -893,52 +974,76 @@
     </div>
   </div>
 
-  <!-- PANNEAU DROIT : Création & Contrôles (croix OK) -->
+  <!-- PANNEAU DROIT : Création & Contrôles -->
   <div class="controls controls-right">
-    <h2>Création & Contrôles</h2>
+    <div class="action-card">
+      <h2 class="action-title"><span class="action-number">3.</span>Modifier le texte</h2>
+      <p class="action-instructions">Cliquez sur un texte de l'affiche puis personnalisez sa police, sa taille et sa couleur.</p>
+      <div class="editor-status" id="editorStatus">Sélectionnez un bloc de texte.</div>
+      <div class="style-panel">
+        <label for="fontFamilySelect">Police</label>
+        <select id="fontFamilySelect">
+          <option value="Poppins">Poppins</option>
+          <option value="Playfair Display">Playfair Display</option>
+          <option value="Montserrat">Montserrat</option>
+          <option value="Source Serif Pro">Source Serif Pro</option>
+          <option value="Raleway">Raleway</option>
+        </select>
 
-    <div class="control-block">
-      <div class="control-title">Visuels & IA</div>
+        <label for="fontSizeRange">Taille <span id="fontSizeValue">24px</span></label>
+        <input type="range" id="fontSizeRange" min="14" max="64" value="24" />
 
-      <label>Logo pharmacie</label>
-      <input id="logoInput" type="file" accept="image/*" />
-      <div class="range-control">
-        <label for="logoScaleRange">Taille logo <span id="logoScaleValue">100%</span></label>
-        <input id="logoScaleRange" type="range" min="50" max="150" value="100" />
+        <label for="fontColorInput">Couleur</label>
+        <input type="color" id="fontColorInput" value="#0a7f5a" />
+      </div>
+    </div>
+
+    <div class="action-card">
+      <h2 class="action-title"><span class="action-number">4.</span>Modifier les couleurs</h2>
+      <p class="action-instructions">Choisissez un type d'arrière-plan puis ajustez le dégradé et la couleur des bandeaux.</p>
+
+      <div class="bg-mode">
+        <label class="bg-mode-option"><input type="radio" name="bgMode" value="solid" />Couleur unie</label>
+        <input type="color" id="solidBgColor" value="#eaf7f1" />
+
+        <label class="bg-mode-option"><input type="radio" name="bgMode" value="image" />Image modèle</label>
+        <input type="file" id="bgImageInput" accept="image/*" />
+        <button type="button" id="bgImageClearBtn" class="secondary" disabled>Retirer l'image</button>
+
+        <label class="bg-mode-option"><input type="radio" name="bgMode" value="generated" checked />Fond généré</label>
+        <select id="bgStyleSelect">
+          <option value="bubbles">Bulles</option>
+          <option value="waves">Ondes</option>
+          <option value="dots">Pointillé</option>
+          <option value="cross">Motif croix</option>
+        </select>
+
+        <div class="palette-choice">
+          <label><input type="radio" name="bgPaletteMode" value="logo" checked />Palette du logo</label>
+          <label><input type="radio" name="bgPaletteMode" value="custom" />Dégradé personnalisé</label>
+        </div>
+        <div class="custom-palette-fields" id="customPaletteFields">
+          <input type="color" id="customColorA" value="#0A7F5A" />
+          <input type="color" id="customColorB" value="#A4D4AE" />
+        </div>
+        <button type="button" id="bgRandomBtn" class="secondary">Aléatoire</button>
       </div>
 
-      <label>Photo produit</label>
-      <input id="productInput" type="file" accept="image/*" />
+      <div class="band-color-panel">
+        <label for="bandColorInput">Couleur des bandeaux</label>
+        <input type="color" id="bandColorInput" value="#0a7f5a" />
+        <label for="bandAlphaRange">Opacité <span id="bandAlphaValue">95%</span></label>
+        <input type="range" id="bandAlphaRange" min="0" max="100" value="95" />
+      </div>
 
-      <fieldset class="detourage-panel">
-        <legend>🪄 Détourage</legend>
-        <div class="detourage-modes">
-          <label><input type="radio" name="detourageMode" value="auto" checked />Auto (recommandé)</label>
-          <label><input type="radio" name="detourageMode" value="ia" />Forcer IA (U²-Net)</label>
-          <label><input type="radio" name="detourageMode" value="color" />Forcer détourage Couleur</label>
-        </div>
-        <div class="tolerance-control" id="toleranceControl">
-          <label for="toleranceRange">Tolérance <span id="toleranceValue">40</span></label>
-          <input type="range" id="toleranceRange" min="0" max="60" value="40" />
-        </div>
-        <div class="model-choice">
-          <span>Modèle IA</span>
-          <label>
-            <input type="radio" name="u2netModel" value="u2netp.onnx" checked />
-            <span>u2netp.onnx <small>(fond uni)</small></span>
-          </label>
-          <label>
-            <input type="radio" name="u2netModel" value="u2net.onnx" />
-            <span>u2net.onnx <small>(images encombrées)</small></span>
-          </label>
-        </div>
-        <p class="detourage-note">Les images restent sur votre appareil.</p>
-      </fieldset>
-      <div class="detourage-status" id="detourageStatus">Initialisation de l'IA…</div>
-      <progress id="detourageProgress" class="progress" max="100" value="0" hidden></progress>
+      <div class="action-buttons">
+        <button type="button" id="updatePosterBtn">Mettre à jour l'affiche</button>
+        <button type="button" id="downloadPosterBtn" class="download-btn">Télécharger l'affiche</button>
+      </div>
     </div>
   </div>
 
+  <!-- SCRIPTS -->
   <!-- SCRIPTS -->
   <script type="module">
     // --- Constantes & chemins dynamiques ---
@@ -983,6 +1088,8 @@
     const bgStyleSelect = document.getElementById('bgStyleSelect');
     const bgRandomBtn = document.getElementById('bgRandomBtn');
     const bgLayer = document.getElementById('bgLayer');
+    const updatePosterBtn = document.getElementById('updatePosterBtn');
+    const downloadPosterBtn = document.getElementById('downloadPosterBtn');
     const bgModeInputs = document.querySelectorAll('input[name="bgMode"]');
     const solidBgColorInput = document.getElementById('solidBgColor');
     const bgImageInput = document.getElementById('bgImageInput');
@@ -991,6 +1098,9 @@
     const customPaletteFields = document.getElementById('customPaletteFields');
     const customColorAInput = document.getElementById('customColorA');
     const customColorBInput = document.getElementById('customColorB');
+    const bandColorInput = document.getElementById('bandColorInput');
+    const bandAlphaRange = document.getElementById('bandAlphaRange');
+    const bandAlphaValue = document.getElementById('bandAlphaValue');
     const fontFamilySelect = document.getElementById('fontFamilySelect');
     const fontSizeRange = document.getElementById('fontSizeRange');
     const fontSizeValue = document.getElementById('fontSizeValue');
@@ -1027,6 +1137,7 @@
     ];
     let bgImageDataURL = null;
     const baseBackground = getComputedStyle(affiche).background;
+    let html2canvasPromise;
 
     const selectedModelInput = document.querySelector('input[name="u2netModel"]:checked');
     if (selectedModelInput?.value) {
@@ -1065,6 +1176,11 @@
     };
 
     const rgba = (hex, alpha = 1) => {
+      const { r, g, b } = hexToRgb(hex);
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    };
+
+    const hexToRgba = (hex, alpha = 1) => {
       const { r, g, b } = hexToRgb(hex);
       return `rgba(${r}, ${g}, ${b}, ${alpha})`;
     };
@@ -1112,6 +1228,14 @@
       const footerNotch = clampValue(8 + footerChars * 0.04, 4, 18);
       setCssVarNumber('--footer-depth', footerDepth, 'px');
       setCssVarNumber('--footer-notch', footerNotch, '%');
+    };
+
+    const updateBandColor = () => {
+      const colorHex = bandColorInput?.value || '#0a7f5a';
+      const alpha = clampValue((bandAlphaRange?.value || 95) / 100, 0, 1);
+      if (bandAlphaValue) bandAlphaValue.textContent = `${Math.round(alpha * 100)}%`;
+      const rgbaColor = hexToRgba(colorHex, alpha);
+      root.style.setProperty('--band-color', rgbaColor);
     };
 
     const applySolidBackground = () => {
@@ -1234,6 +1358,32 @@
       }
     });
 
+    updatePosterBtn?.addEventListener('click', () => {
+      setBackgroundMode(currentBgMode);
+      autoAdjustBands();
+    });
+
+    downloadPosterBtn?.addEventListener('click', async () => {
+      if (!affiche) return;
+      try {
+        const html2canvas = await ensureHtml2Canvas();
+        const canvas = await html2canvas(affiche, {
+          backgroundColor: null,
+          scale: Math.min(2, window.devicePixelRatio || 1.5),
+        });
+        const dataURL = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.href = dataURL;
+        link.download = 'affiche-demo.png';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } catch (error) {
+        console.error('Téléchargement impossible', error);
+        alert("Impossible de générer l'image. Réessayez ou utilisez le mode plein écran.");
+      }
+    });
+
 
     const FONT_OPTIONS = ['Poppins', 'Playfair Display', 'Montserrat', 'Source Serif Pro', 'Raleway'];
 
@@ -1244,6 +1394,14 @@
         const hex = parseInt(val, 10).toString(16);
         return hex.length === 1 ? `0${hex}` : hex;
       }).join('')}`;
+    };
+
+    const ensureHtml2Canvas = async () => {
+      if (!html2canvasPromise) {
+        html2canvasPromise = import('https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/+esm');
+      }
+      const mod = await html2canvasPromise;
+      return mod.default || mod;
     };
 
     let activeEditable = null;
@@ -1324,6 +1482,9 @@
       if (!activeEditable) return;
       activeEditable.style.color = fontColorInput.value;
     });
+
+    bandColorInput?.addEventListener('input', updateBandColor);
+    bandAlphaRange?.addEventListener('input', updateBandColor);
 
     const getToleranceValue = () => Number(toleranceRange?.value || 40);
 
@@ -1466,6 +1627,9 @@
     const buildPalette = (forceRandom = false) => {
       const base = getPaletteSource();
       const working = forceRandom ? shuffleArray(base) : base.slice();
+      if (currentPaletteMode === 'custom') {
+        return working.length ? working : DEFAULT_COLORS;
+      }
       const softened = working.map((color, idx) => {
         const tinted = blendWithWhite(color, 0.15 + idx * 0.05);
         return adjustColor(tinted, (Math.random() - 0.5) * 0.08);
@@ -2249,6 +2413,14 @@
       maxScale: 1.8,
     });
 
+    setupTransformHandle(document.getElementById('afficheLogo'), {
+      dxVar: '--logo-shift-x',
+      dyVar: '--logo-shift-y',
+      scaleVar: '--logo-scale',
+      minScale: 0.4,
+      maxScale: 1.8,
+    });
+
     const setupTextDragHandle = (handle, xVar, yVar) => {
       if (!handle) return;
       let pointerId = null;
@@ -2309,6 +2481,7 @@
 
     const initialBgMode = Array.from(bgModeInputs).find((input) => input.checked)?.value || 'solid';
     setBackgroundMode(initialBgMode);
+    updateBandColor();
     autoAdjustBands();
   </script>
 
