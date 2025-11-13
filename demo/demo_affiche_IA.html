@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/colorthief/dist/color-thief.umd.js"></script>
 
   <style>
     :root {
@@ -25,6 +26,16 @@
       --logo-scale: 1;
       --footer-depth: 140px;
       --footer-notch: 8%;
+      --header-shift-x: 0px;
+      --header-shift-y: 0px;
+      --footer-shift-x: 0px;
+      --footer-shift-y: 0px;
+      --product-shift-x: 0px;
+      --product-shift-y: 0px;
+      --product-scale: 1;
+      --gommette-shift-x: 0px;
+      --gommette-shift-y: 0px;
+      --gommette-scale: 1;
     }
 
     * {
@@ -115,6 +126,186 @@
       font-weight: 600;
       cursor: pointer;
       font-size: .85rem;
+    }
+
+    .editor-hint {
+      font-size: .75rem;
+      color: #4a5b55;
+      margin: 2px 0 10px;
+      line-height: 1.3;
+    }
+
+    .editor-status {
+      padding: 8px 10px;
+      border: 1px dashed rgba(10, 127, 90, .35);
+      border-radius: 8px;
+      font-size: .78rem;
+      color: #0b4f3a;
+      background: #f4faf7;
+      margin-bottom: 12px;
+      min-height: 36px;
+      display: flex;
+      align-items: center;
+    }
+
+    .style-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .style-panel label {
+      font-size: .76rem;
+      font-weight: 600;
+      color: #34423d;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .style-panel select,
+    .style-panel input[type="range"],
+    .style-panel input[type="color"] {
+      width: 100%;
+      border: 1px solid #d7e2dc;
+      border-radius: 6px;
+      padding: 6px 8px;
+      font-size: .78rem;
+      background: #fff;
+    }
+
+    .style-panel input[type="color"] {
+      height: 40px;
+      padding: 2px;
+      cursor: pointer;
+    }
+
+    #fontSizeValue {
+      font-weight: 500;
+      color: #0a7f5a;
+      font-size: .75rem;
+    }
+
+    .bg-mode {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .bg-mode-option {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .8rem;
+      font-weight: 600;
+      color: #1d3a31;
+    }
+
+    .bg-mode input[type="color"],
+    .bg-mode input[type="file"],
+    .bg-mode select {
+      width: 100%;
+      border: 1px solid #d7e2dc;
+      border-radius: 6px;
+      padding: 6px 8px;
+      font-size: .78rem;
+      background: #fff;
+    }
+
+    .palette-choice {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-top: 8px;
+      font-size: .78rem;
+      font-weight: 600;
+      color: #2f463d;
+    }
+
+    .custom-palette-fields {
+      display: none;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .custom-palette-fields.is-visible {
+      display: flex;
+    }
+
+    .custom-palette-fields input[type="color"] {
+      flex: 1;
+      height: 42px;
+    }
+
+    [data-editable] {
+      cursor: text;
+      outline: 2px solid transparent;
+      transition: outline-color .15s ease, background .15s ease;
+    }
+
+    [data-editable].is-editing {
+      outline-color: rgba(255, 255, 255, .6);
+      background: rgba(255, 255, 255, .04);
+    }
+
+    .drag-handle-star {
+      position: absolute;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, .35);
+      border: 1px solid rgba(255, 255, 255, .35);
+      color: #fff;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      z-index: 30;
+      cursor: move;
+      pointer-events: auto;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, .25);
+    }
+
+    .drag-handle-star:focus-visible {
+      outline: 2px solid #fff;
+      outline-offset: 2px;
+    }
+
+    .drag-handle-star.header-star {
+      top: 18px;
+      right: 18px;
+    }
+
+    .drag-handle-star.footer-star {
+      bottom: calc(var(--footer-depth) + 10px);
+      right: 24px;
+    }
+
+    .affiche.has-model-bg .drag-handle-star {
+      display: flex;
+    }
+
+    .affiche.has-model-bg .header-left,
+    .affiche.has-model-bg .footer-band {
+      background: rgba(5, 12, 10, .58);
+      color: #fff;
+      backdrop-filter: blur(5px);
+    }
+
+    .affiche.has-model-bg .header-left::after,
+    .affiche.has-model-bg .footer-band::before {
+      display: none;
+    }
+
+    .controls select {
+      width: 100%;
+      padding: 6px 8px;
+      border: 1px solid #e1e1e1;
+      border-radius: 6px;
+      font-size: .8rem;
+      background: #fff;
     }
 
     .detourage-panel {
@@ -243,6 +434,49 @@
       animation: none;
     }
 
+    .bg-style-controls {
+      margin-top: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .bg-checkbox {
+      font-size: .75rem;
+      font-weight: 500;
+      color: #395247;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .bg-checkbox input[type="checkbox"] {
+      width: auto;
+      accent-color: var(--green);
+    }
+
+    .bg-random-btn {
+      width: auto !important;
+      padding: 6px 14px;
+      font-size: .75rem !important;
+      flex-shrink: 0;
+    }
+
+    #bgLayer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+      border-radius: inherit;
+      mix-blend-mode: normal;
+    }
+
+    #bgLayer svg {
+      width: 100%;
+      height: 100%;
+    }
+
     .progress {
       width: 100%;
       height: 0.6rem;
@@ -288,63 +522,6 @@
     }
 
     /* CROIX + ZOOM (robuste via grid-areas) */
-    .move-controls {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .move-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 30px);
-      grid-template-rows: repeat(3, 30px);
-      gap: 3px;
-      justify-content: center;
-      align-items: center;
-      grid-template-areas:
-        ". up ."
-        "left . right"
-        ". down .";
-    }
-
-    .move-btn {
-      background: #fff;
-      border: 1px solid rgba(10, 127, 90, .2);
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: .65rem;
-      height: 28px;
-      width: 30px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      line-height: 1;
-    }
-
-    /* positionnement par classes (plus d’IDs requis) */
-    .move-btn.up {
-      grid-area: up;
-    }
-
-    .move-btn.left {
-      grid-area: left;
-    }
-
-    .move-btn.right {
-      grid-area: right;
-    }
-
-    .move-btn.down {
-      grid-area: down;
-    }
-
-    .zoom-buttons {
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-      align-items: center;
-    }
-
     /* PREVIEW */
     .preview-container {
       flex: 1;
@@ -373,14 +550,17 @@
       background: #0c8b64;
       /* plus clair que #0a7f5a */
       color: white;
-      padding: 14px 18px 18px 22px;
-      max-width: 70%;
+      width: clamp(45%, var(--header-width), 95%);
+      min-height: clamp(90px, var(--header-depth), 280px);
+      padding: clamp(12px, calc(var(--header-depth) * 0.15), 32px) 18px clamp(18px, calc(var(--header-depth) * 0.35), 48px) 22px;
       border-bottom-right-radius: 38px 42px;
       /* courbure douce */
       clip-path: path("M0,0 H100% L85%,100 Q75%,110 0,100 Z");
       /* arrondi organique */
       z-index: 12;
       box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+      transition: width .2s ease, min-height .2s ease, padding .2s ease, transform .2s ease;
+      transform: translate(var(--header-shift-x, 0px), var(--header-shift-y, 0px));
     }
 
     .header-left::after {
@@ -464,6 +644,10 @@
       z-index: 13;
       isolation: isolate;
       transform-origin: center center;
+      transform: translate(var(--gommette-shift-x, 0px), var(--gommette-shift-y, 0px)) scale(var(--gommette-scale, 1));
+      touch-action: none;
+      cursor: grab;
+      user-select: none;
     }
 
     .gommette::after {
@@ -481,7 +665,7 @@
       position: absolute;
       top: 235px;
       left: 50%;
-      transform: translateX(-50%);
+      transform: translateX(-50%) translate(var(--product-shift-x, 0px), var(--product-shift-y, 0px)) scale(var(--product-scale, 1));
       width: 360px;
       height: 280px;
       background: transparent;
@@ -494,6 +678,9 @@
       transform-origin: center center;
       isolation: isolate;
       transition: .25s ease;
+      touch-action: none;
+      cursor: grab;
+      user-select: none;
     }
 
     .product-image::after {
@@ -525,27 +712,16 @@
       position: relative;
       z-index: 1;
       transition: .25s ease;
+      pointer-events: none;
     }
 
     .product-image.has-image img {
       filter: drop-shadow(0 12px 24px rgba(10, 127, 90, .25));
     }
 
-    .product-image .watermark {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      pointer-events: none;
-      font-size: 3rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: .2em;
-      color: rgba(15, 23, 42, 0.12);
-      transform: rotate(-32deg);
-      user-select: none;
-      z-index: 20;
+    .product-image.dragging,
+    .gommette.dragging {
+      cursor: grabbing;
     }
 
     .product-placeholder {
@@ -556,54 +732,19 @@
       background: rgba(255, 255, 255, .25);
       padding: 8px 10px;
       border-radius: 999px;
+      pointer-events: none;
     }
 
     /* bulles décoratives */
     .bubble {
       position: absolute;
       border-radius: 50%;
-      background: rgba(255, 255, 255, .35);
-      backdrop-filter: blur(3px);
-      pointer-events: none;
-      animation: float 12s ease-in-out infinite;
-      z-index: 0;
-    }
-
-    .bubble.main {
-      width: 95px;
-      height: 95px;
-      top: 320px;
-      right: 150px;
-    }
-
-    .bubble.second {
-      width: 120px;
-      height: 120px;
-      top: 380px;
-      left: 45px;
       background: rgba(255, 255, 255, .22);
-      animation-delay: 4s;
-    }
-
-    .bubble.third {
-      width: 75px;
-      height: 75px;
-      top: 520px;
-      right: 60px;
-      background: rgba(255, 255, 255, .15);
-      animation-delay: 7s;
-    }
-
-    @keyframes float {
-
-      0%,
-      100% {
-        transform: translateY(0) scale(1);
-      }
-
-      50% {
-        transform: translateY(-10px) scale(1.03);
-      }
+      pointer-events: none;
+      z-index: 0;
+      box-shadow: 0 3px 8px rgba(10, 127, 90, .08);
+      border: 1px solid rgba(255, 255, 255, .22);
+      filter: blur(.2px);
     }
 
     @keyframes spin {
@@ -635,6 +776,7 @@
       backdrop-filter: blur(1px);
       isolation: isolate;
       z-index: 12;
+      transform: translate(var(--footer-shift-x, 0px), var(--footer-shift-y, 0px));
     }
 
     .footer-band::before {
@@ -662,115 +804,92 @@
       font-size: .78rem;
       opacity: .85;
     }
-
-    /* Slogans */
-    #sloganResults .slogan-option {
-      background: #fff;
-      border: 1px solid rgba(10, 127, 90, .15);
-      border-radius: 10px;
-      padding: 6px 8px;
-      font-size: .72rem;
-      line-height: 1.3;
-      cursor: pointer;
-      transition: .15s ease;
-      word-break: break-word;
-    }
-
-    #sloganResults .slogan-option:hover {
-      background: rgba(10, 127, 90, .06);
-    }
   </style>
 </head>
 
 <body>
 
-  <!-- COLONNE GAUCHE : Infos (sans flèches) -->
+  <!-- COLONNE GAUCHE -->
   <div class="controls">
-    <h2>Paramètres de l'affiche</h2>
+    <h2>Arrière-plan</h2>
+    <div class="bg-mode">
+      <label class="bg-mode-option"><input type="radio" name="bgMode" value="solid" />Couleur unie</label>
+      <input type="color" id="solidBgColor" value="#eaf7f1" />
 
-    <label>Titre de la promo</label>
-    <input id="promoTitle" type="text" placeholder="Promo d'automne - Vitamine D" />
+      <label class="bg-mode-option"><input type="radio" name="bgMode" value="image" />Image modèle</label>
+      <input type="file" id="bgImageInput" accept="image/*" />
+      <button type="button" id="bgImageClearBtn" class="secondary" disabled>Retirer l'image</button>
 
-    <label>Date / période</label>
-    <input id="promoDate" type="text" placeholder="Du 1er au 15 novembre" />
+      <label class="bg-mode-option"><input type="radio" name="bgMode" value="generated" checked />Fond généré</label>
+      <select id="bgStyleSelect">
+        <option value="bubbles">Bulles</option>
+        <option value="waves">Ondes</option>
+        <option value="dots">Pointillé</option>
+        <option value="cross">Motif croix</option>
+      </select>
 
-    <label>Texte promo (gommette)</label>
-    <input id="promoBadge" type="text" placeholder="-20% / 2=3 / Offre Fidélité" />
-
-    <label>Nom du produit</label>
-    <input id="productName" type="text" placeholder="Vitamine D3 Senior 1000 UI" />
-
-    <label>Texte complémentaire</label>
-    <input id="productSubtitle" type="text" placeholder="Demandez conseil à votre pharmacien" />
-
-    <label>Slogan généré</label>
-    <input id="sloganField" type="text" placeholder="Votre slogan ici" />
-
-    <label>Logo pharmacie</label>
-    <input id="logoInput" type="file" accept="image/*" />
-    <div class="range-control">
-      <label for="logoScaleRange">Taille logo <span id="logoScaleValue">100%</span></label>
-      <input id="logoScaleRange" type="range" min="50" max="150" value="100" />
+      <div class="palette-choice">
+        <label><input type="radio" name="bgPaletteMode" value="logo" checked />Palette du logo</label>
+        <label><input type="radio" name="bgPaletteMode" value="custom" />Dégradé personnalisé</label>
+      </div>
+      <div class="custom-palette-fields" id="customPaletteFields">
+        <input type="color" id="customColorA" value="#0A7F5A" />
+        <input type="color" id="customColorB" value="#A4D4AE" />
+      </div>
+      <button type="button" id="bgRandomBtn" class="secondary">Aléatoire</button>
     </div>
 
-    <label>Photo produit</label>
-    <input id="productInput" type="file" accept="image/*" />
+    <h2>Texte & Style</h2>
+    <p class="editor-hint">Cliquez directement sur les textes de l'affiche pour les modifier. Utilisez les réglages
+      ci-dessous pour ajuster la police, la taille ou la couleur du bloc actuellement sélectionné.</p>
+    <div class="editor-status" id="editorStatus">Sélectionnez un bloc de texte.</div>
+    <div class="style-panel">
+      <label for="fontFamilySelect">Police</label>
+      <select id="fontFamilySelect">
+        <option value="Poppins">Poppins</option>
+        <option value="Playfair Display">Playfair Display</option>
+        <option value="Montserrat">Montserrat</option>
+        <option value="Source Serif Pro">Source Serif Pro</option>
+        <option value="Raleway">Raleway</option>
+      </select>
 
-    <fieldset class="detourage-panel">
-      <legend>🪄 Détourage</legend>
-      <div class="detourage-modes">
-        <label><input type="radio" name="detourageMode" value="auto" checked />Auto (recommandé)</label>
-        <label><input type="radio" name="detourageMode" value="ia" />Forcer IA (U²-Net)</label>
-        <label><input type="radio" name="detourageMode" value="color" />Forcer détourage Couleur</label>
-      </div>
-      <div class="tolerance-control" id="toleranceControl">
-        <label for="toleranceRange">Tolérance <span id="toleranceValue">40</span></label>
-        <input type="range" id="toleranceRange" min="0" max="60" value="40" />
-      </div>
-      <div class="model-choice">
-        <span>Modèle IA</span>
-        <label>
-          <input type="radio" name="u2netModel" value="u2netp.onnx" checked />
-          <span>u2netp.onnx <small>(fond uni)</small></span>
-        </label>
-        <label>
-          <input type="radio" name="u2netModel" value="u2net.onnx" />
-          <span>u2net.onnx <small>(images encombrées)</small></span>
-        </label>
-      </div>
-      <p class="detourage-note">Les images restent sur votre appareil.</p>
-    </fieldset>
+      <label for="fontSizeRange">Taille <span id="fontSizeValue">24px</span></label>
+      <input type="range" id="fontSizeRange" min="14" max="64" value="24" />
 
-    <div class="detourage-status" id="detourageStatus">Initialisation de l'IA…</div>
-    <progress id="detourageProgress" class="progress" max="100" value="0" hidden></progress>
-
-    <button id="updateBtn">Mettre à jour l'affiche</button>
-    <button id="sloganBtn" class="secondary">💡 Proposer des slogans</button>
+      <label for="fontColorInput">Couleur</label>
+      <input type="color" id="fontColorInput" value="#0a7f5a" />
+    </div>
   </div>
 
   <!-- PREVIEW CENTRE -->
   <div class="preview-container">
     <div class="affiche" id="affiche">
+      <div id="bgLayer"></div>
       <div class="header-left">
-        <p class="promo-title" id="afficheTitle">Promo d'automne - Vitamine D</p>
-        <p class="promo-date" id="afficheDate">Du 1er au 15 novembre</p>
+        <p class="promo-title" id="afficheTitle" data-editable="header-title" data-label="Titre promo"
+          contenteditable="true" spellcheck="false">Promo d'automne - Vitamine D</p>
+        <p class="promo-date" id="afficheDate" data-editable="header-date" data-label="Date/accroche"
+          contenteditable="true" spellcheck="false">Du 1er au 15 novembre</p>
       </div>
+      <button type="button" class="drag-handle-star header-star" id="headerDragHandle"
+        aria-label="Déplacer le texte du bandeau haut">✶</button>
 
       <div class="logo" id="afficheLogo"><span class="placeholder">logo</span></div>
-      <div class="gommette" id="afficheBadge">-20%</div>
-      <div class="product-image" id="afficheProduct" data-watermark="demo">
-        <div class="watermark">DEMO</div>
+      <div class="gommette" id="afficheBadge"><span id="afficheBadgeText" data-editable="badge"
+          data-label="Texte gommette" contenteditable="true" spellcheck="false">-20%</span></div>
+      <div class="product-image" id="afficheProduct">
         <div class="product-placeholder">Photo du produit<br />ici</div>
       </div>
 
-      <div class="bubble main"></div>
-      <div class="bubble second"></div>
-      <div class="bubble third"></div>
-
       <div class="footer-band">
-        <div class="footer-title" id="afficheProductName">Vitamine D3 Senior 1000 UI</div>
-        <div class="footer-subtitle" id="afficheProductSubtitle">Demandez conseil à votre pharmacien</div>
+        <div class="footer-title" id="afficheProductName" data-editable="footer-title" data-label="Titre bas"
+          contenteditable="true" spellcheck="false">Vitamine D3 Senior 1000 UI</div>
+        <div class="footer-subtitle" id="afficheProductSubtitle" data-editable="footer-subtitle"
+          data-label="Sous-titre bas" contenteditable="true" spellcheck="false">Demandez conseil à votre pharmacien
+        </div>
       </div>
+      <button type="button" class="drag-handle-star footer-star" id="footerDragHandle"
+        aria-label="Déplacer le texte du bandeau bas">✶</button>
     </div>
   </div>
 
@@ -778,67 +897,45 @@
   <div class="controls controls-right">
     <h2>Création & Contrôles</h2>
 
-    <button class="secondary beautyBtn">✨ Améliorer le visuel</button>
-
     <div class="control-block">
-      <div class="control-title">Position gommette</div>
-      <div class="move-controls">
-        <div class="move-grid">
-          <button class="move-btn up" data-ctrl="g" data-cmd="up">↑</button>
-          <button class="move-btn left" data-ctrl="g" data-cmd="left">←</button>
-          <button class="move-btn right" data-ctrl="g" data-cmd="right">→</button>
-          <button class="move-btn down" data-ctrl="g" data-cmd="down">↓</button>
+      <div class="control-title">Visuels & IA</div>
+
+      <label>Logo pharmacie</label>
+      <input id="logoInput" type="file" accept="image/*" />
+      <div class="range-control">
+        <label for="logoScaleRange">Taille logo <span id="logoScaleValue">100%</span></label>
+        <input id="logoScaleRange" type="range" min="50" max="150" value="100" />
+      </div>
+
+      <label>Photo produit</label>
+      <input id="productInput" type="file" accept="image/*" />
+
+      <fieldset class="detourage-panel">
+        <legend>🪄 Détourage</legend>
+        <div class="detourage-modes">
+          <label><input type="radio" name="detourageMode" value="auto" checked />Auto (recommandé)</label>
+          <label><input type="radio" name="detourageMode" value="ia" />Forcer IA (U²-Net)</label>
+          <label><input type="radio" name="detourageMode" value="color" />Forcer détourage Couleur</label>
         </div>
-        <div class="zoom-buttons">
-          <button class="move-btn" data-ctrl="g" data-cmd="plus">+</button>
-          <button class="move-btn" data-ctrl="g" data-cmd="minus">−</button>
+        <div class="tolerance-control" id="toleranceControl">
+          <label for="toleranceRange">Tolérance <span id="toleranceValue">40</span></label>
+          <input type="range" id="toleranceRange" min="0" max="60" value="40" />
         </div>
-      </div>
-    </div>
-
-    <div class="control-block">
-      <div class="control-title">Position produit</div>
-      <div class="move-controls">
-        <div class="move-grid">
-          <button class="move-btn up" data-ctrl="p" data-cmd="up">↑</button>
-          <button class="move-btn left" data-ctrl="p" data-cmd="left">←</button>
-          <button class="move-btn right" data-ctrl="p" data-cmd="right">→</button>
-          <button class="move-btn down" data-ctrl="p" data-cmd="down">↓</button>
+        <div class="model-choice">
+          <span>Modèle IA</span>
+          <label>
+            <input type="radio" name="u2netModel" value="u2netp.onnx" checked />
+            <span>u2netp.onnx <small>(fond uni)</small></span>
+          </label>
+          <label>
+            <input type="radio" name="u2netModel" value="u2net.onnx" />
+            <span>u2net.onnx <small>(images encombrées)</small></span>
+          </label>
         </div>
-        <div class="zoom-buttons">
-          <button class="move-btn" data-ctrl="p" data-cmd="plus">+</button>
-          <button class="move-btn" data-ctrl="p" data-cmd="minus">−</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="control-block">
-      <div class="control-title">Bandeaux & fades</div>
-
-      <div class="range-control">
-        <label for="headerWidthRange">Largeur bandeau haut <span id="headerWidthValue">70%</span></label>
-        <input type="range" id="headerWidthRange" min="45" max="95" value="70" />
-      </div>
-
-      <div class="range-control">
-        <label for="headerDepthRange">Hauteur bandeau haut <span id="headerDepthValue">120px</span></label>
-        <input type="range" id="headerDepthRange" min="80" max="220" value="120" />
-      </div>
-
-      <div class="range-control">
-        <label for="headerAngleRange">Angle coupe haut <span id="headerAngleValue">88%</span></label>
-        <input type="range" id="headerAngleRange" min="55" max="100" value="88" />
-      </div>
-
-      <div class="range-control">
-        <label for="footerDepthRange">Hauteur bandeau bas <span id="footerDepthValue">140px</span></label>
-        <input type="range" id="footerDepthRange" min="100" max="260" value="140" />
-      </div>
-
-      <div class="range-control">
-        <label for="footerAngleRange">Angle coupe bas <span id="footerAngleValue">8%</span></label>
-        <input type="range" id="footerAngleRange" min="0" max="20" value="8" />
-      </div>
+        <p class="detourage-note">Les images restent sur votre appareil.</p>
+      </fieldset>
+      <div class="detourage-status" id="detourageStatus">Initialisation de l'IA…</div>
+      <progress id="detourageProgress" class="progress" max="100" value="0" hidden></progress>
     </div>
   </div>
 
@@ -863,12 +960,6 @@
     const getModelLabel = () => MODEL_LABELS[modelChoice] || modelChoice;
 
     // --- Références DOM ---
-    const titleInput = document.getElementById('promoTitle');
-    const dateInput = document.getElementById('promoDate');
-    const badgeInput = document.getElementById('promoBadge');
-    const productNameInput = document.getElementById('productName');
-    const productSubtitleInput = document.getElementById('productSubtitle');
-    const sloganField = document.getElementById('sloganField');
     const logoInput = document.getElementById('logoInput');
     const productInput = document.getElementById('productInput');
     const logoScaleRange = document.getElementById('logoScaleRange');
@@ -881,9 +972,6 @@
     const detourageModeInputs = document.querySelectorAll('input[name="detourageMode"]');
     const modelChoiceInputs = document.querySelectorAll('input[name="u2netModel"]');
 
-    const updateBtn = document.getElementById('updateBtn');
-    const sloganBtn = document.getElementById('sloganBtn');
-
     const affiche = document.getElementById('affiche');
     const afficheTitle = document.getElementById('afficheTitle');
     const afficheDate = document.getElementById('afficheDate');
@@ -892,12 +980,33 @@
     const afficheProductSubtitle = document.getElementById('afficheProductSubtitle');
     const afficheLogo = document.getElementById('afficheLogo');
     const afficheProduct = document.getElementById('afficheProduct');
-    const sloganResults = document.getElementById('sloganResults');
+    const bgStyleSelect = document.getElementById('bgStyleSelect');
+    const bgRandomBtn = document.getElementById('bgRandomBtn');
+    const bgLayer = document.getElementById('bgLayer');
+    const bgModeInputs = document.querySelectorAll('input[name="bgMode"]');
+    const solidBgColorInput = document.getElementById('solidBgColor');
+    const bgImageInput = document.getElementById('bgImageInput');
+    const bgImageClearBtn = document.getElementById('bgImageClearBtn');
+    const paletteModeInputs = document.querySelectorAll('input[name="bgPaletteMode"]');
+    const customPaletteFields = document.getElementById('customPaletteFields');
+    const customColorAInput = document.getElementById('customColorA');
+    const customColorBInput = document.getElementById('customColorB');
+    const fontFamilySelect = document.getElementById('fontFamilySelect');
+    const fontSizeRange = document.getElementById('fontSizeRange');
+    const fontSizeValue = document.getElementById('fontSizeValue');
+    const fontColorInput = document.getElementById('fontColorInput');
+    const editorStatus = document.getElementById('editorStatus');
+    const editableElements = document.querySelectorAll('[data-editable]');
+    const headerDragHandle = document.getElementById('headerDragHandle');
+    const footerDragHandle = document.getElementById('footerDragHandle');
 
     const root = document.documentElement;
 
+    const DEFAULT_COLORS = ['#0A7F5A', '#4EB190', '#9FD7B8'];
     const sampleCanvas = document.createElement('canvas');
     const sampleCtx = sampleCanvas.getContext('2d');
+    let brandColors = [];
+    let colorThiefInstance = null;
 
     const state = {
       lastLogoImage: null,
@@ -905,11 +1014,19 @@
       lastLogoFile: null,
       lastProductFile: null,
       lastLogoDataURL: null,
-      lastProductDataURL: null,
       lastLogoMode: null,
       lastProductMode: null,
       logoManualColor: null,
     };
+
+    let currentBgMode = 'solid';
+    let currentPaletteMode = 'logo';
+    let customPalette = [
+      customColorAInput?.value || '#0A7F5A',
+      customColorBInput?.value || '#A4D4AE',
+    ];
+    let bgImageDataURL = null;
+    const baseBackground = getComputedStyle(affiche).background;
 
     const selectedModelInput = document.querySelector('input[name="u2netModel"]:checked');
     if (selectedModelInput?.value) {
@@ -919,6 +1036,294 @@
     // --- UI helpers ---
     const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
     const clamp255 = (value) => clamp(value, 0, 255);
+    const clampValue = (value, min, max) => clamp(value, min, max);
+
+    const hexToRgb = (hex) => {
+      if (!hex) return { r: 0, g: 0, b: 0 };
+      let clean = hex.replace('#', '');
+      if (clean.length === 3) {
+        clean = clean.split('').map((c) => c + c).join('');
+      }
+      const intVal = parseInt(clean, 16);
+      return {
+        r: (intVal >> 16) & 255,
+        g: (intVal >> 8) & 255,
+        b: intVal & 255,
+      };
+    };
+
+    const rgbArrayToHex = (arr = []) => {
+      const [r = 0, g = 0, b = 0] = arr;
+      const toHex = (v) => clamp255(v).toString(16).padStart(2, '0');
+      return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+    };
+
+    const adjustColor = (hex, amount = 0) => {
+      const { r, g, b } = hexToRgb(hex);
+      const adjust = (channel) => clamp255(channel + amount * 255);
+      return rgbArrayToHex([adjust(r), adjust(g), adjust(b)]);
+    };
+
+    const rgba = (hex, alpha = 1) => {
+      const { r, g, b } = hexToRgb(hex);
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    };
+
+    const randRange = (min, max) => Math.random() * (max - min) + min;
+
+    const getCssVarNumber = (cssVar) => parseFloat(getComputedStyle(root).getPropertyValue(cssVar)) || 0;
+    const setCssVarNumber = (cssVar, value, unit = 'px') => {
+      root.style.setProperty(cssVar, `${value}${unit}`);
+    };
+
+    const clearBackgroundLayer = () => {
+      if (!bgLayer) return;
+      bgLayer.innerHTML = '';
+      bgLayer.style.background = 'none';
+      bgLayer.style.backgroundImage = 'none';
+      bgLayer.style.backgroundColor = 'transparent';
+    };
+
+    const resetTextPositions = () => {
+      ['--header-shift-x', '--header-shift-y', '--footer-shift-x', '--footer-shift-y'].forEach((varName) => {
+        root.style.setProperty(varName, '0px');
+      });
+    };
+
+    const enableTextDragMode = (enabled) => {
+      if (!affiche) return;
+      affiche.classList.toggle('has-model-bg', enabled);
+      if (!enabled) {
+        resetTextPositions();
+      }
+    };
+
+    const autoAdjustBands = () => {
+      const headerText = `${afficheTitle?.textContent || ''} ${afficheDate?.textContent || ''}`.trim();
+      const headerChars = Math.max(headerText.length, 12);
+      const headerWidth = clampValue(50 + headerChars * 0.4, 50, 95);
+      const headerDepth = clampValue(110 + headerChars * 0.45, 90, 240);
+      setCssVarNumber('--header-width', headerWidth, '%');
+      setCssVarNumber('--header-depth', headerDepth, 'px');
+
+      const footerText = `${afficheProductName?.textContent || ''} ${afficheProductSubtitle?.textContent || ''}`.trim();
+      const footerChars = Math.max(footerText.length, 18);
+      const footerDepth = clampValue(150 + footerChars * 0.3, 120, 300);
+      const footerNotch = clampValue(8 + footerChars * 0.04, 4, 18);
+      setCssVarNumber('--footer-depth', footerDepth, 'px');
+      setCssVarNumber('--footer-notch', footerNotch, '%');
+    };
+
+    const applySolidBackground = () => {
+      enableTextDragMode(false);
+      if (!affiche) return;
+      const color = solidBgColorInput?.value || '#eaf7f1';
+      affiche.style.background = color;
+      clearBackgroundLayer();
+    };
+
+    const applyGeneratedBackground = ({ forceRandom = false } = {}) => {
+      enableTextDragMode(false);
+      if (!affiche) return;
+      affiche.style.background = baseBackground;
+      regenerateBackground({ forceRandom });
+    };
+
+    const applyImageBackground = (dataURL) => {
+      if (!affiche || !dataURL) return;
+      affiche.style.background = `url(${dataURL}) center/cover no-repeat`;
+      clearBackgroundLayer();
+      enableTextDragMode(true);
+      bgImageClearBtn?.removeAttribute('disabled');
+    };
+
+    const syncBackgroundControls = () => {
+      const isGenerated = currentBgMode === 'generated';
+      if (bgStyleSelect) bgStyleSelect.disabled = !isGenerated;
+      if (solidBgColorInput) solidBgColorInput.disabled = currentBgMode !== 'solid';
+      if (bgImageInput) bgImageInput.disabled = currentBgMode !== 'image';
+      paletteModeInputs.forEach((radio) => {
+        radio.disabled = !isGenerated;
+      });
+      const showCustom = isGenerated && currentPaletteMode === 'custom';
+      if (customPaletteFields) {
+        customPaletteFields.classList.toggle('is-visible', showCustom);
+      }
+      if (customColorAInput) customColorAInput.disabled = !showCustom;
+      if (customColorBInput) customColorBInput.disabled = !showCustom;
+      if (bgRandomBtn) bgRandomBtn.disabled = !isGenerated;
+      if (bgImageClearBtn) {
+        if (bgImageDataURL) {
+          bgImageClearBtn.removeAttribute('disabled');
+        } else {
+          bgImageClearBtn.setAttribute('disabled', 'disabled');
+        }
+      }
+    };
+
+    const setBackgroundMode = (mode, options = {}) => {
+      currentBgMode = mode;
+      if (mode === 'solid') {
+        applySolidBackground();
+      } else if (mode === 'image') {
+        if (bgImageDataURL) {
+          applyImageBackground(bgImageDataURL);
+        } else {
+          enableTextDragMode(false);
+          affiche.style.background = baseBackground;
+          clearBackgroundLayer();
+        }
+      } else {
+        applyGeneratedBackground(options);
+      }
+      syncBackgroundControls();
+    };
+
+    bgModeInputs.forEach((input) => {
+      input.addEventListener('change', () => {
+        if (input.checked) {
+          setBackgroundMode(input.value);
+        }
+      });
+    });
+
+    solidBgColorInput?.addEventListener('input', () => {
+      if (currentBgMode === 'solid') applySolidBackground();
+    });
+
+    const updateCustomPalette = () => {
+      customPalette = [
+        customColorAInput?.value || '#0A7F5A',
+        customColorBInput?.value || '#A4D4AE',
+      ];
+      if (currentBgMode === 'generated' && currentPaletteMode === 'custom') {
+        regenerateBackground();
+      }
+    };
+
+    customColorAInput?.addEventListener('input', updateCustomPalette);
+    customColorBInput?.addEventListener('input', updateCustomPalette);
+
+    paletteModeInputs.forEach((input) => {
+      input.addEventListener('change', () => {
+        if (!input.checked) return;
+        currentPaletteMode = input.value;
+        syncBackgroundControls();
+        if (currentBgMode === 'generated') regenerateBackground();
+      });
+    });
+
+    bgImageInput?.addEventListener('change', async () => {
+      const file = bgImageInput.files?.[0];
+      if (!file) return;
+      const dataURL = await readFileAsDataURL(file);
+      bgImageDataURL = dataURL;
+      const imageRadio = Array.from(bgModeInputs).find((input) => input.value === 'image');
+      if (imageRadio) imageRadio.checked = true;
+      setBackgroundMode('image');
+    });
+
+    bgImageClearBtn?.addEventListener('click', () => {
+      bgImageDataURL = null;
+      if (bgImageInput) bgImageInput.value = '';
+      bgImageClearBtn.setAttribute('disabled', 'disabled');
+      if (currentBgMode === 'image') {
+        const solidRadio = Array.from(bgModeInputs).find((input) => input.value === 'solid');
+        if (solidRadio) solidRadio.checked = true;
+        setBackgroundMode('solid');
+      }
+    });
+
+
+    const FONT_OPTIONS = ['Poppins', 'Playfair Display', 'Montserrat', 'Source Serif Pro', 'Raleway'];
+
+    const rgbStringToHex = (color) => {
+      const match = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
+      if (!match) return '#000000';
+      return `#${match.slice(1, 4).map((val) => {
+        const hex = parseInt(val, 10).toString(16);
+        return hex.length === 1 ? `0${hex}` : hex;
+      }).join('')}`;
+    };
+
+    let activeEditable = null;
+
+    const syncToolbarWithElement = (element) => {
+      if (!element) return;
+      const styles = window.getComputedStyle(element);
+      const family = FONT_OPTIONS.find((font) => styles.fontFamily.toLowerCase().includes(font.toLowerCase())) || FONT_OPTIONS[0];
+      if (fontFamilySelect) fontFamilySelect.value = family;
+      const size = clampValue(parseInt(styles.fontSize, 10) || 24, 14, 64);
+      if (fontSizeRange) {
+        fontSizeRange.value = size;
+        if (fontSizeValue) fontSizeValue.textContent = `${size}px`;
+      }
+      if (fontColorInput) fontColorInput.value = rgbStringToHex(styles.color);
+    };
+
+    const setActiveEditable = (element) => {
+      if (activeEditable === element) return;
+      if (activeEditable) activeEditable.classList.remove('is-editing');
+      activeEditable = element;
+      if (activeEditable) {
+        activeEditable.classList.add('is-editing');
+        if (editorStatus) editorStatus.textContent = activeEditable.dataset.label || 'Bloc sélectionné';
+        syncToolbarWithElement(activeEditable);
+      } else if (editorStatus) {
+        editorStatus.textContent = 'Sélectionnez un bloc de texte.';
+      }
+    };
+
+    const clearActiveEditable = () => {
+      if (activeEditable) {
+        activeEditable.classList.remove('is-editing');
+      }
+      activeEditable = null;
+      if (editorStatus) editorStatus.textContent = 'Sélectionnez un bloc de texte.';
+    };
+
+    editableElements.forEach((el) => {
+      el.setAttribute('contenteditable', 'true');
+      el.setAttribute('spellcheck', 'false');
+      el.addEventListener('focus', () => setActiveEditable(el));
+      el.addEventListener('click', (event) => {
+        setActiveEditable(el);
+        event.stopPropagation();
+      });
+      el.addEventListener('input', () => {
+        autoAdjustBands();
+      });
+    });
+
+    document.addEventListener('click', (event) => {
+      if (!event.target.closest('[data-editable]') && !event.target.closest('.style-panel')) {
+        clearActiveEditable();
+      }
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        clearActiveEditable();
+      }
+    });
+
+    fontFamilySelect?.addEventListener('change', () => {
+      if (!activeEditable) return;
+      activeEditable.style.fontFamily = fontFamilySelect.value;
+    });
+
+    fontSizeRange?.addEventListener('input', () => {
+      if (!fontSizeValue) return;
+      fontSizeValue.textContent = `${fontSizeRange.value}px`;
+      if (!activeEditable) return;
+      activeEditable.style.fontSize = `${fontSizeRange.value}px`;
+      autoAdjustBands();
+    });
+
+    fontColorInput?.addEventListener('input', () => {
+      if (!activeEditable) return;
+      activeEditable.style.color = fontColorInput.value;
+    });
 
     const getToleranceValue = () => Number(toleranceRange?.value || 40);
 
@@ -1003,6 +1408,247 @@
         const wantsColor = input.value === DETOUR_MODE.COLOR;
         setToleranceVisibility(wantsColor);
       });
+    });
+
+    // --- Générateur d'arrière-plan ---
+    const ensureColorThief = () => {
+      if (!colorThiefInstance && globalThis.ColorThief) {
+        colorThiefInstance = new globalThis.ColorThief();
+      }
+      return colorThiefInstance;
+    };
+
+    // Récupère jusqu'à 3 couleurs dominantes depuis le logo
+    const extractBrandColors = (image) => {
+      const thief = ensureColorThief();
+      if (!thief || !image) {
+        brandColors = [];
+        return;
+      }
+      try {
+        const palette = thief.getPalette(image, 3) || [];
+        brandColors = palette.map((rgb) => rgbArrayToHex(rgb));
+        if (currentBgMode === 'generated' && currentPaletteMode === 'logo') {
+          regenerateBackground();
+        }
+      } catch (err) {
+        console.warn('Impossible de récupérer la palette du logo', err);
+        brandColors = [];
+      }
+    };
+
+    const getPaletteSource = () => {
+      if (currentPaletteMode === 'custom') {
+        return customPalette.length ? customPalette : DEFAULT_COLORS;
+      }
+      if (currentPaletteMode === 'logo' && brandColors.length) {
+        return brandColors;
+      }
+      return DEFAULT_COLORS;
+    };
+
+    const shuffleArray = (arr = []) => {
+      const copy = arr.slice();
+      for (let i = copy.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    };
+
+    // Assemble une palette douce avec de légères variations aléatoires
+    const blendWithWhite = (hex, factor = 0.2) => {
+      const { r, g, b } = hexToRgb(hex);
+      const mix = (channel) => Math.round(channel + (255 - channel) * factor);
+      return rgbArrayToHex([mix(r), mix(g), mix(b)]);
+    };
+
+    const buildPalette = (forceRandom = false) => {
+      const base = getPaletteSource();
+      const working = forceRandom ? shuffleArray(base) : base.slice();
+      const softened = working.map((color, idx) => {
+        const tinted = blendWithWhite(color, 0.15 + idx * 0.05);
+        return adjustColor(tinted, (Math.random() - 0.5) * 0.08);
+      });
+      return softened.length ? softened : DEFAULT_COLORS;
+    };
+
+    // Réinitialise la couche d'arrière-plan avant une nouvelle génération
+    const clearBgLayer = () => {
+      if (!bgLayer) return;
+      bgLayer.innerHTML = '';
+      bgLayer.style.background = 'none';
+      bgLayer.style.backgroundImage = 'none';
+      bgLayer.style.backgroundColor = 'transparent';
+    };
+
+    // Génère un chemin sinusoïdal approximatif pour les vagues
+    const wavePath = (width, height, baseY, amplitude) => {
+      const segments = 5;
+      const step = width / segments;
+      let d = `M ${-step} ${baseY}`;
+      for (let i = -1; i <= segments + 1; i += 1) {
+        const x = i * step;
+        const cpX1 = x + step / 3;
+        const cpX2 = x + (2 * step) / 3;
+        const cpY1 = baseY + Math.sin(i) * amplitude;
+        const cpY2 = baseY + Math.cos(i) * amplitude * 0.8;
+        const endX = x + step;
+        const endY = baseY + Math.sin(i + 1) * amplitude * 0.6;
+        d += ` C ${cpX1} ${cpY1} ${cpX2} ${cpY2} ${endX} ${endY}`;
+      }
+      d += ` L ${width} ${height} L 0 ${height} Z`;
+      return d;
+    };
+
+    // Empile plusieurs vagues SVG discrètes
+    const bgWaves = (colors) => {
+      if (!bgLayer) return;
+      clearBgLayer();
+      const svgWidth = 600;
+      const svgHeight = 800;
+      let waves = '';
+      for (let i = 0; i < 3; i += 1) {
+        const color = colors[i % colors.length] || DEFAULT_COLORS[0];
+        const baseY = 160 + i * 130 + randRange(-10, 10);
+        const amplitude = 18 + i * 10;
+        waves += `<path d="${wavePath(svgWidth, svgHeight, baseY, amplitude)}" fill="${rgba(color, 0.12 - i * 0.025)}" />`;
+      }
+      bgLayer.innerHTML = `<svg viewBox="0 0 ${svgWidth} ${svgHeight}" preserveAspectRatio="none">${waves}</svg>`;
+    };
+
+    const productSafeZone = {
+      left: 140,
+      right: 460,
+      top: 210,
+      bottom: 540,
+    };
+
+    const bubbleSizes = [70, 85, 95, 115, 135];
+
+    const isInsideProductZone = (x, y, size) => {
+      const cx = x + size / 2;
+      const cy = y + size / 2;
+      return (
+        cx > productSafeZone.left &&
+        cx < productSafeZone.right &&
+        cy > productSafeZone.top &&
+        cy < productSafeZone.bottom
+      );
+    };
+
+    const hasOverlap = (placements, x, y, size) => {
+      const cx = x + size / 2;
+      const cy = y + size / 2;
+      return placements.some(({ x: px, y: py, size: ps }) => {
+        const pcx = px + ps / 2;
+        const pcy = py + ps / 2;
+        const minDist = (size + ps) / 2 + 25;
+        const dist = Math.hypot(pcx - cx, pcy - cy);
+        return dist < minDist;
+      });
+    };
+
+    const createBubbleElement = (x, y, size, tone) => {
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble dynamic';
+      bubble.style.width = `${size}px`;
+      bubble.style.height = `${size}px`;
+      bubble.style.left = `${x}px`;
+      bubble.style.top = `${y}px`;
+      bubble.style.background = `rgba(255, 255, 255, ${tone})`;
+      bubble.style.borderColor = `rgba(255, 255, 255, ${tone + 0.05})`;
+      bubble.style.boxShadow = `0 3px 10px rgba(10, 127, 90, ${tone - 0.03})`;
+      return bubble;
+    };
+
+    const bgBubbles = (colors) => {
+      if (!bgLayer) return;
+      clearBgLayer();
+      const placements = [];
+      const count = Math.floor(randRange(2, 6));
+      let attempts = 0;
+      while (placements.length < count && attempts < 80) {
+        attempts += 1;
+        const size = bubbleSizes[Math.floor(Math.random() * bubbleSizes.length)];
+        const x = randRange(30, 600 - size - 30);
+        const y = randRange(140, 800 - size - 40);
+        if (isInsideProductZone(x, y, size)) continue;
+        if (hasOverlap(placements, x, y, size)) continue;
+        placements.push({ x, y, size });
+      }
+      placements.forEach(({ x, y, size }, idx) => {
+        const tone = 0.12 + (idx % 3) * 0.035;
+        const bubble = createBubbleElement(x, y, size, tone);
+        bgLayer.appendChild(bubble);
+      });
+    };
+
+    // Motif pointillé basé sur des dégradés CSS
+    const appendProductHalo = (intensity = 0.25) => {
+      const halo = document.createElement('div');
+      halo.style.position = 'absolute';
+      halo.style.inset = '0';
+      halo.style.background = `radial-gradient(circle at 50% 45%, rgba(255,255,255,${intensity}), transparent 55%)`;
+      halo.style.pointerEvents = 'none';
+      halo.style.zIndex = 0;
+      bgLayer.appendChild(halo);
+    };
+
+    const bgDots = (colors) => {
+      if (!bgLayer) return;
+      clearBgLayer();
+      const primary = colors[0] || DEFAULT_COLORS[0];
+      const secondary = colors[1] || DEFAULT_COLORS[1];
+      bgLayer.style.backgroundImage = `radial-gradient(${rgba(primary, 0.12)} 12%, transparent 20%), radial-gradient(${rgba(secondary, 0.08)} 10%, transparent 22%)`;
+      bgLayer.style.backgroundSize = '20px 20px, 20px 20px';
+      bgLayer.style.backgroundPosition = '0 0, 10px 10px';
+      bgLayer.style.backgroundColor = rgba(adjustColor(primary, 0.3), 0.04);
+      appendProductHalo(0.22);
+    };
+
+    // Motif croix répété via pattern SVG
+    const bgCross = (colors) => {
+      if (!bgLayer) return;
+      clearBgLayer();
+      const stroke = colors[0] || DEFAULT_COLORS[0];
+      const accent = colors[1] || DEFAULT_COLORS[1];
+      const rotation = randRange(-12, 12).toFixed(2);
+      const svg = `
+        <svg viewBox="0 0 600 800" preserveAspectRatio="xMidYMid slice">
+          <defs>
+            <pattern id="crossPattern" width="32" height="32" patternUnits="userSpaceOnUse" patternTransform="rotate(${rotation})">
+            <path d="M16 4 L16 28 M4 16 L28 16" stroke="${rgba(stroke, 0.12)}" stroke-width="1.5" stroke-linecap="round" />
+            </pattern>
+          </defs>
+          <rect width="600" height="800" fill="url(#crossPattern)" fill-opacity="0.6" />
+          <rect width="600" height="800" fill="${rgba(accent, 0.03)}" />
+        </svg>`;
+      bgLayer.innerHTML = svg;
+      appendProductHalo(0.2);
+    };
+
+    const rendererMap = {
+      bubbles: bgBubbles,
+      waves: bgWaves,
+      dots: bgDots,
+      cross: bgCross,
+    };
+
+    const regenerateBackground = ({ forceRandom = false } = {}) => {
+      if (!bgLayer || currentBgMode !== 'generated') return;
+      const style = bgStyleSelect?.value || 'bubbles';
+      const palette = buildPalette(forceRandom);
+      const render = rendererMap[style] || bgBubbles;
+      render(palette);
+    };
+
+    bgStyleSelect?.addEventListener('change', () => {
+      if (currentBgMode === 'generated') regenerateBackground();
+    });
+    bgRandomBtn?.addEventListener('click', () => {
+      if (currentBgMode !== 'generated') return;
+      regenerateBackground({ forceRandom: true });
     });
 
     modelChoiceInputs.forEach((input) => {
@@ -1090,14 +1736,7 @@
 
     const injectImage = (container, dataURL) => {
       if (!container) return;
-      const watermarkLabel = container.dataset?.watermark;
       container.innerHTML = '';
-      if (watermarkLabel) {
-        const watermark = document.createElement('div');
-        watermark.className = 'watermark';
-        watermark.textContent = watermarkLabel.toUpperCase();
-        container.appendChild(watermark);
-      }
       const img = document.createElement('img');
       img.src = dataURL;
       container.appendChild(img);
@@ -1393,6 +2032,7 @@
         state.lastLogoDataURL = dataURL;
         lastDataURL = dataURL;
         state.logoManualColor = null;
+        extractBrandColors(image);
 
         const result = await smartDetour(file, image, getSelectedDetourMode(), { isLogo: true });
         injectImage(afficheLogo, result.dataURL);
@@ -1409,6 +2049,8 @@
           state.lastLogoMode = null;
           setToleranceVisibility(getSelectedDetourMode() === DETOUR_MODE.COLOR);
         }
+      } finally {
+        regenerateBackground({ forceRandom: true });
       }
     };
 
@@ -1421,12 +2063,12 @@
         const { image, dataURL } = await fileToImage(file);
         state.lastProductImage = image;
         state.lastProductFile = file;
-        state.lastProductDataURL = dataURL;
         lastDataURL = dataURL;
 
         const result = await smartDetour(file, image, getSelectedDetourMode());
         injectImage(afficheProduct, result.dataURL);
         state.lastProductMode = result.modeUsed;
+        lastDataURL = result.dataURL;
         setToleranceVisibility(result.modeUsed === DETOUR_MODE.COLOR);
         if (result.modeUsed === DETOUR_MODE.IA) {
           setDetourageStatus(`Produit détouré par IA (${result.provider || 'IA'}) ✅`);
@@ -1465,122 +2107,193 @@
       await rerunLogoColor();
     });
 
-    // --- Synchronisation contenu affiche ---
-    const syncText = (input, target, fallback = "") => {
-      if (!target) return;
-      target.textContent = input.value || fallback;
-    };
+    // --- Interactions directes (drag + zoom) ---
+    const setupTransformHandle = (element, {
+      dxVar,
+      dyVar,
+      scaleVar,
+      minScale = 0.5,
+      maxScale = 2.5,
+    }) => {
+      if (!element) return;
+      const state = {
+        x: parseFloat(getComputedStyle(root).getPropertyValue(dxVar)) || 0,
+        y: parseFloat(getComputedStyle(root).getPropertyValue(dyVar)) || 0,
+        scale: parseFloat(getComputedStyle(root).getPropertyValue(scaleVar)) || 1,
+      };
 
-    updateBtn?.addEventListener('click', () => {
-      afficheTitle.textContent = titleInput.value || "Promotion en pharmacie";
-      afficheDate.textContent = dateInput.value || "Période de l'offre";
-      afficheBadge.textContent = badgeInput.value || "-20%";
-      afficheProductName.textContent = productNameInput.value || "Nom du produit";
-      afficheProductSubtitle.textContent = productSubtitleInput.value || "Texte complémentaire";
-      afficheLogo.classList.add('has-image');
-      afficheProduct.classList.add('has-image');
-    });
+      const apply = () => {
+        root.style.setProperty(dxVar, `${state.x}px`);
+        root.style.setProperty(dyVar, `${state.y}px`);
+        root.style.setProperty(scaleVar, String(state.scale));
+      };
+      apply();
 
-    titleInput?.addEventListener('input', () => syncText(titleInput, afficheTitle, "Promo spéciale en pharmacie"));
-    dateInput?.addEventListener('input', () => syncText(dateInput, afficheDate, "Période de l'offre"));
-    badgeInput?.addEventListener('input', () => syncText(badgeInput, afficheBadge, "-20%"));
-    productNameInput?.addEventListener('input', () => syncText(productNameInput, afficheProductName, "Nom du produit"));
-    productSubtitleInput?.addEventListener('input', () => syncText(productSubtitleInput, afficheProductSubtitle, "Un sous-titre percutant ici"));
-    sloganField?.addEventListener('input', () => syncText(sloganField, afficheProductSubtitle, "Un slogan sur mesure"));
+      const activePointers = new Map();
+      let primaryPointerId = null;
+      let panStart = { x: state.x, y: state.y };
+      let pinchStartDist = 0;
+      let pinchStartScale = state.scale;
 
-    // --- Génération slogans ---
-    const OPENERS = [
-      "Parce que votre santé compte ✨", "Le conseil de votre pharmacie :", "Pour prolonger l'été ☀️",
-      "L'essentiel de la saison 🍁", "La cure qu'il vous faut 💊"
-    ];
-    const HOOKS = [
-      "Renforce l'immunité naturellement", "Formule experte, résultats rapides",
-      "Approuvé par l'équipe officinale", "Pour toute la famille", "Qualité officine"
-    ];
-    const BENEFITS = [
-      "Vitalité retrouvée", "Immunité renforcée", "Équilibre parfait",
-      "Énergie naturelle", "Protection au quotidien"
-    ];
-    const CTA = [
-      "Disponible en pharmacie", "Demandez conseil à votre pharmacien",
-      "Profitez de l'offre dès aujourd'hui", "Offre limitée en stock", "À découvrir maintenant"
-    ];
-    const ENDINGS = [
-      "Réservé à votre pharmacie préférée", "À prix doux en ce moment", "À retrouver en comptoir",
-      "Votre geste bien-être du jour", "Une offre exclusive officine"
-    ];
-    const CALLINGS = [
-      "Passez en officine ➜", "On vous attend au comptoir 💊", "Conseil personnalisé en pharmacie",
-      "Profitez-en tant que c'est dispo ✅", "Offre démo – testez-la sur vos produits"
-    ];
-    const rand = (n) => Math.floor(Math.random() * n);
+      const updateFromPointers = () => {
+        if (activePointers.size === 0) {
+          element.classList.remove('dragging');
+          return;
+        }
+        if (activePointers.size === 1 && primaryPointerId) {
+          const pointer = activePointers.get(primaryPointerId);
+          if (!pointer) return;
+          const dx = pointer.currentX - pointer.startX;
+          const dy = pointer.currentY - pointer.startY;
+          state.x = panStart.x + dx;
+          state.y = panStart.y + dy;
+          apply();
+        } else if (activePointers.size >= 2) {
+          const pointers = Array.from(activePointers.values());
+          if (pointers.length < 2 || pinchStartDist === 0) return;
+          const dist = Math.hypot(
+            pointers[0].currentX - pointers[1].currentX,
+            pointers[0].currentY - pointers[1].currentY,
+          );
+          if (!dist) return;
+          state.scale = clampValue(pinchStartScale * (dist / pinchStartDist), minScale, maxScale);
+          apply();
+        }
+      };
 
-    sloganBtn?.addEventListener('click', () => {
-      sloganResults.innerHTML = '';
-      const name = (productNameInput.value || "notre produit").trim();
-      const promo = badgeInput.value ? ` (${badgeInput.value})` : "";
-      const s1 = `${OPENERS[rand(OPENERS.length)]} ${name}${promo}`;
-      const s2 = `${name} : ${CTA[rand(CTA.length)]}`;
-      const s3 = `${HOOKS[rand(HOOKS.length)]} – ${ENDINGS[rand(ENDINGS.length)]}`;
-      const s4 = `${name}${promo} : ${CALLINGS[rand(CALLINGS.length)]}`;
-      [s1, s2, s3, s4].forEach((text) => {
-        const div = document.createElement('div');
-        div.className = "slogan-option";
-        div.textContent = text;
-        div.addEventListener('click', () => {
-          sloganField.value = text;
-          afficheProductSubtitle.textContent = text;
+      const handlePointerDown = (event) => {
+        if (event.target && event.target.closest('[data-editable]')) {
+          return;
+        }
+        event.preventDefault();
+        element.setPointerCapture(event.pointerId);
+        activePointers.set(event.pointerId, {
+          startX: event.clientX,
+          startY: event.clientY,
+          currentX: event.clientX,
+          currentY: event.clientY,
         });
-        sloganResults.appendChild(div);
-      });
-    });
+        if (primaryPointerId === null) {
+          primaryPointerId = event.pointerId;
+          panStart = { x: state.x, y: state.y };
+        } else if (activePointers.size === 2) {
+          const pointers = Array.from(activePointers.values());
+          pinchStartDist = Math.hypot(
+            pointers[0].currentX - pointers[1].currentX,
+            pointers[0].currentY - pointers[1].currentY,
+          );
+          pinchStartScale = state.scale;
+        }
+        element.classList.add('dragging');
+      };
 
-    document.querySelectorAll('.beautyBtn').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        affiche.style.filter = "drop-shadow(0 10px 25px rgba(0,0,0,0.25))";
-      });
-    });
+      const handlePointerMove = (event) => {
+        if (!activePointers.has(event.pointerId)) return;
+        const data = activePointers.get(event.pointerId);
+        data.currentX = event.clientX;
+        data.currentY = event.clientY;
+        updateFromPointers();
+      };
 
-    // --- Contrôles déplacement / zoom ---
-    const gEl = document.getElementById('afficheBadge');
-    const pEl = document.getElementById('afficheProduct');
-    let gTop = 120;
-    let gLeft = 600 - 35 - 150;
-    let gScale = 1;
-    let pTop = 235;
-    let pScale = 1;
-    let pOffsetX = 0;
+      const cleanupPointer = (event) => {
+        if (element.hasPointerCapture?.(event.pointerId)) {
+          element.releasePointerCapture(event.pointerId);
+        }
+        if (activePointers.has(event.pointerId)) {
+          activePointers.delete(event.pointerId);
+        }
+        if (primaryPointerId === event.pointerId) {
+          primaryPointerId = activePointers.size ? Array.from(activePointers.keys())[0] : null;
+          if (primaryPointerId) {
+            const pointer = activePointers.get(primaryPointerId);
+            panStart = {
+              x: state.x - (pointer.currentX - pointer.startX),
+              y: state.y - (pointer.currentY - pointer.startY),
+            };
+          }
+        }
+        if (activePointers.size < 2) {
+          pinchStartDist = 0;
+        }
+        updateFromPointers();
+      };
 
-    const applyProductTransform = () => {
-      if (!pEl) return;
-      pEl.style.transform = `translateX(-50%) translateX(${pOffsetX}px) scale(${pScale})`;
+      const handleWheel = (event) => {
+        event.preventDefault();
+        const delta = -event.deltaY;
+        const factor = delta > 0 ? 1.05 : 0.95;
+        state.scale = clampValue(state.scale * factor, minScale, maxScale);
+        apply();
+      };
+
+      element.addEventListener('pointerdown', handlePointerDown);
+      element.addEventListener('pointermove', handlePointerMove);
+      element.addEventListener('pointerup', cleanupPointer);
+      element.addEventListener('pointercancel', cleanupPointer);
+      element.addEventListener('wheel', handleWheel, { passive: false });
     };
-    applyProductTransform();
 
-    const handleMove = (ctrl, cmd) => {
-      if (ctrl === 'g') {
-        if (cmd === 'up') { gTop -= 10; gEl.style.top = `${gTop}px`; }
-        if (cmd === 'down') { gTop += 10; gEl.style.top = `${gTop}px`; }
-        if (cmd === 'left') { gLeft -= 10; gEl.style.right = "auto"; gEl.style.left = `${gLeft}px`; }
-        if (cmd === 'right') { gLeft += 10; gEl.style.right = "auto"; gEl.style.left = `${gLeft}px`; }
-        if (cmd === 'plus') { gScale += 0.05; gEl.style.transform = `scale(${gScale})`; }
-        if (cmd === 'minus') { gScale = Math.max(0.5, gScale - 0.05); gEl.style.transform = `scale(${gScale})`; }
-      }
-      if (ctrl === 'p') {
-        if (cmd === 'up') { pTop -= 10; pEl.style.top = `${pTop}px`; }
-        if (cmd === 'down') { pTop += 10; pEl.style.top = `${pTop}px`; }
-        if (cmd === 'left') { pOffsetX -= 10; applyProductTransform(); }
-        if (cmd === 'right') { pOffsetX += 10; applyProductTransform(); }
-        if (cmd === 'plus') { pScale += 0.05; applyProductTransform(); }
-        if (cmd === 'minus') { pScale = Math.max(0.5, pScale - 0.05); applyProductTransform(); }
-      }
+    setupTransformHandle(document.getElementById('afficheProduct'), {
+      dxVar: '--product-shift-x',
+      dyVar: '--product-shift-y',
+      scaleVar: '--product-scale',
+      minScale: 0.4,
+      maxScale: 2.5,
+    });
+
+    setupTransformHandle(document.getElementById('afficheBadge'), {
+      dxVar: '--gommette-shift-x',
+      dyVar: '--gommette-shift-y',
+      scaleVar: '--gommette-scale',
+      minScale: 0.5,
+      maxScale: 1.8,
+    });
+
+    const setupTextDragHandle = (handle, xVar, yVar) => {
+      if (!handle) return;
+      let pointerId = null;
+      const pointerState = {};
+
+      const apply = (x, y) => {
+        root.style.setProperty(xVar, `${x}px`);
+        root.style.setProperty(yVar, `${y}px`);
+      };
+
+      const onPointerMove = (event) => {
+        if (event.pointerId !== pointerId || currentBgMode !== 'image') return;
+        const dx = event.clientX - pointerState.startX;
+        const dy = event.clientY - pointerState.startY;
+        const nextX = clampValue(pointerState.baseX + dx, -240, 240);
+        const nextY = clampValue(pointerState.baseY + dy, -220, 240);
+        apply(nextX, nextY);
+      };
+
+      const releasePointer = (event) => {
+        if (event.pointerId !== pointerId) return;
+        handle.releasePointerCapture(pointerId);
+        handle.removeEventListener('pointermove', onPointerMove);
+        handle.removeEventListener('pointerup', releasePointer);
+        handle.removeEventListener('pointercancel', releasePointer);
+        pointerId = null;
+      };
+
+      handle.addEventListener('pointerdown', (event) => {
+        if (currentBgMode !== 'image') return;
+        event.preventDefault();
+        pointerId = event.pointerId;
+        pointerState.startX = event.clientX;
+        pointerState.startY = event.clientY;
+        pointerState.baseX = getCssVarNumber(xVar);
+        pointerState.baseY = getCssVarNumber(yVar);
+        handle.setPointerCapture(pointerId);
+        handle.addEventListener('pointermove', onPointerMove);
+        handle.addEventListener('pointerup', releasePointer);
+        handle.addEventListener('pointercancel', releasePointer);
+      });
     };
 
-    document.addEventListener('click', (event) => {
-      const btn = event.target.closest('[data-ctrl][data-cmd]');
-      if (!btn) return;
-      handleMove(btn.dataset.ctrl, btn.dataset.cmd);
-    });
+    setupTextDragHandle(headerDragHandle, '--header-shift-x', '--header-shift-y');
+    setupTextDragHandle(footerDragHandle, '--footer-shift-x', '--footer-shift-y');
 
     // --- Contrôles bandeaux ---
     if (logoScaleRange) {
@@ -1594,24 +2307,9 @@
       logoScaleRange.addEventListener('input', (event) => applyLogoScale(event.target.value));
     }
 
-    [
-      { id: 'headerWidthRange', output: 'headerWidthValue', cssVar: '--header-width', format: (v) => `${v}%` },
-      { id: 'headerDepthRange', output: 'headerDepthValue', cssVar: '--header-depth', format: (v) => `${v}px` },
-      { id: 'headerAngleRange', output: 'headerAngleValue', cssVar: '--header-angle', format: (v) => `${v}%` },
-      { id: 'footerDepthRange', output: 'footerDepthValue', cssVar: '--footer-depth', format: (v) => `${v}px` },
-      { id: 'footerAngleRange', output: 'footerAngleValue', cssVar: '--footer-notch', format: (v) => `${v}%` },
-    ].forEach(({ id, output, cssVar, format }) => {
-      const input = document.getElementById(id);
-      if (!input) return;
-      const outputEl = document.getElementById(output);
-      const applyValue = (value) => {
-        const formatted = format ? format(value) : value;
-        root.style.setProperty(cssVar, formatted);
-        if (outputEl) outputEl.textContent = formatted;
-      };
-      applyValue(input.value);
-      input.addEventListener('input', (event) => applyValue(event.target.value));
-    });
+    const initialBgMode = Array.from(bgModeInputs).find((input) => input.checked)?.value || 'solid';
+    setBackgroundMode(initialBgMode);
+    autoAdjustBands();
   </script>
 
 </body>
