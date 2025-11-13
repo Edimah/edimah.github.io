@@ -26,6 +26,10 @@
       --logo-scale: 1;
       --footer-depth: 140px;
       --footer-notch: 8%;
+      --header-shift-x: 0px;
+      --header-shift-y: 0px;
+      --footer-shift-x: 0px;
+      --footer-shift-y: 0px;
       --product-shift-x: 0px;
       --product-shift-y: 0px;
       --product-scale: 1;
@@ -122,6 +126,177 @@
       font-weight: 600;
       cursor: pointer;
       font-size: .85rem;
+    }
+
+    .editor-hint {
+      font-size: .75rem;
+      color: #4a5b55;
+      margin: 2px 0 10px;
+      line-height: 1.3;
+    }
+
+    .editor-status {
+      padding: 8px 10px;
+      border: 1px dashed rgba(10, 127, 90, .35);
+      border-radius: 8px;
+      font-size: .78rem;
+      color: #0b4f3a;
+      background: #f4faf7;
+      margin-bottom: 12px;
+      min-height: 36px;
+      display: flex;
+      align-items: center;
+    }
+
+    .style-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .style-panel label {
+      font-size: .76rem;
+      font-weight: 600;
+      color: #34423d;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .style-panel select,
+    .style-panel input[type="range"],
+    .style-panel input[type="color"] {
+      width: 100%;
+      border: 1px solid #d7e2dc;
+      border-radius: 6px;
+      padding: 6px 8px;
+      font-size: .78rem;
+      background: #fff;
+    }
+
+    .style-panel input[type="color"] {
+      height: 40px;
+      padding: 2px;
+      cursor: pointer;
+    }
+
+    #fontSizeValue {
+      font-weight: 500;
+      color: #0a7f5a;
+      font-size: .75rem;
+    }
+
+    .bg-mode {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .bg-mode-option {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .8rem;
+      font-weight: 600;
+      color: #1d3a31;
+    }
+
+    .bg-mode input[type="color"],
+    .bg-mode input[type="file"],
+    .bg-mode select {
+      width: 100%;
+      border: 1px solid #d7e2dc;
+      border-radius: 6px;
+      padding: 6px 8px;
+      font-size: .78rem;
+      background: #fff;
+    }
+
+    .palette-choice {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-top: 8px;
+      font-size: .78rem;
+      font-weight: 600;
+      color: #2f463d;
+    }
+
+    .custom-palette-fields {
+      display: none;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .custom-palette-fields.is-visible {
+      display: flex;
+    }
+
+    .custom-palette-fields input[type="color"] {
+      flex: 1;
+      height: 42px;
+    }
+
+    [data-editable] {
+      cursor: text;
+      outline: 2px solid transparent;
+      transition: outline-color .15s ease, background .15s ease;
+    }
+
+    [data-editable].is-editing {
+      outline-color: rgba(255, 255, 255, .6);
+      background: rgba(255, 255, 255, .04);
+    }
+
+    .drag-handle-star {
+      position: absolute;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, .35);
+      border: 1px solid rgba(255, 255, 255, .35);
+      color: #fff;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      z-index: 30;
+      cursor: move;
+      pointer-events: auto;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, .25);
+    }
+
+    .drag-handle-star:focus-visible {
+      outline: 2px solid #fff;
+      outline-offset: 2px;
+    }
+
+    .drag-handle-star.header-star {
+      top: 18px;
+      right: 18px;
+    }
+
+    .drag-handle-star.footer-star {
+      bottom: calc(var(--footer-depth) + 10px);
+      right: 24px;
+    }
+
+    .affiche.has-model-bg .drag-handle-star {
+      display: flex;
+    }
+
+    .affiche.has-model-bg .header-left,
+    .affiche.has-model-bg .footer-band {
+      background: rgba(5, 12, 10, .58);
+      color: #fff;
+      backdrop-filter: blur(5px);
+    }
+
+    .affiche.has-model-bg .header-left::after,
+    .affiche.has-model-bg .footer-band::before {
+      display: none;
     }
 
     .controls select {
@@ -384,7 +559,8 @@
       /* arrondi organique */
       z-index: 12;
       box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
-      transition: width .2s ease, min-height .2s ease, padding .2s ease;
+      transition: width .2s ease, min-height .2s ease, padding .2s ease, transform .2s ease;
+      transform: translate(var(--header-shift-x, 0px), var(--header-shift-y, 0px));
     }
 
     .header-left::after {
@@ -600,6 +776,7 @@
       backdrop-filter: blur(1px);
       isolation: isolate;
       z-index: 12;
+      transform: translate(var(--footer-shift-x, 0px), var(--footer-shift-y, 0px));
     }
 
     .footer-band::before {
@@ -632,26 +809,56 @@
 
 <body>
 
-  <!-- COLONNE GAUCHE : Infos (sans flèches) -->
+  <!-- COLONNE GAUCHE -->
   <div class="controls">
-    <h2>Paramètres de l'affiche</h2>
+    <h2>Arrière-plan</h2>
+    <div class="bg-mode">
+      <label class="bg-mode-option"><input type="radio" name="bgMode" value="solid" />Couleur unie</label>
+      <input type="color" id="solidBgColor" value="#eaf7f1" />
 
-    <label>Titre de la promo</label>
-    <input id="promoTitle" type="text" placeholder="Promo d'automne - Vitamine D" />
+      <label class="bg-mode-option"><input type="radio" name="bgMode" value="image" />Image modèle</label>
+      <input type="file" id="bgImageInput" accept="image/*" />
+      <button type="button" id="bgImageClearBtn" class="secondary" disabled>Retirer l'image</button>
 
-    <label>Date / période</label>
-    <input id="promoDate" type="text" placeholder="Du 1er au 15 novembre" />
+      <label class="bg-mode-option"><input type="radio" name="bgMode" value="generated" checked />Fond généré</label>
+      <select id="bgStyleSelect">
+        <option value="bubbles">Bulles</option>
+        <option value="waves">Ondes</option>
+        <option value="dots">Pointillé</option>
+        <option value="cross">Motif croix</option>
+      </select>
 
-    <label>Texte promo (gommette)</label>
-    <input id="promoBadge" type="text" placeholder="-20% / 2=3 / Offre Fidélité" />
+      <div class="palette-choice">
+        <label><input type="radio" name="bgPaletteMode" value="logo" checked />Palette du logo</label>
+        <label><input type="radio" name="bgPaletteMode" value="custom" />Dégradé personnalisé</label>
+      </div>
+      <div class="custom-palette-fields" id="customPaletteFields">
+        <input type="color" id="customColorA" value="#0A7F5A" />
+        <input type="color" id="customColorB" value="#A4D4AE" />
+      </div>
+      <button type="button" id="bgRandomBtn" class="secondary">Aléatoire</button>
+    </div>
 
-    <label>Nom du produit</label>
-    <input id="productName" type="text" placeholder="Vitamine D3 Senior 1000 UI" />
+    <h2>Texte & Style</h2>
+    <p class="editor-hint">Cliquez directement sur les textes de l'affiche pour les modifier. Utilisez les réglages
+      ci-dessous pour ajuster la police, la taille ou la couleur du bloc actuellement sélectionné.</p>
+    <div class="editor-status" id="editorStatus">Sélectionnez un bloc de texte.</div>
+    <div class="style-panel">
+      <label for="fontFamilySelect">Police</label>
+      <select id="fontFamilySelect">
+        <option value="Poppins">Poppins</option>
+        <option value="Playfair Display">Playfair Display</option>
+        <option value="Montserrat">Montserrat</option>
+        <option value="Source Serif Pro">Source Serif Pro</option>
+        <option value="Raleway">Raleway</option>
+      </select>
 
-    <label>Texte complémentaire</label>
-    <input id="productSubtitle" type="text" placeholder="Demandez conseil à votre pharmacien" />
+      <label for="fontSizeRange">Taille <span id="fontSizeValue">24px</span></label>
+      <input type="range" id="fontSizeRange" min="14" max="64" value="24" />
 
-    <button id="updateBtn">Mettre à jour l'affiche</button>
+      <label for="fontColorInput">Couleur</label>
+      <input type="color" id="fontColorInput" value="#0a7f5a" />
+    </div>
   </div>
 
   <!-- PREVIEW CENTRE -->
@@ -659,20 +866,30 @@
     <div class="affiche" id="affiche">
       <div id="bgLayer"></div>
       <div class="header-left">
-        <p class="promo-title" id="afficheTitle">Promo d'automne - Vitamine D</p>
-        <p class="promo-date" id="afficheDate">Du 1er au 15 novembre</p>
+        <p class="promo-title" id="afficheTitle" data-editable="header-title" data-label="Titre promo"
+          contenteditable="true" spellcheck="false">Promo d'automne - Vitamine D</p>
+        <p class="promo-date" id="afficheDate" data-editable="header-date" data-label="Date/accroche"
+          contenteditable="true" spellcheck="false">Du 1er au 15 novembre</p>
       </div>
+      <button type="button" class="drag-handle-star header-star" id="headerDragHandle"
+        aria-label="Déplacer le texte du bandeau haut">✶</button>
 
       <div class="logo" id="afficheLogo"><span class="placeholder">logo</span></div>
-      <div class="gommette" id="afficheBadge">-20%</div>
+      <div class="gommette" id="afficheBadge"><span id="afficheBadgeText" data-editable="badge"
+          data-label="Texte gommette" contenteditable="true" spellcheck="false">-20%</span></div>
       <div class="product-image" id="afficheProduct">
         <div class="product-placeholder">Photo du produit<br />ici</div>
       </div>
 
       <div class="footer-band">
-        <div class="footer-title" id="afficheProductName">Vitamine D3 Senior 1000 UI</div>
-        <div class="footer-subtitle" id="afficheProductSubtitle">Demandez conseil à votre pharmacien</div>
+        <div class="footer-title" id="afficheProductName" data-editable="footer-title" data-label="Titre bas"
+          contenteditable="true" spellcheck="false">Vitamine D3 Senior 1000 UI</div>
+        <div class="footer-subtitle" id="afficheProductSubtitle" data-editable="footer-subtitle"
+          data-label="Sous-titre bas" contenteditable="true" spellcheck="false">Demandez conseil à votre pharmacien
+        </div>
       </div>
+      <button type="button" class="drag-handle-star footer-star" id="footerDragHandle"
+        aria-label="Déplacer le texte du bandeau bas">✶</button>
     </div>
   </div>
 
@@ -692,21 +909,6 @@
 
       <label>Photo produit</label>
       <input id="productInput" type="file" accept="image/*" />
-
-      <label for="bgStyleSelect">Style d'arrière-plan</label>
-      <select id="bgStyleSelect">
-        <option value="waves">Ondes</option>
-        <option value="dots">Pointillé</option>
-        <option value="bubbles">Bulles</option>
-        <option value="cross">Motif croix</option>
-      </select>
-      <div class="bg-style-controls">
-        <label class="bg-checkbox">
-          <input type="checkbox" id="bgUseLogoPalette" checked />
-          Utiliser la palette du logo
-        </label>
-        <button type="button" id="bgRandomBtn" class="bg-random-btn secondary">Regénérer</button>
-      </div>
 
       <fieldset class="detourage-panel">
         <legend>🪄 Détourage</legend>
@@ -758,11 +960,6 @@
     const getModelLabel = () => MODEL_LABELS[modelChoice] || modelChoice;
 
     // --- Références DOM ---
-    const titleInput = document.getElementById('promoTitle');
-    const dateInput = document.getElementById('promoDate');
-    const badgeInput = document.getElementById('promoBadge');
-    const productNameInput = document.getElementById('productName');
-    const productSubtitleInput = document.getElementById('productSubtitle');
     const logoInput = document.getElementById('logoInput');
     const productInput = document.getElementById('productInput');
     const logoScaleRange = document.getElementById('logoScaleRange');
@@ -775,8 +972,6 @@
     const detourageModeInputs = document.querySelectorAll('input[name="detourageMode"]');
     const modelChoiceInputs = document.querySelectorAll('input[name="u2netModel"]');
 
-    const updateBtn = document.getElementById('updateBtn');
-
     const affiche = document.getElementById('affiche');
     const afficheTitle = document.getElementById('afficheTitle');
     const afficheDate = document.getElementById('afficheDate');
@@ -786,9 +981,24 @@
     const afficheLogo = document.getElementById('afficheLogo');
     const afficheProduct = document.getElementById('afficheProduct');
     const bgStyleSelect = document.getElementById('bgStyleSelect');
-    const bgUseLogoPalette = document.getElementById('bgUseLogoPalette');
     const bgRandomBtn = document.getElementById('bgRandomBtn');
     const bgLayer = document.getElementById('bgLayer');
+    const bgModeInputs = document.querySelectorAll('input[name="bgMode"]');
+    const solidBgColorInput = document.getElementById('solidBgColor');
+    const bgImageInput = document.getElementById('bgImageInput');
+    const bgImageClearBtn = document.getElementById('bgImageClearBtn');
+    const paletteModeInputs = document.querySelectorAll('input[name="bgPaletteMode"]');
+    const customPaletteFields = document.getElementById('customPaletteFields');
+    const customColorAInput = document.getElementById('customColorA');
+    const customColorBInput = document.getElementById('customColorB');
+    const fontFamilySelect = document.getElementById('fontFamilySelect');
+    const fontSizeRange = document.getElementById('fontSizeRange');
+    const fontSizeValue = document.getElementById('fontSizeValue');
+    const fontColorInput = document.getElementById('fontColorInput');
+    const editorStatus = document.getElementById('editorStatus');
+    const editableElements = document.querySelectorAll('[data-editable]');
+    const headerDragHandle = document.getElementById('headerDragHandle');
+    const footerDragHandle = document.getElementById('footerDragHandle');
 
     const root = document.documentElement;
 
@@ -809,6 +1019,15 @@
       logoManualColor: null,
     };
 
+    let currentBgMode = 'solid';
+    let currentPaletteMode = 'logo';
+    let customPalette = [
+      customColorAInput?.value || '#0A7F5A',
+      customColorBInput?.value || '#A4D4AE',
+    ];
+    let bgImageDataURL = null;
+    const baseBackground = getComputedStyle(affiche).background;
+
     const selectedModelInput = document.querySelector('input[name="u2netModel"]:checked');
     if (selectedModelInput?.value) {
       modelChoice = selectedModelInput.value;
@@ -817,6 +1036,7 @@
     // --- UI helpers ---
     const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
     const clamp255 = (value) => clamp(value, 0, 255);
+    const clampValue = (value, min, max) => clamp(value, min, max);
 
     const hexToRgb = (hex) => {
       if (!hex) return { r: 0, g: 0, b: 0 };
@@ -856,6 +1076,28 @@
       root.style.setProperty(cssVar, `${value}${unit}`);
     };
 
+    const clearBackgroundLayer = () => {
+      if (!bgLayer) return;
+      bgLayer.innerHTML = '';
+      bgLayer.style.background = 'none';
+      bgLayer.style.backgroundImage = 'none';
+      bgLayer.style.backgroundColor = 'transparent';
+    };
+
+    const resetTextPositions = () => {
+      ['--header-shift-x', '--header-shift-y', '--footer-shift-x', '--footer-shift-y'].forEach((varName) => {
+        root.style.setProperty(varName, '0px');
+      });
+    };
+
+    const enableTextDragMode = (enabled) => {
+      if (!affiche) return;
+      affiche.classList.toggle('has-model-bg', enabled);
+      if (!enabled) {
+        resetTextPositions();
+      }
+    };
+
     const autoAdjustBands = () => {
       const headerText = `${afficheTitle?.textContent || ''} ${afficheDate?.textContent || ''}`.trim();
       const headerChars = Math.max(headerText.length, 12);
@@ -871,6 +1113,217 @@
       setCssVarNumber('--footer-depth', footerDepth, 'px');
       setCssVarNumber('--footer-notch', footerNotch, '%');
     };
+
+    const applySolidBackground = () => {
+      enableTextDragMode(false);
+      if (!affiche) return;
+      const color = solidBgColorInput?.value || '#eaf7f1';
+      affiche.style.background = color;
+      clearBackgroundLayer();
+    };
+
+    const applyGeneratedBackground = ({ forceRandom = false } = {}) => {
+      enableTextDragMode(false);
+      if (!affiche) return;
+      affiche.style.background = baseBackground;
+      regenerateBackground({ forceRandom });
+    };
+
+    const applyImageBackground = (dataURL) => {
+      if (!affiche || !dataURL) return;
+      affiche.style.background = `url(${dataURL}) center/cover no-repeat`;
+      clearBackgroundLayer();
+      enableTextDragMode(true);
+      bgImageClearBtn?.removeAttribute('disabled');
+    };
+
+    const syncBackgroundControls = () => {
+      const isGenerated = currentBgMode === 'generated';
+      if (bgStyleSelect) bgStyleSelect.disabled = !isGenerated;
+      if (solidBgColorInput) solidBgColorInput.disabled = currentBgMode !== 'solid';
+      if (bgImageInput) bgImageInput.disabled = currentBgMode !== 'image';
+      paletteModeInputs.forEach((radio) => {
+        radio.disabled = !isGenerated;
+      });
+      const showCustom = isGenerated && currentPaletteMode === 'custom';
+      if (customPaletteFields) {
+        customPaletteFields.classList.toggle('is-visible', showCustom);
+      }
+      if (customColorAInput) customColorAInput.disabled = !showCustom;
+      if (customColorBInput) customColorBInput.disabled = !showCustom;
+      if (bgRandomBtn) bgRandomBtn.disabled = !isGenerated;
+      if (bgImageClearBtn) {
+        if (bgImageDataURL) {
+          bgImageClearBtn.removeAttribute('disabled');
+        } else {
+          bgImageClearBtn.setAttribute('disabled', 'disabled');
+        }
+      }
+    };
+
+    const setBackgroundMode = (mode, options = {}) => {
+      currentBgMode = mode;
+      if (mode === 'solid') {
+        applySolidBackground();
+      } else if (mode === 'image') {
+        if (bgImageDataURL) {
+          applyImageBackground(bgImageDataURL);
+        } else {
+          enableTextDragMode(false);
+          affiche.style.background = baseBackground;
+          clearBackgroundLayer();
+        }
+      } else {
+        applyGeneratedBackground(options);
+      }
+      syncBackgroundControls();
+    };
+
+    bgModeInputs.forEach((input) => {
+      input.addEventListener('change', () => {
+        if (input.checked) {
+          setBackgroundMode(input.value);
+        }
+      });
+    });
+
+    solidBgColorInput?.addEventListener('input', () => {
+      if (currentBgMode === 'solid') applySolidBackground();
+    });
+
+    const updateCustomPalette = () => {
+      customPalette = [
+        customColorAInput?.value || '#0A7F5A',
+        customColorBInput?.value || '#A4D4AE',
+      ];
+      if (currentBgMode === 'generated' && currentPaletteMode === 'custom') {
+        regenerateBackground();
+      }
+    };
+
+    customColorAInput?.addEventListener('input', updateCustomPalette);
+    customColorBInput?.addEventListener('input', updateCustomPalette);
+
+    paletteModeInputs.forEach((input) => {
+      input.addEventListener('change', () => {
+        if (!input.checked) return;
+        currentPaletteMode = input.value;
+        syncBackgroundControls();
+        if (currentBgMode === 'generated') regenerateBackground();
+      });
+    });
+
+    bgImageInput?.addEventListener('change', async () => {
+      const file = bgImageInput.files?.[0];
+      if (!file) return;
+      const dataURL = await readFileAsDataURL(file);
+      bgImageDataURL = dataURL;
+      const imageRadio = Array.from(bgModeInputs).find((input) => input.value === 'image');
+      if (imageRadio) imageRadio.checked = true;
+      setBackgroundMode('image');
+    });
+
+    bgImageClearBtn?.addEventListener('click', () => {
+      bgImageDataURL = null;
+      if (bgImageInput) bgImageInput.value = '';
+      bgImageClearBtn.setAttribute('disabled', 'disabled');
+      if (currentBgMode === 'image') {
+        const solidRadio = Array.from(bgModeInputs).find((input) => input.value === 'solid');
+        if (solidRadio) solidRadio.checked = true;
+        setBackgroundMode('solid');
+      }
+    });
+
+
+    const FONT_OPTIONS = ['Poppins', 'Playfair Display', 'Montserrat', 'Source Serif Pro', 'Raleway'];
+
+    const rgbStringToHex = (color) => {
+      const match = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
+      if (!match) return '#000000';
+      return `#${match.slice(1, 4).map((val) => {
+        const hex = parseInt(val, 10).toString(16);
+        return hex.length === 1 ? `0${hex}` : hex;
+      }).join('')}`;
+    };
+
+    let activeEditable = null;
+
+    const syncToolbarWithElement = (element) => {
+      if (!element) return;
+      const styles = window.getComputedStyle(element);
+      const family = FONT_OPTIONS.find((font) => styles.fontFamily.toLowerCase().includes(font.toLowerCase())) || FONT_OPTIONS[0];
+      if (fontFamilySelect) fontFamilySelect.value = family;
+      const size = clampValue(parseInt(styles.fontSize, 10) || 24, 14, 64);
+      if (fontSizeRange) {
+        fontSizeRange.value = size;
+        if (fontSizeValue) fontSizeValue.textContent = `${size}px`;
+      }
+      if (fontColorInput) fontColorInput.value = rgbStringToHex(styles.color);
+    };
+
+    const setActiveEditable = (element) => {
+      if (activeEditable === element) return;
+      if (activeEditable) activeEditable.classList.remove('is-editing');
+      activeEditable = element;
+      if (activeEditable) {
+        activeEditable.classList.add('is-editing');
+        if (editorStatus) editorStatus.textContent = activeEditable.dataset.label || 'Bloc sélectionné';
+        syncToolbarWithElement(activeEditable);
+      } else if (editorStatus) {
+        editorStatus.textContent = 'Sélectionnez un bloc de texte.';
+      }
+    };
+
+    const clearActiveEditable = () => {
+      if (activeEditable) {
+        activeEditable.classList.remove('is-editing');
+      }
+      activeEditable = null;
+      if (editorStatus) editorStatus.textContent = 'Sélectionnez un bloc de texte.';
+    };
+
+    editableElements.forEach((el) => {
+      el.setAttribute('contenteditable', 'true');
+      el.setAttribute('spellcheck', 'false');
+      el.addEventListener('focus', () => setActiveEditable(el));
+      el.addEventListener('click', (event) => {
+        setActiveEditable(el);
+        event.stopPropagation();
+      });
+      el.addEventListener('input', () => {
+        autoAdjustBands();
+      });
+    });
+
+    document.addEventListener('click', (event) => {
+      if (!event.target.closest('[data-editable]') && !event.target.closest('.style-panel')) {
+        clearActiveEditable();
+      }
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        clearActiveEditable();
+      }
+    });
+
+    fontFamilySelect?.addEventListener('change', () => {
+      if (!activeEditable) return;
+      activeEditable.style.fontFamily = fontFamilySelect.value;
+    });
+
+    fontSizeRange?.addEventListener('input', () => {
+      if (!fontSizeValue) return;
+      fontSizeValue.textContent = `${fontSizeRange.value}px`;
+      if (!activeEditable) return;
+      activeEditable.style.fontSize = `${fontSizeRange.value}px`;
+      autoAdjustBands();
+    });
+
+    fontColorInput?.addEventListener('input', () => {
+      if (!activeEditable) return;
+      activeEditable.style.color = fontColorInput.value;
+    });
 
     const getToleranceValue = () => Number(toleranceRange?.value || 40);
 
@@ -975,6 +1428,9 @@
       try {
         const palette = thief.getPalette(image, 3) || [];
         brandColors = palette.map((rgb) => rgbArrayToHex(rgb));
+        if (currentBgMode === 'generated' && currentPaletteMode === 'logo') {
+          regenerateBackground();
+        }
       } catch (err) {
         console.warn('Impossible de récupérer la palette du logo', err);
         brandColors = [];
@@ -982,8 +1438,13 @@
     };
 
     const getPaletteSource = () => {
-      const useBrand = bgUseLogoPalette?.checked && brandColors.length;
-      return useBrand ? brandColors : DEFAULT_COLORS;
+      if (currentPaletteMode === 'custom') {
+        return customPalette.length ? customPalette : DEFAULT_COLORS;
+      }
+      if (currentPaletteMode === 'logo' && brandColors.length) {
+        return brandColors;
+      }
+      return DEFAULT_COLORS;
     };
 
     const shuffleArray = (arr = []) => {
@@ -1175,16 +1636,20 @@
     };
 
     const regenerateBackground = ({ forceRandom = false } = {}) => {
-      if (!bgLayer) return;
+      if (!bgLayer || currentBgMode !== 'generated') return;
       const style = bgStyleSelect?.value || 'bubbles';
       const palette = buildPalette(forceRandom);
       const render = rendererMap[style] || bgBubbles;
       render(palette);
     };
 
-    bgStyleSelect?.addEventListener('change', () => regenerateBackground());
-    bgUseLogoPalette?.addEventListener('change', () => regenerateBackground());
-    bgRandomBtn?.addEventListener('click', () => regenerateBackground({ forceRandom: true }));
+    bgStyleSelect?.addEventListener('change', () => {
+      if (currentBgMode === 'generated') regenerateBackground();
+    });
+    bgRandomBtn?.addEventListener('click', () => {
+      if (currentBgMode !== 'generated') return;
+      regenerateBackground({ forceRandom: true });
+    });
 
     modelChoiceInputs.forEach((input) => {
       input.addEventListener('change', () => {
@@ -1642,49 +2107,7 @@
       await rerunLogoColor();
     });
 
-    // --- Synchronisation contenu affiche ---
-    const syncText = (input, target, fallback = "") => {
-      if (!target) return;
-      target.textContent = input.value || fallback;
-    };
-
-    updateBtn?.addEventListener('click', () => {
-      afficheTitle.textContent = titleInput.value || "Promotion en pharmacie";
-      afficheDate.textContent = dateInput.value || "Période de l'offre";
-      afficheBadge.textContent = badgeInput.value || "-20%";
-      afficheProductName.textContent = productNameInput.value || "Nom du produit";
-      afficheProductSubtitle.textContent = productSubtitleInput.value || "Texte complémentaire";
-      afficheLogo.classList.add('has-image');
-      afficheProduct.classList.add('has-image');
-      autoAdjustBands();
-    });
-
-    titleInput?.addEventListener('input', () => {
-      syncText(titleInput, afficheTitle, "Promo spéciale en pharmacie");
-      autoAdjustBands();
-    });
-    dateInput?.addEventListener('input', () => {
-      syncText(dateInput, afficheDate, "Période de l'offre");
-      autoAdjustBands();
-    });
-    badgeInput?.addEventListener('input', () => {
-      syncText(badgeInput, afficheBadge, "-20%");
-      autoAdjustBands();
-    });
-    productNameInput?.addEventListener('input', () => {
-      syncText(productNameInput, afficheProductName, "Nom du produit");
-      autoAdjustBands();
-    });
-    productSubtitleInput?.addEventListener('input', () => {
-      syncText(productSubtitleInput, afficheProductSubtitle, "Un sous-titre percutant ici");
-      autoAdjustBands();
-    });
-
-    // Le bouton "Améliorer le visuel" a été retiré (filtre conservé pour compatibilité éventuelle)
-
     // --- Interactions directes (drag + zoom) ---
-    const clampValue = (value, min, max) => Math.min(max, Math.max(min, value));
-
     const setupTransformHandle = (element, {
       dxVar,
       dyVar,
@@ -1739,6 +2162,9 @@
       };
 
       const handlePointerDown = (event) => {
+        if (event.target && event.target.closest('[data-editable]')) {
+          return;
+        }
         event.preventDefault();
         element.setPointerCapture(event.pointerId);
         activePointers.set(event.pointerId, {
@@ -1823,6 +2249,52 @@
       maxScale: 1.8,
     });
 
+    const setupTextDragHandle = (handle, xVar, yVar) => {
+      if (!handle) return;
+      let pointerId = null;
+      const pointerState = {};
+
+      const apply = (x, y) => {
+        root.style.setProperty(xVar, `${x}px`);
+        root.style.setProperty(yVar, `${y}px`);
+      };
+
+      const onPointerMove = (event) => {
+        if (event.pointerId !== pointerId || currentBgMode !== 'image') return;
+        const dx = event.clientX - pointerState.startX;
+        const dy = event.clientY - pointerState.startY;
+        const nextX = clampValue(pointerState.baseX + dx, -240, 240);
+        const nextY = clampValue(pointerState.baseY + dy, -220, 240);
+        apply(nextX, nextY);
+      };
+
+      const releasePointer = (event) => {
+        if (event.pointerId !== pointerId) return;
+        handle.releasePointerCapture(pointerId);
+        handle.removeEventListener('pointermove', onPointerMove);
+        handle.removeEventListener('pointerup', releasePointer);
+        handle.removeEventListener('pointercancel', releasePointer);
+        pointerId = null;
+      };
+
+      handle.addEventListener('pointerdown', (event) => {
+        if (currentBgMode !== 'image') return;
+        event.preventDefault();
+        pointerId = event.pointerId;
+        pointerState.startX = event.clientX;
+        pointerState.startY = event.clientY;
+        pointerState.baseX = getCssVarNumber(xVar);
+        pointerState.baseY = getCssVarNumber(yVar);
+        handle.setPointerCapture(pointerId);
+        handle.addEventListener('pointermove', onPointerMove);
+        handle.addEventListener('pointerup', releasePointer);
+        handle.addEventListener('pointercancel', releasePointer);
+      });
+    };
+
+    setupTextDragHandle(headerDragHandle, '--header-shift-x', '--header-shift-y');
+    setupTextDragHandle(footerDragHandle, '--footer-shift-x', '--footer-shift-y');
+
     // --- Contrôles bandeaux ---
     if (logoScaleRange) {
       const applyLogoScale = (val) => {
@@ -1835,8 +2307,9 @@
       logoScaleRange.addEventListener('input', (event) => applyLogoScale(event.target.value));
     }
 
+    const initialBgMode = Array.from(bgModeInputs).find((input) => input.checked)?.value || 'solid';
+    setBackgroundMode(initialBgMode);
     autoAdjustBands();
-    regenerateBackground();
   </script>
 
 </body>
