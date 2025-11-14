@@ -1117,6 +1117,8 @@
     const editableElements = document.querySelectorAll('[data-editable]');
     const headerDragHandle = document.getElementById('headerDragHandle');
     const footerDragHandle = document.getElementById('footerDragHandle');
+    const headerBlock = document.querySelector('.header-left');
+    const footerBlock = document.querySelector('.footer-band');
 
     const root = document.documentElement;
 
@@ -1371,14 +1373,74 @@
       autoAdjustBands();
     });
 
+    const suspendTransformsForCapture = () => {
+      if (!affiche) return () => { };
+      const posterRect = affiche.getBoundingClientRect();
+      const adjustments = [];
+
+      const recordStyle = (el, prop) => {
+        let entry = adjustments.find((item) => item.el === el);
+        if (!entry) {
+          entry = { el, props: {} };
+          adjustments.push(entry);
+        }
+        if (!(prop in entry.props)) {
+          entry.props[prop] = el.style[prop] || '';
+        }
+      };
+
+      const transformTargets = [
+        headerBlock,
+        footerBlock,
+        afficheProduct,
+        afficheBadge,
+        afficheLogo,
+      ];
+
+      transformTargets.forEach((el) => {
+        if (!el) return;
+        const rect = el.getBoundingClientRect();
+        ['transform', 'width', 'height', 'left', 'top', 'right', 'bottom'].forEach((prop) => recordStyle(el, prop));
+        el.style.transform = 'none';
+        el.style.width = `${rect.width}px`;
+        el.style.height = `${rect.height}px`;
+        el.style.left = `${rect.left - posterRect.left}px`;
+        el.style.top = `${rect.top - posterRect.top}px`;
+        el.style.right = 'auto';
+        el.style.bottom = 'auto';
+      });
+
+      [afficheProduct, afficheLogo].forEach((el) => {
+        if (!el) return;
+        recordStyle(el, 'overflow');
+        el.style.overflow = 'visible';
+      });
+
+      return () => {
+        adjustments.forEach(({ el, props }) => {
+          if (!el) return;
+          Object.entries(props).forEach(([prop, value]) => {
+            if (value === '') {
+              el.style.removeProperty(prop);
+            } else {
+              el.style[prop] = value;
+            }
+          });
+        });
+      };
+    };
+
     downloadPosterBtn?.addEventListener('click', async () => {
       if (!affiche) return;
+      let restore = () => { };
       try {
         const html2canvas = await ensureHtml2Canvas();
+        restore = suspendTransformsForCapture();
         const canvas = await html2canvas(affiche, {
           backgroundColor: null,
           scale: Math.min(2, window.devicePixelRatio || 1.5),
         });
+        restore();
         const dataURL = canvas.toDataURL('image/png');
         const link = document.createElement('a');
         link.href = dataURL;
@@ -1389,6 +1451,8 @@
       } catch (error) {
         console.error('Téléchargement impossible', error);
         alert("Impossible de générer l'image. Réessayez ou utilisez le mode plein écran.");
+      } finally {
+        restore();
       }
     });
 
