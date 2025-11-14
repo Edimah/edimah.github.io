@@ -400,6 +400,12 @@
       padding: 14px;
     }
 
+    .global-actions button.secondary {
+      background: #fff;
+      color: var(--green);
+      border: 1px solid rgba(10, 127, 90, .2);
+    }
+
     .context-toolbar {
       position: absolute;
       background: rgba(18, 41, 34, 0.94);
@@ -757,9 +763,14 @@
       align-items: center;
       overflow: hidden;
       border: none;
-      z-index: 4;
+      z-index: 40;
       transform: translate(var(--logo-shift-x, 0px), var(--logo-shift-y, 0px));
       transition: transform .25s ease;
+      touch-action: none;
+      cursor: grab;
+      user-select: none;
+      isolation: isolate;
+      transform-origin: center center;
     }
 
     .logo img {
@@ -874,7 +885,8 @@
     }
 
     .product-image.dragging,
-    .gommette.dragging {
+    .gommette.dragging,
+    .logo.dragging {
       cursor: grabbing;
     }
 
@@ -973,12 +985,9 @@
     <div class="controls">
       <div class="action-card">
         <h2 class="action-title"><span class="action-number">1.</span>Importer un logo</h2>
-        <p class="action-instructions">Chargez le logo (PNG/JPG) puis ajustez sa taille.</p>
+        <p class="action-instructions">Chargez le logo (PNG/JPG) puis ajustez-le directement sur l’aperçu (drag + zoom).
+        </p>
         <input id="logoInput" type="file" accept="image/*" />
-        <div class="range-control">
-          <label for="logoScaleRange">Taille logo <span id="logoScaleValue">100%</span></label>
-          <input id="logoScaleRange" type="range" min="50" max="150" value="100" />
-        </div>
       </div>
 
       <div class="action-card">
@@ -1122,6 +1131,7 @@
 
   <div class="global-actions">
     <button type="button" id="updatePosterBtn">Mettre à jour l'affiche</button>
+    <button type="button" id="resetPosterBtn" class="secondary">Réinitialiser l'affiche</button>
     <button type="button" id="downloadPosterBtn" class="download-btn">Télécharger l'affiche</button>
   </div>
 
@@ -1149,8 +1159,6 @@
     // --- Références DOM ---
     const logoInput = document.getElementById('logoInput');
     const productInput = document.getElementById('productInput');
-    const logoScaleRange = document.getElementById('logoScaleRange');
-    const logoScaleValue = document.getElementById('logoScaleValue');
     const detourageStatusEl = document.getElementById('detourageStatus');
     const detourProgress = document.getElementById('detourageProgress');
     const toleranceRange = document.getElementById('toleranceRange');
@@ -1171,6 +1179,7 @@
     const bgRandomBtn = document.getElementById('bgRandomBtn');
     const bgLayer = document.getElementById('bgLayer');
     const updatePosterBtn = document.getElementById('updatePosterBtn');
+    const resetPosterBtn = document.getElementById('resetPosterBtn');
     const downloadPosterBtn = document.getElementById('downloadPosterBtn');
     const bgModeInputs = document.querySelectorAll('input[name="bgMode"]');
     const solidBgColorInput = document.getElementById('solidBgColor');
@@ -1199,10 +1208,26 @@
     const root = document.documentElement;
 
     const DEFAULT_COLORS = ['#0A7F5A', '#4EB190', '#9FD7B8'];
+    const DEFAULT_CUSTOM_A = '#0A7F5A';
+    const DEFAULT_CUSTOM_B = '#A4D4AE';
+    const DEFAULT_BAND_COLOR = '#0a7f5a';
+    const DEFAULT_TOLERANCE = 40;
+    const DEFAULT_SOLID_BG = '#eaf7f1';
     const sampleCanvas = document.createElement('canvas');
     const sampleCtx = sampleCanvas.getContext('2d');
     let brandColors = [];
     let colorThiefInstance = null;
+    const DEFAULT_TEXTS = Object.freeze({
+      title: "Promo d'automne - Vitamine D",
+      date: 'Du 1er au 15 novembre',
+      badge: '-20%',
+      productName: 'Vitamine D3 Senior 1000 UI',
+      productSubtitle: 'Demandez conseil à votre pharmacien',
+    });
+    const DEFAULT_PLACEHOLDERS = Object.freeze({
+      logo: '<span class="placeholder">logo</span>',
+      product: '<div class="product-placeholder">Photo du produit<br />ici</div>',
+    });
 
     const state = {
       lastLogoImage: null,
@@ -1350,6 +1375,126 @@
       root.style.setProperty('--band-color', rgbaColor);
     };
 
+    const resetDraggableTransforms = () => {
+      const defaults = {
+        '--header-shift-x': '0px',
+        '--header-shift-y': '0px',
+        '--footer-shift-x': '0px',
+        '--footer-shift-y': '0px',
+        '--product-shift-x': '0px',
+        '--product-shift-y': '0px',
+        '--product-scale': '1',
+        '--gommette-shift-x': '0px',
+        '--gommette-shift-y': '0px',
+        '--gommette-scale': '1',
+        '--logo-shift-x': '0px',
+        '--logo-shift-y': '0px',
+        '--logo-scale': '1',
+      };
+      Object.entries(defaults).forEach(([varName, value]) => root.style.setProperty(varName, value));
+    };
+
+    const restorePlaceholder = (container, html) => {
+      if (!container) return;
+      container.innerHTML = html;
+      container.classList.remove('has-image');
+    };
+
+    const resetEditableBlocks = () => {
+      const pairs = [
+        [afficheTitle, DEFAULT_TEXTS.title],
+        [afficheDate, DEFAULT_TEXTS.date],
+        [afficheBadgeText, DEFAULT_TEXTS.badge],
+        [afficheProductName, DEFAULT_TEXTS.productName],
+        [afficheProductSubtitle, DEFAULT_TEXTS.productSubtitle],
+      ];
+      pairs.forEach(([el, text]) => {
+        if (!el) return;
+        el.textContent = text;
+        el.style.fontFamily = '';
+        el.style.fontSize = '';
+        el.style.color = '';
+        el.style.transform = '';
+        textOffsets.delete(el);
+      });
+      autoAdjustBands();
+    };
+
+    const resetBandControlsToDefault = () => {
+      if (toolbarBandColor) toolbarBandColor.value = DEFAULT_BAND_COLOR;
+      if (toolbarBandOpacity) toolbarBandOpacity.value = 95;
+      if (toolbarBandOpacityValue) toolbarBandOpacityValue.textContent = '95%';
+      updateBandColor();
+    };
+
+    const resetDetourageControls = () => {
+      detourageModeInputs.forEach((input) => {
+        input.checked = input.value === DETOUR_MODE.AUTO;
+      });
+      modelChoiceInputs.forEach((input) => {
+        const isDefault = input.value === DEFAULT_MODEL_CHOICE;
+        input.checked = isDefault;
+        if (isDefault) modelChoice = input.value;
+      });
+      if (toleranceRange) {
+        toleranceRange.value = DEFAULT_TOLERANCE;
+        updateToleranceLabel();
+      }
+      setToleranceVisibility(false);
+      setDetourageStatus(`Réinitialisé. Modèle ${getModelLabel()} prêt.`, 'idle');
+    };
+
+    const resetBackgroundSettings = () => {
+      brandColors = [];
+      bgImageDataURL = null;
+      if (bgImageInput) bgImageInput.value = '';
+      bgModeInputs.forEach((input) => {
+        input.checked = input.value === 'generated';
+      });
+      paletteModeInputs.forEach((input) => {
+        input.checked = input.value === 'logo';
+      });
+      if (solidBgColorInput) solidBgColorInput.value = DEFAULT_SOLID_BG;
+      if (customColorAInput) customColorAInput.value = DEFAULT_CUSTOM_A;
+      if (customColorBInput) customColorBInput.value = DEFAULT_CUSTOM_B;
+      currentPaletteMode = 'logo';
+      setBackgroundMode('generated', { forceRandom: true });
+    };
+
+    const clearMediaState = () => {
+      state.lastLogoImage = null;
+      state.lastProductImage = null;
+      state.lastLogoFile = null;
+      state.lastProductFile = null;
+      state.lastLogoDataURL = null;
+      state.lastProductMode = null;
+      state.lastLogoMode = null;
+      state.logoManualColor = null;
+      logoInput && (logoInput.value = '');
+      productInput && (productInput.value = '');
+      restorePlaceholder(afficheLogo, DEFAULT_PLACEHOLDERS.logo);
+      restorePlaceholder(afficheProduct, DEFAULT_PLACEHOLDERS.product);
+      afficheLogo?.classList.remove('dragging');
+      afficheProduct?.classList.remove('dragging');
+    };
+
+    const resetPoster = () => {
+      clearActiveEditable();
+      hideContextToolbar();
+      resetEditableBlocks();
+      resetDraggableTransforms();
+      clearMediaState();
+      resetBandControlsToDefault();
+      resetBackgroundSettings();
+      customPalette = [
+        customColorAInput?.value || DEFAULT_CUSTOM_A,
+        customColorBInput?.value || DEFAULT_CUSTOM_B,
+      ];
+      resetDetourageControls();
+      if (bgImageClearBtn) bgImageClearBtn.setAttribute('disabled', 'disabled');
+      syncBackgroundControls();
+    };
+
     const applySolidBackground = () => {
       enableTextDragMode(false);
       if (!affiche) return;
@@ -1473,6 +1618,10 @@
     updatePosterBtn?.addEventListener('click', () => {
       setBackgroundMode(currentBgMode);
       autoAdjustBands();
+    });
+
+    resetPosterBtn?.addEventListener('click', () => {
+      resetPoster();
     });
 
     const suspendTransformsForCapture = () => {
@@ -1873,9 +2022,9 @@
     };
     setToleranceVisibility(false);
 
-    const updateToleranceLabel = () => {
+    function updateToleranceLabel() {
       if (toleranceValue) toleranceValue.textContent = getToleranceValue();
-    };
+    }
     updateToleranceLabel();
     if (toleranceRange) {
       toleranceRange.addEventListener('input', async () => {
@@ -2853,17 +3002,6 @@
     setupTextDragHandle(footerDragHandle, '--footer-shift-x', '--footer-shift-y');
 
     // --- Contrôles bandeaux ---
-    if (logoScaleRange) {
-      const applyLogoScale = (val) => {
-        const pct = `${val}%`;
-        const scale = (val / 100).toFixed(2);
-        root.style.setProperty('--logo-scale', scale);
-        if (logoScaleValue) logoScaleValue.textContent = pct;
-      };
-      applyLogoScale(logoScaleRange.value);
-      logoScaleRange.addEventListener('input', (event) => applyLogoScale(event.target.value));
-    }
-
     const initialBgMode = Array.from(bgModeInputs).find((input) => input.checked)?.value || 'solid';
     setBackgroundMode(initialBgMode);
     syncBandInputsFromCss();
