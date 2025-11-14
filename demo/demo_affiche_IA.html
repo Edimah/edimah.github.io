@@ -23,10 +23,11 @@
       --radius: 18px;
       --header-width: 70%;
       --header-depth: 120px;
-      --header-angle: 88%;
+      --header-chamfer: 85%;
       --logo-scale: 1;
       --footer-depth: 140px;
       --footer-notch: 8%;
+      --footer-notch-right: 0%;
       --band-color: #0c8b64;
       --header-shift-x: 0px;
       --header-shift-y: 0px;
@@ -38,6 +39,8 @@
       --gommette-shift-x: 0px;
       --gommette-shift-y: 0px;
       --gommette-scale: 1;
+      --gommette-width: 150px;
+      --gommette-height: 150px;
     }
 
     * {
@@ -712,9 +715,7 @@
       min-height: clamp(90px, var(--header-depth), 280px);
       padding: clamp(12px, calc(var(--header-depth) * 0.15), 32px) 18px clamp(18px, calc(var(--header-depth) * 0.35), 48px) 22px;
       border-bottom-right-radius: 38px 42px;
-      /* courbure douce */
-      clip-path: path("M0,0 H100% L85%,100 Q75%,110 0,100 Z");
-      /* arrondi organique */
+      clip-path: polygon(0 0, 100% 0, var(--header-chamfer, 85%) 100%, 0 100%);
       z-index: 12;
       box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
       transition: width .2s ease, min-height .2s ease, padding .2s ease, transform .2s ease;
@@ -730,7 +731,7 @@
           rgba(255, 255, 255, .35) 6%,
           rgba(255, 255, 255, .15) 20%,
           rgba(255, 255, 255, 0) 40%);
-      clip-path: polygon(0 0, 100% 0, var(--header-angle) 100%, 0 100%);
+      clip-path: polygon(0 0, 100% 0, var(--header-chamfer, 85%) 100%, 0 100%);
       filter: blur(18px);
       opacity: .75;
       z-index: -1;
@@ -764,7 +765,7 @@
       overflow: hidden;
       border: none;
       z-index: 40;
-      transform: translate(var(--logo-shift-x, 0px), var(--logo-shift-y, 0px));
+      transform: translate(var(--logo-shift-x, 0px), var(--logo-shift-y, 0px)) scale(var(--logo-scale, 1));
       transition: transform .25s ease;
       touch-action: none;
       cursor: grab;
@@ -793,8 +794,8 @@
       position: absolute;
       top: 120px;
       right: 35px;
-      width: 150px;
-      height: 150px;
+      width: var(--gommette-width, 150px);
+      height: var(--gommette-height, 150px);
       background: radial-gradient(circle, #ff9a7a 0%, #ff7b5a 45%, #ff5c32 100%);
       border-radius: 50%;
       color: #fff;
@@ -937,7 +938,7 @@
       display: flex;
       flex-direction: column;
       gap: 6px;
-      clip-path: polygon(0 var(--footer-notch), 100% 0, 100% 100%, 0 100%);
+      clip-path: polygon(0 var(--footer-notch), 100% var(--footer-notch-right, 0%), 100% 100%, 0 100%);
       transition: .2s ease;
       backdrop-filter: blur(1px);
       isolation: isolate;
@@ -954,7 +955,7 @@
           rgba(255, 255, 255, .25) 0%,
           rgba(255, 255, 255, .05) 55%,
           rgba(255, 255, 255, 0) 100%);
-      clip-path: polygon(0 var(--footer-notch), 100% 0, 100% 100%, 0 100%);
+      clip-path: polygon(0 var(--footer-notch), 100% var(--footer-notch-right, 0%), 100% 100%, 0 100%);
       filter: blur(26px);
       opacity: .8;
       pointer-events: none;
@@ -1228,6 +1229,15 @@
       logo: '<span class="placeholder">logo</span>',
       product: '<div class="product-placeholder">Photo du produit<br />ici</div>',
     });
+    const EDGE_TOLERANCE = 26;
+    const POSTER_BASE_WIDTH = 600;
+    const HEADER_WIDTH_LIMITS = [45, 95];
+    const HEADER_DEPTH_LIMITS = [90, 280];
+    const HEADER_CHAMFER_LIMITS = [55, 100];
+    const FOOTER_DEPTH_LIMITS = [120, 360];
+    const FOOTER_NOTCH_LIMITS = [0, 40];
+    const GOMMETTE_WIDTH_LIMITS = [90, 280];
+    const GOMMETTE_HEIGHT_LIMITS = [90, 280];
 
     const state = {
       lastLogoImage: null,
@@ -1351,20 +1361,37 @@
       }
     };
 
+    const manualBandOverrides = new Set();
+
+    const parseCssNumber = (cssVar, fallback = 0) => {
+      const value = parseFloat(getComputedStyle(root).getPropertyValue(cssVar));
+      return Number.isFinite(value) ? value : fallback;
+    };
+
+    const setBandVarManual = (cssVar, value, unit = 'px') => {
+      manualBandOverrides.add(cssVar);
+      setCssVarNumber(cssVar, value, unit);
+    };
+
+    const setBandVarIfUnlocked = (cssVar, value, unit = 'px') => {
+      if (manualBandOverrides.has(cssVar)) return;
+      setCssVarNumber(cssVar, value, unit);
+    };
+
     const autoAdjustBands = () => {
       const headerText = `${afficheTitle?.textContent || ''} ${afficheDate?.textContent || ''}`.trim();
       const headerChars = Math.max(headerText.length, 12);
       const headerWidth = clampValue(50 + headerChars * 0.4, 50, 95);
       const headerDepth = clampValue(110 + headerChars * 0.45, 90, 240);
-      setCssVarNumber('--header-width', headerWidth, '%');
-      setCssVarNumber('--header-depth', headerDepth, 'px');
+      setBandVarIfUnlocked('--header-width', headerWidth, '%');
+      setBandVarIfUnlocked('--header-depth', headerDepth, 'px');
 
       const footerText = `${afficheProductName?.textContent || ''} ${afficheProductSubtitle?.textContent || ''}`.trim();
       const footerChars = Math.max(footerText.length, 18);
       const footerDepth = clampValue(150 + footerChars * 0.3, 120, 300);
       const footerNotch = clampValue(8 + footerChars * 0.04, 4, 18);
-      setCssVarNumber('--footer-depth', footerDepth, 'px');
-      setCssVarNumber('--footer-notch', footerNotch, '%');
+      setBandVarIfUnlocked('--footer-depth', footerDepth, 'px');
+      setBandVarIfUnlocked('--footer-notch', footerNotch, '%');
     };
 
     const updateBandColor = () => {
@@ -1417,7 +1444,6 @@
         el.style.transform = '';
         textOffsets.delete(el);
       });
-      autoAdjustBands();
     };
 
     const resetBandControlsToDefault = () => {
@@ -1478,9 +1504,18 @@
       afficheProduct?.classList.remove('dragging');
     };
 
+    const resetMorphableShapes = () => {
+      manualBandOverrides.clear();
+      root.style.setProperty('--header-chamfer', '85%');
+      root.style.setProperty('--footer-notch-right', '0%');
+      root.style.setProperty('--gommette-width', '150px');
+      root.style.setProperty('--gommette-height', '150px');
+    };
+
     const resetPoster = () => {
       clearActiveEditable();
       hideContextToolbar();
+      resetMorphableShapes();
       resetEditableBlocks();
       resetDraggableTransforms();
       clearMediaState();
@@ -1492,6 +1527,7 @@
       ];
       resetDetourageControls();
       if (bgImageClearBtn) bgImageClearBtn.setAttribute('disabled', 'disabled');
+      autoAdjustBands();
       syncBackgroundControls();
     };
 
@@ -1935,6 +1971,183 @@
       clearActiveEditable();
       hideContextToolbar();
     });
+
+    const setupHeaderMorphing = () => {
+      if (!headerBlock || !affiche) return;
+      headerBlock.addEventListener('pointerdown', (event) => {
+        if (event.target.closest('[data-editable]')) return;
+        const rect = headerBlock.getBoundingClientRect();
+        const offsetX = event.clientX - rect.left;
+        const offsetY = event.clientY - rect.top;
+        const nearRight = rect.width - offsetX <= EDGE_TOLERANCE;
+        const nearBottom = rect.height - offsetY <= EDGE_TOLERANCE;
+        let mode = null;
+        if (nearRight && nearBottom) {
+          mode = 'corner';
+        } else if (nearRight) {
+          mode = 'width';
+        } else if (nearBottom) {
+          mode = 'depth';
+        }
+        if (!mode) return;
+        event.preventDefault();
+        const pointerId = event.pointerId;
+        const startX = event.clientX;
+        const startY = event.clientY;
+        const base = {
+          width: parseCssNumber('--header-width', 70),
+          depth: parseCssNumber('--header-depth', 140),
+          chamfer: parseCssNumber('--header-chamfer', 85),
+          posterWidth: affiche.clientWidth || POSTER_BASE_WIDTH,
+          rectWidth: rect.width || POSTER_BASE_WIDTH,
+        };
+        const handleMove = (moveEvent) => {
+          if (moveEvent.pointerId !== pointerId) return;
+          const dx = moveEvent.clientX - startX;
+          const dy = moveEvent.clientY - startY;
+          if (mode === 'width') {
+            const deltaPercent = (dx / base.posterWidth) * 100;
+            const next = clampValue(base.width + deltaPercent, HEADER_WIDTH_LIMITS[0], HEADER_WIDTH_LIMITS[1]);
+            setBandVarManual('--header-width', next, '%');
+          } else if (mode === 'depth') {
+            const next = clampValue(base.depth + dy, HEADER_DEPTH_LIMITS[0], HEADER_DEPTH_LIMITS[1]);
+            setBandVarManual('--header-depth', next, 'px');
+          } else {
+            const deltaPercent = (dx / base.rectWidth) * 100;
+            const next = clampValue(base.chamfer + deltaPercent, HEADER_CHAMFER_LIMITS[0], HEADER_CHAMFER_LIMITS[1]);
+            setBandVarManual('--header-chamfer', next, '%');
+          }
+        };
+        const cleanup = (endEvent) => {
+          if (endEvent.pointerId !== pointerId) return;
+          headerBlock.releasePointerCapture(pointerId);
+          headerBlock.removeEventListener('pointermove', handleMove);
+          headerBlock.removeEventListener('pointerup', cleanup);
+          headerBlock.removeEventListener('pointercancel', cleanup);
+        };
+        headerBlock.setPointerCapture(pointerId);
+        headerBlock.addEventListener('pointermove', handleMove);
+        headerBlock.addEventListener('pointerup', cleanup);
+        headerBlock.addEventListener('pointercancel', cleanup);
+      });
+    };
+
+    const setupFooterMorphing = () => {
+      if (!footerBlock) return;
+      footerBlock.addEventListener('pointerdown', (event) => {
+        if (event.target.closest('[data-editable]')) return;
+        const rect = footerBlock.getBoundingClientRect();
+        const offsetX = event.clientX - rect.left;
+        const offsetY = event.clientY - rect.top;
+        const nearTop = offsetY <= EDGE_TOLERANCE;
+        const nearBottom = rect.height - offsetY <= EDGE_TOLERANCE;
+        let mode = null;
+        if (nearTop && offsetX <= 120) {
+          mode = 'notch-left';
+        } else if (nearTop && rect.width - offsetX <= 120) {
+          mode = 'notch-right';
+        } else if (nearBottom) {
+          mode = 'depth';
+        }
+        if (!mode) return;
+        event.preventDefault();
+        const pointerId = event.pointerId;
+        const startY = event.clientY;
+        const base = {
+          depth: parseCssNumber('--footer-depth', 160),
+          notchLeft: parseCssNumber('--footer-notch', 8),
+          notchRight: parseCssNumber('--footer-notch-right', 0),
+          rectHeight: rect.height || 200,
+        };
+        const handleMove = (moveEvent) => {
+          if (moveEvent.pointerId !== pointerId) return;
+          const dy = moveEvent.clientY - startY;
+          if (mode === 'depth') {
+            const next = clampValue(base.depth + dy, FOOTER_DEPTH_LIMITS[0], FOOTER_DEPTH_LIMITS[1]);
+            setBandVarManual('--footer-depth', next, 'px');
+          } else if (mode === 'notch-left') {
+            const deltaPercent = (dy / base.rectHeight) * 100;
+            const next = clampValue(base.notchLeft + deltaPercent, FOOTER_NOTCH_LIMITS[0], FOOTER_NOTCH_LIMITS[1]);
+            setBandVarManual('--footer-notch', next, '%');
+          } else if (mode === 'notch-right') {
+            const deltaPercent = (dy / base.rectHeight) * 100;
+            const next = clampValue(base.notchRight + deltaPercent, FOOTER_NOTCH_LIMITS[0], FOOTER_NOTCH_LIMITS[1]);
+            setBandVarManual('--footer-notch-right', next, '%');
+          }
+        };
+        const cleanup = (endEvent) => {
+          if (endEvent.pointerId !== pointerId) return;
+          footerBlock.releasePointerCapture(pointerId);
+          footerBlock.removeEventListener('pointermove', handleMove);
+          footerBlock.removeEventListener('pointerup', cleanup);
+          footerBlock.removeEventListener('pointercancel', cleanup);
+        };
+        footerBlock.setPointerCapture(pointerId);
+        footerBlock.addEventListener('pointermove', handleMove);
+        footerBlock.addEventListener('pointerup', cleanup);
+        footerBlock.addEventListener('pointercancel', cleanup);
+      });
+    };
+
+    const setupGommetteMorphing = () => {
+      if (!afficheBadge) return;
+      afficheBadge.addEventListener('pointerdown', (event) => {
+        if (event.target.closest('[data-editable]')) return;
+        const rect = afficheBadge.getBoundingClientRect();
+        const offsetX = event.clientX - rect.left;
+        const offsetY = event.clientY - rect.top;
+        const nearHorizontalEdge = offsetX <= EDGE_TOLERANCE || rect.width - offsetX <= EDGE_TOLERANCE;
+        const nearVerticalEdge = offsetY <= EDGE_TOLERANCE || rect.height - offsetY <= EDGE_TOLERANCE;
+        let mode = null;
+        if (nearHorizontalEdge && nearVerticalEdge) {
+          mode = 'both';
+        } else if (nearHorizontalEdge) {
+          mode = 'width';
+        } else if (nearVerticalEdge) {
+          mode = 'height';
+        }
+        if (!mode) return;
+        event.preventDefault();
+        const pointerId = event.pointerId;
+        const startX = event.clientX;
+        const startY = event.clientY;
+        const base = {
+          width: parseCssNumber('--gommette-width', 150),
+          height: parseCssNumber('--gommette-height', 150),
+        };
+        const applyDimensions = (deltaX, deltaY) => {
+          if (mode === 'width' || mode === 'both') {
+            const nextWidth = clampValue(base.width + deltaX * 2, GOMMETTE_WIDTH_LIMITS[0], GOMMETTE_WIDTH_LIMITS[1]);
+            root.style.setProperty('--gommette-width', `${nextWidth}px`);
+          }
+          if (mode === 'height' || mode === 'both') {
+            const nextHeight = clampValue(base.height + deltaY * 2, GOMMETTE_HEIGHT_LIMITS[0], GOMMETTE_HEIGHT_LIMITS[1]);
+            root.style.setProperty('--gommette-height', `${nextHeight}px`);
+          }
+        };
+        const handleMove = (moveEvent) => {
+          if (moveEvent.pointerId !== pointerId) return;
+          const dx = moveEvent.clientX - startX;
+          const dy = moveEvent.clientY - startY;
+          applyDimensions(dx, dy);
+        };
+        const cleanup = (endEvent) => {
+          if (endEvent.pointerId !== pointerId) return;
+          afficheBadge.releasePointerCapture(pointerId);
+          afficheBadge.removeEventListener('pointermove', handleMove);
+          afficheBadge.removeEventListener('pointerup', cleanup);
+          afficheBadge.removeEventListener('pointercancel', cleanup);
+        };
+        afficheBadge.setPointerCapture(pointerId);
+        afficheBadge.addEventListener('pointermove', handleMove);
+        afficheBadge.addEventListener('pointerup', cleanup);
+        afficheBadge.addEventListener('pointercancel', cleanup);
+      });
+    };
+
+    setupHeaderMorphing();
+    setupFooterMorphing();
+    setupGommetteMorphing();
 
     document.addEventListener('keydown', (event) => {
       if (event.key === 'Escape') {
@@ -2858,6 +3071,7 @@
       };
 
       const handlePointerDown = (event) => {
+        if (event.defaultPrevented) return;
         if (event.target && event.target.closest('[data-editable]')) {
           return;
         }
