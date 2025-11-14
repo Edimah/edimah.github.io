@@ -366,22 +366,6 @@
       right: 24px;
     }
 
-    .affiche.has-model-bg .drag-handle-star {
-      display: flex;
-    }
-
-    .affiche.has-model-bg .header-left,
-    .affiche.has-model-bg .footer-band {
-      background: rgba(5, 12, 10, .58);
-      color: #fff;
-      backdrop-filter: blur(5px);
-    }
-
-    .affiche.has-model-bg .header-left::after,
-    .affiche.has-model-bg .footer-band::before {
-      display: none;
-    }
-
     .workspace {
       display: flex;
       gap: 16px;
@@ -1119,10 +1103,8 @@
       <input type="color" id="toolbarBandColor" value="#0a7f5a" />
       <input type="range" id="toolbarBandOpacity" min="0" max="100" value="95" />
       <span id="toolbarBandOpacityValue">95%</span>
-      <button type="button" id="bandMoveBtn" class="toolbar-button" title="Déplacer le bandeau">⬌</button>
     </div>
     <div id="textToolbar" class="toolbar-section">
-      <button type="button" id="textMoveBtn" class="toolbar-button" title="Déplacer le texte">⬌</button>
       <select id="toolbarFontSelect">
         <option value="Poppins">Poppins</option>
         <option value="Playfair Display">Playfair Display</option>
@@ -1210,10 +1192,8 @@
     const toolbarBandColor = document.getElementById('toolbarBandColor');
     const toolbarBandOpacity = document.getElementById('toolbarBandOpacity');
     const toolbarBandOpacityValue = document.getElementById('toolbarBandOpacityValue');
-    const bandMoveBtn = document.getElementById('bandMoveBtn');
     const toolbarFontSelect = document.getElementById('toolbarFontSelect');
     const toolbarTextColor = document.getElementById('toolbarTextColor');
-    const textMoveBtn = document.getElementById('textMoveBtn');
     const sizeButtons = document.querySelectorAll('.size-controls .toolbar-button');
 
     const root = document.documentElement;
@@ -1265,7 +1245,6 @@
     });
     textDragConfig = createTextDragState();
     bandDragConfig = {
-      enabled: false,
       pointerId: null,
       startX: 0,
       startY: 0,
@@ -1342,8 +1321,6 @@
     };
 
     const enableTextDragMode = (enabled) => {
-      if (!affiche) return;
-      affiche.classList.toggle('has-model-bg', enabled);
       if (!enabled) {
         resetTextPositions();
       }
@@ -1611,20 +1588,9 @@
       if (toolbarTextColor) toolbarTextColor.value = rgbStringToHex(styles.color);
     };
 
-    const updateTextMoveButtonState = () => {
-      if (!textMoveBtn) return;
-      if (activeEditable) {
-        textMoveBtn.removeAttribute('disabled');
-      } else {
-        textMoveBtn.setAttribute('disabled', 'disabled');
-        textMoveBtn.classList.remove('active');
-        textDragConfig.enabled = false;
-      }
-    };
-
     const setActiveEditable = (element) => {
       if (activeEditable === element) {
-        updateTextMoveButtonState();
+        textDragConfig.enabled = Boolean(element);
         return;
       }
       if (activeEditable) activeEditable.classList.remove('is-editing');
@@ -1636,7 +1602,7 @@
       } else if (editorStatus) {
         editorStatus.textContent = 'Sélectionnez un bloc de texte.';
       }
-      updateTextMoveButtonState();
+      textDragConfig.enabled = Boolean(activeEditable);
     };
 
     const clearActiveEditable = () => {
@@ -1645,7 +1611,7 @@
       }
       activeEditable = null;
       if (editorStatus) editorStatus.textContent = 'Sélectionnez un bloc de texte.';
-      updateTextMoveButtonState();
+      textDragConfig.enabled = false;
     };
 
     const getElementAnchor = (element) => {
@@ -1706,7 +1672,6 @@
       if (bandDragConfig.pointerId && bandDragConfig.target?.releasePointerCapture) {
         bandDragConfig.target.releasePointerCapture(bandDragConfig.pointerId);
       }
-      bandDragConfig.enabled = false;
       bandDragConfig.pointerId = null;
       bandDragConfig.target = null;
       if (textDragConfig.pointerId && activeEditable?.releasePointerCapture) {
@@ -1714,9 +1679,6 @@
       }
       textDragConfig.enabled = false;
       textDragConfig.pointerId = null;
-      bandMoveBtn?.classList.remove('active');
-      bandMoveBtn?.setAttribute('disabled', 'disabled');
-      textMoveBtn?.classList.remove('active');
     };
 
     const parseBandColorVar = () => {
@@ -1746,11 +1708,6 @@
       if (!target) return;
       activeBandTarget = target;
       syncBandInputsFromCss();
-      bandMoveBtn?.classList.remove('active');
-      bandMoveBtn?.removeAttribute('disabled');
-      textDragConfig.enabled = false;
-      textMoveBtn?.classList.remove('active');
-      bandDragConfig.enabled = false;
       bandDragConfig.target = target;
       showContextToolbar('band', getAnchorFromEvent(event, target));
     };
@@ -1758,8 +1715,6 @@
     const showTextToolbarFor = (element, event) => {
       if (!element) return;
       setActiveEditable(element);
-      textDragConfig.enabled = false;
-      textMoveBtn?.classList.remove('active');
       showContextToolbar('text', getAnchorFromEvent(event, element));
     };
 
@@ -1863,28 +1818,6 @@
     toolbarBandColor?.addEventListener('input', updateBandColor);
     toolbarBandOpacity?.addEventListener('input', updateBandColor);
 
-    textMoveBtn?.addEventListener('click', () => {
-      if (!activeEditable) return;
-      textDragConfig.enabled = !textDragConfig.enabled;
-      textMoveBtn.classList.toggle('active', textDragConfig.enabled);
-    });
-
-    const setBandMoveState = (shouldEnable) => {
-      if (!bandDragConfig) return;
-      bandDragConfig.enabled = shouldEnable;
-      if (!shouldEnable) {
-        bandDragConfig.pointerId = null;
-      }
-      bandMoveBtn?.classList.toggle('active', shouldEnable);
-    };
-
-    bandMoveBtn?.addEventListener('click', () => {
-      if (!activeBandTarget) return;
-      const enabling = bandDragConfig.target === activeBandTarget ? !bandDragConfig.enabled : true;
-      bandDragConfig.target = activeBandTarget;
-      setBandMoveState(enabling);
-    });
-
     const attachBandInteractions = (element) => {
       if (!element) return;
       element.addEventListener('click', (event) => {
@@ -1894,17 +1827,16 @@
       });
 
       element.addEventListener('pointerdown', (event) => {
-        if (!bandDragConfig?.enabled || bandDragConfig.target !== element) return;
         if (event.target.closest('[data-editable]')) return;
         const vars = bandShiftVars.get(element);
         if (!vars) return;
+        bandDragConfig.target = element;
         bandDragConfig.pointerId = event.pointerId;
         bandDragConfig.startX = event.clientX;
         bandDragConfig.startY = event.clientY;
         bandDragConfig.baseX = getCssVarNumber(vars.xVar);
         bandDragConfig.baseY = getCssVarNumber(vars.yVar);
         element.setPointerCapture(event.pointerId);
-        event.preventDefault();
 
         const handleMove = (moveEvent) => {
           if (moveEvent.pointerId !== bandDragConfig.pointerId) return;
@@ -1933,9 +1865,6 @@
 
     attachBandInteractions(headerBlock);
     attachBandInteractions(footerBlock);
-    updateTextMoveButtonState();
-    bandMoveBtn?.setAttribute('disabled', 'disabled');
-
     const getToleranceValue = () => Number(toleranceRange?.value || 40);
 
     const setToleranceVisibility = (visible) => {
