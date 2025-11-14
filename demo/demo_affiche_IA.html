@@ -50,8 +50,9 @@
       margin: 0;
       padding: 20px;
       display: flex;
-      gap: 20px;
-      align-items: flex-start;
+      flex-direction: column;
+      gap: 18px;
+      align-items: stretch;
     }
 
     /* PANNEAUX */
@@ -380,6 +381,88 @@
     .affiche.has-model-bg .footer-band::before {
       display: none;
     }
+
+    .workspace {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      padding-bottom: 8px;
+    }
+
+    .workspace>.controls,
+    .workspace>.controls-right {
+      flex: 0 0 320px;
+      min-width: 280px;
+    }
+
+    .workspace>.preview-container {
+      flex: 0 0 640px;
+      min-width: 600px;
+    }
+
+    .global-actions {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      padding: 0 12px 32px;
+      flex-wrap: wrap;
+    }
+
+    .global-actions button {
+      flex: 1 1 240px;
+      font-size: 1rem;
+      padding: 14px;
+    }
+
+    .context-toolbar {
+      position: absolute;
+      background: rgba(18, 41, 34, 0.94);
+      color: #fff;
+      border-radius: 10px;
+      padding: 8px 10px;
+      display: none;
+      gap: 8px;
+      align-items: center;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+      font-size: .75rem;
+      z-index: 1200;
+    }
+
+    .context-toolbar.is-visible {
+      display: inline-flex;
+    }
+
+    .context-toolbar select,
+    .context-toolbar input[type="color"] {
+      border: none;
+      border-radius: 6px;
+      height: 32px;
+      font-size: .75rem;
+      padding: 0 6px;
+    }
+
+    .toolbar-button {
+      background: rgba(255, 255, 255, .12);
+      border: none;
+      color: #fff;
+      border-radius: 6px;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-size: .8rem;
+    }
+
+    .toolbar-button.active {
+      background: rgba(255, 255, 255, .3);
+    }
+
+    .context-toolbar .size-controls {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
 
     .controls select {
       width: 100%;
@@ -901,154 +984,163 @@
     modification ou diffusion interdite sans autorisation écrite de l’autrice.
   </div>
 
-  <!-- COLONNE GAUCHE -->
-  <div class="controls">
-    <div class="action-card">
-      <h2 class="action-title"><span class="action-number">1.</span>Importer un logo</h2>
-      <p class="action-instructions">Chargez le logo (PNG/JPG) puis ajustez sa taille.</p>
-      <input id="logoInput" type="file" accept="image/*" />
-      <div class="range-control">
-        <label for="logoScaleRange">Taille logo <span id="logoScaleValue">100%</span></label>
-        <input id="logoScaleRange" type="range" min="50" max="150" value="100" />
+  <div class="workspace">
+    <!-- COLONNE GAUCHE -->
+    <div class="controls">
+      <div class="action-card">
+        <h2 class="action-title"><span class="action-number">1.</span>Importer un logo</h2>
+        <p class="action-instructions">Chargez le logo (PNG/JPG) puis ajustez sa taille.</p>
+        <input id="logoInput" type="file" accept="image/*" />
+        <div class="range-control">
+          <label for="logoScaleRange">Taille logo <span id="logoScaleValue">100%</span></label>
+          <input id="logoScaleRange" type="range" min="50" max="150" value="100" />
+        </div>
+      </div>
+
+      <div class="action-card">
+        <h2 class="action-title"><span class="action-number">2.</span>Importer l'image produit</h2>
+        <p class="action-instructions">Sélectionnez la photo du produit et appliquez le détourage.</p>
+        <input id="productInput" type="file" accept="image/*" />
+
+        <fieldset class="detourage-panel">
+          <legend>🪄 Détourage</legend>
+          <div class="detourage-modes">
+            <label><input type="radio" name="detourageMode" value="auto" checked />Auto (recommandé)</label>
+            <label><input type="radio" name="detourageMode" value="ia" />Forcer IA (U²-Net)</label>
+            <label><input type="radio" name="detourageMode" value="color" />Forcer détourage Couleur</label>
+          </div>
+          <div class="tolerance-control" id="toleranceControl">
+            <label for="toleranceRange">Tolérance <span id="toleranceValue">40</span></label>
+            <input type="range" id="toleranceRange" min="0" max="60" value="40" />
+          </div>
+          <div class="model-choice">
+            <span>Modèle IA</span>
+            <label>
+              <input type="radio" name="u2netModel" value="u2netp.onnx" checked />
+              <span>u2netp.onnx <small>(fond uni)</small></span>
+            </label>
+            <label>
+              <input type="radio" name="u2netModel" value="u2net.onnx" />
+              <span>u2net.onnx <small>(images encombrées)</small></span>
+            </label>
+          </div>
+          <p class="detourage-note">Les images restent sur votre appareil.</p>
+        </fieldset>
+        <div class="detourage-status" id="detourageStatus">Initialisation de l'IA…</div>
+        <progress id="detourageProgress" class="progress" max="100" value="0" hidden></progress>
       </div>
     </div>
 
-    <div class="action-card">
-      <h2 class="action-title"><span class="action-number">2.</span>Importer l'image produit</h2>
-      <p class="action-instructions">Sélectionnez la photo du produit et appliquez le détourage.</p>
-      <input id="productInput" type="file" accept="image/*" />
+    <!-- PREVIEW CENTRE -->
+    <!-- PREVIEW CENTRE -->
+    <div class="preview-container">
+      <div class="affiche" id="affiche">
+        <div id="bgLayer"></div>
+        <div class="header-left">
+          <p class="promo-title" id="afficheTitle" data-editable="header-title" data-label="Titre promo"
+            contenteditable="true" spellcheck="false">Promo d'automne - Vitamine D</p>
+          <p class="promo-date" id="afficheDate" data-editable="header-date" data-label="Date/accroche"
+            contenteditable="true" spellcheck="false">Du 1er au 15 novembre</p>
+        </div>
+        <button type="button" class="drag-handle-star header-star" id="headerDragHandle"
+          aria-label="Déplacer le texte du bandeau haut">✶</button>
 
-      <fieldset class="detourage-panel">
-        <legend>🪄 Détourage</legend>
-        <div class="detourage-modes">
-          <label><input type="radio" name="detourageMode" value="auto" checked />Auto (recommandé)</label>
-          <label><input type="radio" name="detourageMode" value="ia" />Forcer IA (U²-Net)</label>
-          <label><input type="radio" name="detourageMode" value="color" />Forcer détourage Couleur</label>
+        <div class="logo" id="afficheLogo"><span class="placeholder">logo</span></div>
+        <div class="gommette" id="afficheBadge"><span id="afficheBadgeText" data-editable="badge"
+            data-label="Texte gommette" contenteditable="true" spellcheck="false">-20%</span></div>
+        <div class="product-image" id="afficheProduct">
+          <div class="product-placeholder">Photo du produit<br />ici</div>
         </div>
-        <div class="tolerance-control" id="toleranceControl">
-          <label for="toleranceRange">Tolérance <span id="toleranceValue">40</span></label>
-          <input type="range" id="toleranceRange" min="0" max="60" value="40" />
+
+        <div class="footer-band">
+          <div class="footer-title" id="afficheProductName" data-editable="footer-title" data-label="Titre bas"
+            contenteditable="true" spellcheck="false">Vitamine D3 Senior 1000 UI</div>
+          <div class="footer-subtitle" id="afficheProductSubtitle" data-editable="footer-subtitle"
+            data-label="Sous-titre bas" contenteditable="true" spellcheck="false">Demandez conseil à votre pharmacien
+          </div>
         </div>
-        <div class="model-choice">
-          <span>Modèle IA</span>
-          <label>
-            <input type="radio" name="u2netModel" value="u2netp.onnx" checked />
-            <span>u2netp.onnx <small>(fond uni)</small></span>
-          </label>
-          <label>
-            <input type="radio" name="u2netModel" value="u2net.onnx" />
-            <span>u2net.onnx <small>(images encombrées)</small></span>
-          </label>
+        <button type="button" class="drag-handle-star footer-star" id="footerDragHandle"
+          aria-label="Déplacer le texte du bandeau bas">✶</button>
+      </div>
+    </div>
+
+    <!-- PANNEAU DROIT : Création & Contrôles -->
+    <div class="controls controls-right">
+      <div class="action-card">
+        <h2 class="action-title"><span class="action-number">3.</span>Modifier le texte</h2>
+        <p class="action-instructions">Cliquez directement sur les zones de texte de l'affiche pour les modifier puis
+          ajustez-les via la barre contextuelle qui apparaît juste en dessous.</p>
+        <div class="editor-status" id="editorStatus">Sélectionnez un bloc de texte pour afficher la réglette
+          contextuelle.</div>
+      </div>
+
+      <div class="action-card">
+        <h2 class="action-title"><span class="action-number">4.</span>Modifier les couleurs</h2>
+        <p class="action-instructions">Choisissez un type d'arrière-plan puis ajustez le dégradé et la couleur des
+          bandeaux.</p>
+
+        <div class="bg-mode">
+          <label class="bg-mode-option"><input type="radio" name="bgMode" value="solid" />Couleur unie</label>
+          <input type="color" id="solidBgColor" value="#eaf7f1" />
+
+          <label class="bg-mode-option"><input type="radio" name="bgMode" value="image" />Image modèle</label>
+          <input type="file" id="bgImageInput" accept="image/*" />
+          <button type="button" id="bgImageClearBtn" class="secondary" disabled>Retirer l'image</button>
+
+          <label class="bg-mode-option"><input type="radio" name="bgMode" value="generated" checked />Fond
+            généré</label>
+          <select id="bgStyleSelect">
+            <option value="bubbles">Bulles</option>
+            <option value="waves">Ondes</option>
+            <option value="dots">Pointillé</option>
+            <option value="cross">Motif croix</option>
+          </select>
+
+          <div class="palette-choice">
+            <label><input type="radio" name="bgPaletteMode" value="logo" checked />Palette du logo</label>
+            <label><input type="radio" name="bgPaletteMode" value="custom" />Dégradé personnalisé</label>
+          </div>
+          <div class="custom-palette-fields" id="customPaletteFields">
+            <input type="color" id="customColorA" value="#0A7F5A" />
+            <input type="color" id="customColorB" value="#A4D4AE" />
+          </div>
+          <button type="button" id="bgRandomBtn" class="secondary">Aléatoire</button>
         </div>
-        <p class="detourage-note">Les images restent sur votre appareil.</p>
-      </fieldset>
-      <div class="detourage-status" id="detourageStatus">Initialisation de l'IA…</div>
-      <progress id="detourageProgress" class="progress" max="100" value="0" hidden></progress>
+
+      </div>
+    </div>
+
+  </div>
+  </div>
+
+  <div id="contextToolbar" class="context-toolbar">
+    <div id="bandToolbar" class="toolbar-section">
+      <label for="toolbarBandColor" style="margin:0;font-size:.7rem;">Bandeaux</label>
+      <input type="color" id="toolbarBandColor" value="#0a7f5a" />
+      <input type="range" id="toolbarBandOpacity" min="0" max="100" value="95" />
+      <span id="toolbarBandOpacityValue">95%</span>
+      <button type="button" id="bandMoveBtn" class="toolbar-button" title="Déplacer le bandeau">⬌</button>
+    </div>
+    <div id="textToolbar" class="toolbar-section">
+      <button type="button" id="textMoveBtn" class="toolbar-button" title="Déplacer le texte">⬌</button>
+      <select id="toolbarFontSelect">
+        <option value="Poppins">Poppins</option>
+        <option value="Playfair Display">Playfair Display</option>
+        <option value="Montserrat">Montserrat</option>
+        <option value="Source Serif Pro">Source Serif Pro</option>
+        <option value="Raleway">Raleway</option>
+      </select>
+      <div class="size-controls">
+        <button type="button" class="toolbar-button" data-size="minus">−</button>
+        <button type="button" class="toolbar-button" data-size="plus">+</button>
+      </div>
+      <input type="color" id="toolbarTextColor" value="#0a7f5a" />
     </div>
   </div>
 
-  <!-- PREVIEW CENTRE -->
-  <!-- PREVIEW CENTRE -->
-  <div class="preview-container">
-    <div class="affiche" id="affiche">
-      <div id="bgLayer"></div>
-      <div class="header-left">
-        <p class="promo-title" id="afficheTitle" data-editable="header-title" data-label="Titre promo"
-          contenteditable="true" spellcheck="false">Promo d'automne - Vitamine D</p>
-        <p class="promo-date" id="afficheDate" data-editable="header-date" data-label="Date/accroche"
-          contenteditable="true" spellcheck="false">Du 1er au 15 novembre</p>
-      </div>
-      <button type="button" class="drag-handle-star header-star" id="headerDragHandle"
-        aria-label="Déplacer le texte du bandeau haut">✶</button>
-
-      <div class="logo" id="afficheLogo"><span class="placeholder">logo</span></div>
-      <div class="gommette" id="afficheBadge"><span id="afficheBadgeText" data-editable="badge"
-          data-label="Texte gommette" contenteditable="true" spellcheck="false">-20%</span></div>
-      <div class="product-image" id="afficheProduct">
-        <div class="product-placeholder">Photo du produit<br />ici</div>
-      </div>
-
-      <div class="footer-band">
-        <div class="footer-title" id="afficheProductName" data-editable="footer-title" data-label="Titre bas"
-          contenteditable="true" spellcheck="false">Vitamine D3 Senior 1000 UI</div>
-        <div class="footer-subtitle" id="afficheProductSubtitle" data-editable="footer-subtitle"
-          data-label="Sous-titre bas" contenteditable="true" spellcheck="false">Demandez conseil à votre pharmacien
-        </div>
-      </div>
-      <button type="button" class="drag-handle-star footer-star" id="footerDragHandle"
-        aria-label="Déplacer le texte du bandeau bas">✶</button>
-    </div>
-  </div>
-
-  <!-- PANNEAU DROIT : Création & Contrôles -->
-  <div class="controls controls-right">
-    <div class="action-card">
-      <h2 class="action-title"><span class="action-number">3.</span>Modifier le texte</h2>
-      <p class="action-instructions">Cliquez sur un texte de l'affiche puis personnalisez sa police, sa taille et sa
-        couleur.</p>
-      <div class="editor-status" id="editorStatus">Sélectionnez un bloc de texte.</div>
-      <div class="style-panel">
-        <label for="fontFamilySelect">Police</label>
-        <select id="fontFamilySelect">
-          <option value="Poppins">Poppins</option>
-          <option value="Playfair Display">Playfair Display</option>
-          <option value="Montserrat">Montserrat</option>
-          <option value="Source Serif Pro">Source Serif Pro</option>
-          <option value="Raleway">Raleway</option>
-        </select>
-
-        <label for="fontSizeRange">Taille <span id="fontSizeValue">24px</span></label>
-        <input type="range" id="fontSizeRange" min="14" max="64" value="24" />
-
-        <label for="fontColorInput">Couleur</label>
-        <input type="color" id="fontColorInput" value="#0a7f5a" />
-      </div>
-    </div>
-
-    <div class="action-card">
-      <h2 class="action-title"><span class="action-number">4.</span>Modifier les couleurs</h2>
-      <p class="action-instructions">Choisissez un type d'arrière-plan puis ajustez le dégradé et la couleur des
-        bandeaux.</p>
-
-      <div class="bg-mode">
-        <label class="bg-mode-option"><input type="radio" name="bgMode" value="solid" />Couleur unie</label>
-        <input type="color" id="solidBgColor" value="#eaf7f1" />
-
-        <label class="bg-mode-option"><input type="radio" name="bgMode" value="image" />Image modèle</label>
-        <input type="file" id="bgImageInput" accept="image/*" />
-        <button type="button" id="bgImageClearBtn" class="secondary" disabled>Retirer l'image</button>
-
-        <label class="bg-mode-option"><input type="radio" name="bgMode" value="generated" checked />Fond généré</label>
-        <select id="bgStyleSelect">
-          <option value="bubbles">Bulles</option>
-          <option value="waves">Ondes</option>
-          <option value="dots">Pointillé</option>
-          <option value="cross">Motif croix</option>
-        </select>
-
-        <div class="palette-choice">
-          <label><input type="radio" name="bgPaletteMode" value="logo" checked />Palette du logo</label>
-          <label><input type="radio" name="bgPaletteMode" value="custom" />Dégradé personnalisé</label>
-        </div>
-        <div class="custom-palette-fields" id="customPaletteFields">
-          <input type="color" id="customColorA" value="#0A7F5A" />
-          <input type="color" id="customColorB" value="#A4D4AE" />
-        </div>
-        <button type="button" id="bgRandomBtn" class="secondary">Aléatoire</button>
-      </div>
-
-      <div class="band-color-panel">
-        <label for="bandColorInput">Couleur des bandeaux</label>
-        <input type="color" id="bandColorInput" value="#0a7f5a" />
-        <label for="bandAlphaRange">Opacité <span id="bandAlphaValue">95%</span></label>
-        <input type="range" id="bandAlphaRange" min="0" max="100" value="95" />
-      </div>
-
-      <div class="action-buttons">
-        <button type="button" id="updatePosterBtn">Mettre à jour l'affiche</button>
-        <button type="button" id="downloadPosterBtn" class="download-btn">Télécharger l'affiche</button>
-      </div>
-    </div>
+  <div class="global-actions">
+    <button type="button" id="updatePosterBtn">Mettre à jour l'affiche</button>
+    <button type="button" id="downloadPosterBtn" class="download-btn">Télécharger l'affiche</button>
   </div>
 
   <!-- SCRIPTS -->
@@ -1106,19 +1198,23 @@
     const customPaletteFields = document.getElementById('customPaletteFields');
     const customColorAInput = document.getElementById('customColorA');
     const customColorBInput = document.getElementById('customColorB');
-    const bandColorInput = document.getElementById('bandColorInput');
-    const bandAlphaRange = document.getElementById('bandAlphaRange');
-    const bandAlphaValue = document.getElementById('bandAlphaValue');
-    const fontFamilySelect = document.getElementById('fontFamilySelect');
-    const fontSizeRange = document.getElementById('fontSizeRange');
-    const fontSizeValue = document.getElementById('fontSizeValue');
-    const fontColorInput = document.getElementById('fontColorInput');
     const editorStatus = document.getElementById('editorStatus');
     const editableElements = document.querySelectorAll('[data-editable]');
     const headerDragHandle = document.getElementById('headerDragHandle');
     const footerDragHandle = document.getElementById('footerDragHandle');
     const headerBlock = document.querySelector('.header-left');
     const footerBlock = document.querySelector('.footer-band');
+    const contextToolbar = document.getElementById('contextToolbar');
+    const bandToolbar = document.getElementById('bandToolbar');
+    const textToolbar = document.getElementById('textToolbar');
+    const toolbarBandColor = document.getElementById('toolbarBandColor');
+    const toolbarBandOpacity = document.getElementById('toolbarBandOpacity');
+    const toolbarBandOpacityValue = document.getElementById('toolbarBandOpacityValue');
+    const bandMoveBtn = document.getElementById('bandMoveBtn');
+    const toolbarFontSelect = document.getElementById('toolbarFontSelect');
+    const toolbarTextColor = document.getElementById('toolbarTextColor');
+    const textMoveBtn = document.getElementById('textMoveBtn');
+    const sizeButtons = document.querySelectorAll('.size-controls .toolbar-button');
 
     const root = document.documentElement;
 
@@ -1147,7 +1243,36 @@
     ];
     let bgImageDataURL = null;
     const baseBackground = getComputedStyle(affiche).background;
+    let activeToolbarMode = null;
+    let activeBandTarget = null;
+    let bandDragConfig = null;
+    let textDragConfig = null;
     let html2canvasPromise;
+    const textOffsets = new WeakMap();
+    const bandShiftVars = new Map([
+      [headerBlock, { xVar: '--header-shift-x', yVar: '--header-shift-y' }],
+      [footerBlock, { xVar: '--footer-shift-x', yVar: '--footer-shift-y' }],
+    ]);
+    const TEXT_DRAG_LIMITS = { x: [-220, 220], y: [-160, 240] };
+    const BAND_DRAG_LIMITS = { x: [-240, 240], y: [-240, 240] };
+    const createTextDragState = () => ({
+      enabled: false,
+      pointerId: null,
+      startX: 0,
+      startY: 0,
+      baseX: 0,
+      baseY: 0,
+    });
+    textDragConfig = createTextDragState();
+    bandDragConfig = {
+      enabled: false,
+      pointerId: null,
+      startX: 0,
+      startY: 0,
+      baseX: 0,
+      baseY: 0,
+      target: null,
+    };
 
     const selectedModelInput = document.querySelector('input[name="u2netModel"]:checked');
     if (selectedModelInput?.value) {
@@ -1241,9 +1366,9 @@
     };
 
     const updateBandColor = () => {
-      const colorHex = bandColorInput?.value || '#0a7f5a';
-      const alpha = clampValue((bandAlphaRange?.value || 95) / 100, 0, 1);
-      if (bandAlphaValue) bandAlphaValue.textContent = `${Math.round(alpha * 100)}%`;
+      const colorHex = toolbarBandColor?.value || '#0a7f5a';
+      const alpha = clampValue((toolbarBandOpacity?.value || 95) / 100, 0, 1);
+      if (toolbarBandOpacityValue) toolbarBandOpacityValue.textContent = `${Math.round(alpha * 100)}%`;
       const rgbaColor = hexToRgba(colorHex, alpha);
       root.style.setProperty('--band-color', rgbaColor);
     };
@@ -1482,17 +1607,26 @@
       if (!element) return;
       const styles = window.getComputedStyle(element);
       const family = FONT_OPTIONS.find((font) => styles.fontFamily.toLowerCase().includes(font.toLowerCase())) || FONT_OPTIONS[0];
-      if (fontFamilySelect) fontFamilySelect.value = family;
-      const size = clampValue(parseInt(styles.fontSize, 10) || 24, 14, 64);
-      if (fontSizeRange) {
-        fontSizeRange.value = size;
-        if (fontSizeValue) fontSizeValue.textContent = `${size}px`;
+      if (toolbarFontSelect) toolbarFontSelect.value = family;
+      if (toolbarTextColor) toolbarTextColor.value = rgbStringToHex(styles.color);
+    };
+
+    const updateTextMoveButtonState = () => {
+      if (!textMoveBtn) return;
+      if (activeEditable) {
+        textMoveBtn.removeAttribute('disabled');
+      } else {
+        textMoveBtn.setAttribute('disabled', 'disabled');
+        textMoveBtn.classList.remove('active');
+        textDragConfig.enabled = false;
       }
-      if (fontColorInput) fontColorInput.value = rgbStringToHex(styles.color);
     };
 
     const setActiveEditable = (element) => {
-      if (activeEditable === element) return;
+      if (activeEditable === element) {
+        updateTextMoveButtonState();
+        return;
+      }
       if (activeEditable) activeEditable.classList.remove('is-editing');
       activeEditable = element;
       if (activeEditable) {
@@ -1502,6 +1636,7 @@
       } else if (editorStatus) {
         editorStatus.textContent = 'Sélectionnez un bloc de texte.';
       }
+      updateTextMoveButtonState();
     };
 
     const clearActiveEditable = () => {
@@ -1510,53 +1645,296 @@
       }
       activeEditable = null;
       if (editorStatus) editorStatus.textContent = 'Sélectionnez un bloc de texte.';
+      updateTextMoveButtonState();
+    };
+
+    const getElementAnchor = (element) => {
+      if (!element) {
+        return {
+          x: window.innerWidth / 2,
+          y: window.innerHeight / 2,
+        };
+      }
+      const rect = element.getBoundingClientRect();
+      return {
+        x: rect.left + rect.width / 2,
+        y: rect.bottom + 6,
+      };
+    };
+
+    const getAnchorFromEvent = (event, element) => {
+      if (event && typeof event.clientX === 'number') {
+        return { x: event.clientX, y: event.clientY };
+      }
+      return getElementAnchor(element);
+    };
+
+    const positionContextToolbar = (anchor) => {
+      if (!contextToolbar || !anchor) return;
+      const { x, y } = anchor;
+      const toolbarRect = contextToolbar.getBoundingClientRect();
+      const padding = 12;
+      let left = x + padding + window.scrollX;
+      let top = y + padding + window.scrollY;
+      const maxLeft = window.scrollX + window.innerWidth - toolbarRect.width - padding;
+      const maxTop = window.scrollY + window.innerHeight - toolbarRect.height - padding;
+      left = clamp(left, window.scrollX + padding, Math.max(window.scrollX + padding, maxLeft));
+      top = clamp(top, window.scrollY + padding, Math.max(window.scrollY + padding, maxTop));
+      contextToolbar.style.left = `${left}px`;
+      contextToolbar.style.top = `${top}px`;
+    };
+
+    const toggleToolbarSections = (mode) => {
+      if (!contextToolbar) return;
+      if (bandToolbar) bandToolbar.style.display = mode === 'band' ? 'inline-flex' : 'none';
+      if (textToolbar) textToolbar.style.display = mode === 'text' ? 'inline-flex' : 'none';
+    };
+
+    const showContextToolbar = (mode, anchor) => {
+      if (!contextToolbar) return;
+      activeToolbarMode = mode;
+      toggleToolbarSections(mode);
+      contextToolbar.classList.add('is-visible');
+      requestAnimationFrame(() => positionContextToolbar(anchor));
+    };
+
+    const hideContextToolbar = () => {
+      if (!contextToolbar) return;
+      contextToolbar.classList.remove('is-visible');
+      activeToolbarMode = null;
+      activeBandTarget = null;
+      if (bandDragConfig.pointerId && bandDragConfig.target?.releasePointerCapture) {
+        bandDragConfig.target.releasePointerCapture(bandDragConfig.pointerId);
+      }
+      bandDragConfig.enabled = false;
+      bandDragConfig.pointerId = null;
+      bandDragConfig.target = null;
+      if (textDragConfig.pointerId && activeEditable?.releasePointerCapture) {
+        activeEditable.releasePointerCapture(textDragConfig.pointerId);
+      }
+      textDragConfig.enabled = false;
+      textDragConfig.pointerId = null;
+      bandMoveBtn?.classList.remove('active');
+      bandMoveBtn?.setAttribute('disabled', 'disabled');
+      textMoveBtn?.classList.remove('active');
+    };
+
+    const parseBandColorVar = () => {
+      const raw = (getComputedStyle(root).getPropertyValue('--band-color') || '#0a7f5a').trim();
+      if (raw.startsWith('#')) {
+        return { hex: raw, alpha: 1 };
+      }
+      const match = raw.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/i);
+      if (!match) {
+        return { hex: '#0a7f5a', alpha: 1 };
+      }
+      const [, rs, gs, bs, alpha = '1'] = match;
+      const hex = rgbArrayToHex([Number(rs), Number(gs), Number(bs)]);
+      return { hex, alpha: clampValue(parseFloat(alpha) || 1, 0, 1) };
+    };
+
+    const syncBandInputsFromCss = () => {
+      if (!toolbarBandColor || !toolbarBandOpacity) return;
+      const { hex, alpha } = parseBandColorVar();
+      toolbarBandColor.value = hex;
+      const percent = Math.round(alpha * 100);
+      toolbarBandOpacity.value = percent;
+      if (toolbarBandOpacityValue) toolbarBandOpacityValue.textContent = `${percent}%`;
+    };
+
+    const showBandToolbarFor = (target, event) => {
+      if (!target) return;
+      activeBandTarget = target;
+      syncBandInputsFromCss();
+      bandMoveBtn?.classList.remove('active');
+      bandMoveBtn?.removeAttribute('disabled');
+      textDragConfig.enabled = false;
+      textMoveBtn?.classList.remove('active');
+      bandDragConfig.enabled = false;
+      bandDragConfig.target = target;
+      showContextToolbar('band', getAnchorFromEvent(event, target));
+    };
+
+    const showTextToolbarFor = (element, event) => {
+      if (!element) return;
+      setActiveEditable(element);
+      textDragConfig.enabled = false;
+      textMoveBtn?.classList.remove('active');
+      showContextToolbar('text', getAnchorFromEvent(event, element));
+    };
+
+    const applyTextOffset = (element, x, y) => {
+      if (!element) return;
+      element.style.transform = `translate(${x}px, ${y}px)`;
+      textOffsets.set(element, { x, y });
+    };
+
+    const ensureTextOffset = (element) => textOffsets.get(element) || { x: 0, y: 0 };
+
+    const setupEditableDrag = (element) => {
+      if (!element) return;
+      element.addEventListener('pointerdown', (event) => {
+        if (!textDragConfig.enabled || activeEditable !== element) return;
+        textDragConfig.pointerId = event.pointerId;
+        textDragConfig.startX = event.clientX;
+        textDragConfig.startY = event.clientY;
+        const { x, y } = ensureTextOffset(element);
+        textDragConfig.baseX = x;
+        textDragConfig.baseY = y;
+        element.setPointerCapture(event.pointerId);
+        event.preventDefault();
+
+        const handleMove = (moveEvent) => {
+          if (moveEvent.pointerId !== textDragConfig.pointerId) return;
+          const dx = moveEvent.clientX - textDragConfig.startX;
+          const dy = moveEvent.clientY - textDragConfig.startY;
+          const nextX = clampValue(textDragConfig.baseX + dx, TEXT_DRAG_LIMITS.x[0], TEXT_DRAG_LIMITS.x[1]);
+          const nextY = clampValue(textDragConfig.baseY + dy, TEXT_DRAG_LIMITS.y[0], TEXT_DRAG_LIMITS.y[1]);
+          applyTextOffset(element, nextX, nextY);
+        };
+
+        const release = (endEvent) => {
+          if (endEvent.pointerId !== textDragConfig.pointerId) return;
+          element.releasePointerCapture(textDragConfig.pointerId);
+          element.removeEventListener('pointermove', handleMove);
+          element.removeEventListener('pointerup', release);
+          element.removeEventListener('pointercancel', release);
+          textDragConfig.pointerId = null;
+        };
+
+        element.addEventListener('pointermove', handleMove);
+        element.addEventListener('pointerup', release);
+        element.addEventListener('pointercancel', release);
+      });
     };
 
     editableElements.forEach((el) => {
       el.setAttribute('contenteditable', 'true');
       el.setAttribute('spellcheck', 'false');
-      el.addEventListener('focus', () => setActiveEditable(el));
+      el.addEventListener('focus', (event) => {
+        showTextToolbarFor(el, event);
+      });
       el.addEventListener('click', (event) => {
-        setActiveEditable(el);
         event.stopPropagation();
+        showTextToolbarFor(el, event);
       });
       el.addEventListener('input', () => {
         autoAdjustBands();
       });
+      setupEditableDrag(el);
     });
 
-    document.addEventListener('click', (event) => {
-      if (!event.target.closest('[data-editable]') && !event.target.closest('.style-panel')) {
-        clearActiveEditable();
-      }
+    document.addEventListener('pointerdown', (event) => {
+      if (contextToolbar?.contains(event.target)) return;
+      if (event.target.closest('[data-editable]')) return;
+      if (event.target.closest('.header-left') || event.target.closest('.footer-band')) return;
+      clearActiveEditable();
+      hideContextToolbar();
     });
 
     document.addEventListener('keydown', (event) => {
       if (event.key === 'Escape') {
         clearActiveEditable();
+        hideContextToolbar();
       }
     });
-
-    fontFamilySelect?.addEventListener('change', () => {
+    toolbarFontSelect?.addEventListener('change', () => {
       if (!activeEditable) return;
-      activeEditable.style.fontFamily = fontFamilySelect.value;
+      activeEditable.style.fontFamily = toolbarFontSelect.value;
     });
 
-    fontSizeRange?.addEventListener('input', () => {
-      if (!fontSizeValue) return;
-      fontSizeValue.textContent = `${fontSizeRange.value}px`;
+    toolbarTextColor?.addEventListener('input', () => {
       if (!activeEditable) return;
-      activeEditable.style.fontSize = `${fontSizeRange.value}px`;
-      autoAdjustBands();
+      activeEditable.style.color = toolbarTextColor.value;
     });
 
-    fontColorInput?.addEventListener('input', () => {
-      if (!activeEditable) return;
-      activeEditable.style.color = fontColorInput.value;
+    sizeButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        if (!activeEditable) return;
+        const delta = button.dataset.size === 'plus' ? 2 : -2;
+        const styles = window.getComputedStyle(activeEditable);
+        const current = parseInt(styles.fontSize, 10) || 24;
+        const next = clampValue(current + delta, 12, 72);
+        activeEditable.style.fontSize = `${next}px`;
+        autoAdjustBands();
+      });
     });
 
-    bandColorInput?.addEventListener('input', updateBandColor);
-    bandAlphaRange?.addEventListener('input', updateBandColor);
+    toolbarBandColor?.addEventListener('input', updateBandColor);
+    toolbarBandOpacity?.addEventListener('input', updateBandColor);
+
+    textMoveBtn?.addEventListener('click', () => {
+      if (!activeEditable) return;
+      textDragConfig.enabled = !textDragConfig.enabled;
+      textMoveBtn.classList.toggle('active', textDragConfig.enabled);
+    });
+
+    const setBandMoveState = (shouldEnable) => {
+      if (!bandDragConfig) return;
+      bandDragConfig.enabled = shouldEnable;
+      if (!shouldEnable) {
+        bandDragConfig.pointerId = null;
+      }
+      bandMoveBtn?.classList.toggle('active', shouldEnable);
+    };
+
+    bandMoveBtn?.addEventListener('click', () => {
+      if (!activeBandTarget) return;
+      const enabling = bandDragConfig.target === activeBandTarget ? !bandDragConfig.enabled : true;
+      bandDragConfig.target = activeBandTarget;
+      setBandMoveState(enabling);
+    });
+
+    const attachBandInteractions = (element) => {
+      if (!element) return;
+      element.addEventListener('click', (event) => {
+        if (event.target.closest('[data-editable]')) return;
+        event.stopPropagation();
+        showBandToolbarFor(element, event);
+      });
+
+      element.addEventListener('pointerdown', (event) => {
+        if (!bandDragConfig?.enabled || bandDragConfig.target !== element) return;
+        if (event.target.closest('[data-editable]')) return;
+        const vars = bandShiftVars.get(element);
+        if (!vars) return;
+        bandDragConfig.pointerId = event.pointerId;
+        bandDragConfig.startX = event.clientX;
+        bandDragConfig.startY = event.clientY;
+        bandDragConfig.baseX = getCssVarNumber(vars.xVar);
+        bandDragConfig.baseY = getCssVarNumber(vars.yVar);
+        element.setPointerCapture(event.pointerId);
+        event.preventDefault();
+
+        const handleMove = (moveEvent) => {
+          if (moveEvent.pointerId !== bandDragConfig.pointerId) return;
+          const dx = moveEvent.clientX - bandDragConfig.startX;
+          const dy = moveEvent.clientY - bandDragConfig.startY;
+          const nextX = clampValue(bandDragConfig.baseX + dx, BAND_DRAG_LIMITS.x[0], BAND_DRAG_LIMITS.x[1]);
+          const nextY = clampValue(bandDragConfig.baseY + dy, BAND_DRAG_LIMITS.y[0], BAND_DRAG_LIMITS.y[1]);
+          root.style.setProperty(vars.xVar, `${nextX}px`);
+          root.style.setProperty(vars.yVar, `${nextY}px`);
+        };
+
+        const release = (endEvent) => {
+          if (endEvent.pointerId !== bandDragConfig.pointerId) return;
+          element.releasePointerCapture(bandDragConfig.pointerId);
+          element.removeEventListener('pointermove', handleMove);
+          element.removeEventListener('pointerup', release);
+          element.removeEventListener('pointercancel', release);
+          bandDragConfig.pointerId = null;
+        };
+
+        element.addEventListener('pointermove', handleMove);
+        element.addEventListener('pointerup', release);
+        element.addEventListener('pointercancel', release);
+      });
+    };
+
+    attachBandInteractions(headerBlock);
+    attachBandInteractions(footerBlock);
+    updateTextMoveButtonState();
+    bandMoveBtn?.setAttribute('disabled', 'disabled');
 
     const getToleranceValue = () => Number(toleranceRange?.value || 40);
 
@@ -2350,6 +2728,8 @@
       scaleVar,
       minScale = 0.5,
       maxScale = 2.5,
+      clampX = [-300, 300],
+      clampY = [-300, 300],
     }) => {
       if (!element) return;
       const state = {
@@ -2359,6 +2739,8 @@
       };
 
       const apply = () => {
+        state.x = clampValue(state.x, clampX[0], clampX[1]);
+        state.y = clampValue(state.y, clampY[0], clampY[1]);
         root.style.setProperty(dxVar, `${state.x}px`);
         root.style.setProperty(dyVar, `${state.y}px`);
         root.style.setProperty(scaleVar, String(state.scale));
@@ -2489,8 +2871,10 @@
       dxVar: '--logo-shift-x',
       dyVar: '--logo-shift-y',
       scaleVar: '--logo-scale',
-      minScale: 0.4,
-      maxScale: 1.8,
+      minScale: 0.3,
+      maxScale: 2.3,
+      clampX: [-420, 420],
+      clampY: [-320, 320],
     });
 
     const setupTextDragHandle = (handle, xVar, yVar) => {
@@ -2553,6 +2937,7 @@
 
     const initialBgMode = Array.from(bgModeInputs).find((input) => input.checked)?.value || 'solid';
     setBackgroundMode(initialBgMode);
+    syncBandInputsFromCss();
     updateBandColor();
     autoAdjustBands();
   </script>
