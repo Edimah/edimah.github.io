@@ -1034,37 +1034,41 @@
     <!-- COLONNE GAUCHE -->
     <div class="controls">
       <div class="action-card">
-        <h2 class="action-title"><span class="action-number">1.</span>Importer un logo</h2>
-        <p class="action-instructions">Chargez le logo (PNG/JPG) puis ajustez-le directement sur l’aperçu (drag + zoom).
-        </p>
+        <h2 class="action-title"><span class="action-number">1.</span>Importer le logo</h2>
         <input id="logoInput" type="file" accept="image/*" />
+        <p class="action-instructions">Taille et emplacement ajustables directement sur l'affiche.
+        </p>
       </div>
 
       <div class="action-card">
-        <h2 class="action-title"><span class="action-number">2.</span>Importer l'image produit</h2>
-        <p class="action-instructions">Sélectionnez la photo du produit et appliquez le détourage.</p>
+        <h2 class="action-title"><span class="action-number">2.</span>Importer une photo du produit</h2>
+        <p class="action-instructions">Photo <b><u>centrée</u></b>, soit prise </p>
+        <ul class="action-instructions">
+          <li><i>depuis votre appareil</i> 📸</li>
+          <li><i>sur internet </i> 🌐</li>
+        </ul>
         <input id="productInput" type="file" accept="image/*" />
-
+        <p class="action-instructions"><b>L'IA retire automatiquement l'arrière-plan de la photo.</b></p>
         <fieldset class="detourage-panel">
-          <legend>🪄 Détourage</legend>
+          <legend>🪄 Paramètres de détourage par IA</legend>
           <div class="detourage-modes">
             <label><input type="radio" name="detourageMode" value="auto" checked />Auto (recommandé)</label>
             <label><input type="radio" name="detourageMode" value="ia" />Forcer IA (U²-Net)</label>
-            <label><input type="radio" name="detourageMode" value="color" />Forcer détourage Couleur</label>
+            <label><input type="radio" name="detourageMode" value="color" />Forcer détourage sans IA</label>
           </div>
           <div class="tolerance-control" id="toleranceControl">
             <label for="toleranceRange">Tolérance <span id="toleranceValue">40</span></label>
             <input type="range" id="toleranceRange" min="0" max="60" value="40" />
           </div>
-          <div class="model-choice">
-            <span>Modèle IA</span>
+          <div class="model-choice" style="color:DodgerBlue;">
+            <span>Modèle d'IA utilisé</span>
             <label>
               <input type="radio" name="u2netModel" value="u2netp.onnx" checked />
-              <span>u2netp.onnx <small>(fond uni)</small></span>
+              <span>fond uni <small>(u2netp.onnx)</small></span>
             </label>
             <label>
               <input type="radio" name="u2netModel" value="u2net.onnx" />
-              <span>u2net.onnx <small>(images encombrées)</small></span>
+              <span>fond encombré <small>(u2net.onnx)</small></span>
             </label>
           </div>
           <p class="detourage-note">Les images restent sur votre appareil.</p>
@@ -1074,8 +1078,6 @@
       </div>
 
       <div class="action-card">
-        <h2 class="action-title">Actions de l'affiche</h2>
-        <p class="action-instructions">Actualisez vos réglages ou exportez la création finale en un clic.</p>
         <div class="global-actions">
           <button type="button" id="updatePosterBtn">Mettre à jour l'affiche</button>
           <button type="button" id="resetPosterBtn" class="secondary">Réinitialiser l'affiche</button>
