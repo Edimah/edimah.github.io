@@ -23,10 +23,11 @@
       --radius: 18px;
       --header-width: 70%;
       --header-depth: 120px;
-      --header-angle: 88%;
+      --header-chamfer: 85%;
       --logo-scale: 1;
       --footer-depth: 140px;
       --footer-notch: 8%;
+      --footer-notch-right: 0%;
       --band-color: #0c8b64;
       --header-shift-x: 0px;
       --header-shift-y: 0px;
@@ -38,6 +39,12 @@
       --gommette-shift-x: 0px;
       --gommette-shift-y: 0px;
       --gommette-scale: 1;
+      --gommette-width: 150px;
+      --gommette-height: 150px;
+      --header-corner-x: 6%;
+      --header-corner-y: 12%;
+      --footer-corner-x: 5%;
+      --footer-corner-y: 10%;
     }
 
     * {
@@ -50,8 +57,9 @@
       margin: 0;
       padding: 20px;
       display: flex;
-      gap: 20px;
-      align-items: flex-start;
+      flex-direction: column;
+      gap: 18px;
+      align-items: stretch;
     }
 
     /* PANNEAUX */
@@ -365,21 +373,93 @@
       right: 24px;
     }
 
-    .affiche.has-model-bg .drag-handle-star {
+    .workspace {
       display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      padding-bottom: 8px;
     }
 
-    .affiche.has-model-bg .header-left,
-    .affiche.has-model-bg .footer-band {
-      background: rgba(5, 12, 10, .58);
+    .workspace>.controls,
+    .workspace>.controls-right {
+      flex: 0 0 320px;
+      min-width: 280px;
+    }
+
+    .workspace>.preview-container {
+      flex: 0 0 640px;
+      min-width: 600px;
+    }
+
+    .global-actions {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      padding: 0 12px 32px;
+      flex-wrap: wrap;
+    }
+
+    .global-actions button {
+      flex: 1 1 240px;
+      font-size: 1rem;
+      padding: 14px;
+    }
+
+    .global-actions button.secondary {
+      background: #fff;
+      color: var(--green);
+      border: 1px solid rgba(10, 127, 90, .2);
+    }
+
+    .context-toolbar {
+      position: absolute;
+      background: rgba(18, 41, 34, 0.94);
       color: #fff;
-      backdrop-filter: blur(5px);
+      border-radius: 10px;
+      padding: 8px 10px;
+      display: none;
+      gap: 8px;
+      align-items: center;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+      font-size: .75rem;
+      z-index: 1200;
     }
 
-    .affiche.has-model-bg .header-left::after,
-    .affiche.has-model-bg .footer-band::before {
-      display: none;
+    .context-toolbar.is-visible {
+      display: inline-flex;
     }
+
+    .context-toolbar select,
+    .context-toolbar input[type="color"] {
+      border: none;
+      border-radius: 6px;
+      height: 32px;
+      font-size: .75rem;
+      padding: 0 6px;
+    }
+
+    .toolbar-button {
+      background: rgba(255, 255, 255, .12);
+      border: none;
+      color: #fff;
+      border-radius: 6px;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-size: .8rem;
+    }
+
+    .toolbar-button.active {
+      background: rgba(255, 255, 255, .3);
+    }
+
+    .context-toolbar .size-controls {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
 
     .controls select {
       width: 100%;
@@ -638,10 +718,22 @@
       width: clamp(45%, var(--header-width), 95%);
       min-height: clamp(90px, var(--header-depth), 280px);
       padding: clamp(12px, calc(var(--header-depth) * 0.15), 32px) 18px clamp(18px, calc(var(--header-depth) * 0.35), 48px) 22px;
-      border-bottom-right-radius: 38px 42px;
-      /* courbure douce */
-      clip-path: path("M0,0 H100% L85%,100 Q75%,110 0,100 Z");
-      /* arrondi organique */
+      border-radius: 34px;
+      overflow: hidden;
+      -webkit-clip-path: polygon(0% var(--header-corner-y),
+          var(--header-corner-x) 0%,
+          calc(100% - var(--header-corner-x)) 0%,
+          100% var(--header-corner-y),
+          var(--header-chamfer, 85%) 100%,
+          var(--header-corner-x) 100%,
+          0% calc(100% - var(--header-corner-y)));
+      clip-path: polygon(0% var(--header-corner-y),
+          var(--header-corner-x) 0%,
+          calc(100% - var(--header-corner-x)) 0%,
+          100% var(--header-corner-y),
+          var(--header-chamfer, 85%) 100%,
+          var(--header-corner-x) 100%,
+          0% calc(100% - var(--header-corner-y)));
       z-index: 12;
       box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
       transition: width .2s ease, min-height .2s ease, padding .2s ease, transform .2s ease;
@@ -657,7 +749,20 @@
           rgba(255, 255, 255, .35) 6%,
           rgba(255, 255, 255, .15) 20%,
           rgba(255, 255, 255, 0) 40%);
-      clip-path: polygon(0 0, 100% 0, var(--header-angle) 100%, 0 100%);
+      -webkit-clip-path: polygon(0% var(--header-corner-y),
+          var(--header-corner-x) 0%,
+          calc(100% - var(--header-corner-x)) 0%,
+          100% var(--header-corner-y),
+          var(--header-chamfer, 85%) 100%,
+          var(--header-corner-x) 100%,
+          0% calc(100% - var(--header-corner-y)));
+      clip-path: polygon(0% var(--header-corner-y),
+          var(--header-corner-x) 0%,
+          calc(100% - var(--header-corner-x)) 0%,
+          100% var(--header-corner-y),
+          var(--header-chamfer, 85%) 100%,
+          var(--header-corner-x) 100%,
+          0% calc(100% - var(--header-corner-y)));
       filter: blur(18px);
       opacity: .75;
       z-index: -1;
@@ -690,9 +795,14 @@
       align-items: center;
       overflow: hidden;
       border: none;
-      z-index: 4;
-      transform: translate(var(--logo-shift-x, 0px), var(--logo-shift-y, 0px));
+      z-index: 40;
+      transform: translate(var(--logo-shift-x, 0px), var(--logo-shift-y, 0px)) scale(var(--logo-scale, 1));
       transition: transform .25s ease;
+      touch-action: none;
+      cursor: grab;
+      user-select: none;
+      isolation: isolate;
+      transform-origin: center center;
     }
 
     .logo img {
@@ -715,8 +825,8 @@
       position: absolute;
       top: 120px;
       right: 35px;
-      width: 150px;
-      height: 150px;
+      width: var(--gommette-width, 150px);
+      height: var(--gommette-height, 150px);
       background: radial-gradient(circle, #ff9a7a 0%, #ff7b5a 45%, #ff5c32 100%);
       border-radius: 50%;
       color: #fff;
@@ -807,7 +917,8 @@
     }
 
     .product-image.dragging,
-    .gommette.dragging {
+    .gommette.dragging,
+    .logo.dragging {
       cursor: grabbing;
     }
 
@@ -858,7 +969,24 @@
       display: flex;
       flex-direction: column;
       gap: 6px;
-      clip-path: polygon(0 var(--footer-notch), 100% 0, 100% 100%, 0 100%);
+      border-radius: 36px;
+      overflow: hidden;
+      -webkit-clip-path: polygon(0% calc(var(--footer-notch) + var(--footer-corner-y)),
+          var(--footer-corner-x) var(--footer-notch),
+          calc(100% - var(--footer-corner-x)) var(--footer-notch-right, 0%),
+          100% calc(var(--footer-notch-right, 0%) + var(--footer-corner-y)),
+          100% calc(100% - var(--footer-corner-y)),
+          calc(100% - var(--footer-corner-x)) 100%,
+          var(--footer-corner-x) 100%,
+          0% calc(100% - var(--footer-corner-y)));
+      clip-path: polygon(0% calc(var(--footer-notch) + var(--footer-corner-y)),
+          var(--footer-corner-x) var(--footer-notch),
+          calc(100% - var(--footer-corner-x)) var(--footer-notch-right, 0%),
+          100% calc(var(--footer-notch-right, 0%) + var(--footer-corner-y)),
+          100% calc(100% - var(--footer-corner-y)),
+          calc(100% - var(--footer-corner-x)) 100%,
+          var(--footer-corner-x) 100%,
+          0% calc(100% - var(--footer-corner-y)));
       transition: .2s ease;
       backdrop-filter: blur(1px);
       isolation: isolate;
@@ -875,7 +1003,22 @@
           rgba(255, 255, 255, .25) 0%,
           rgba(255, 255, 255, .05) 55%,
           rgba(255, 255, 255, 0) 100%);
-      clip-path: polygon(0 var(--footer-notch), 100% 0, 100% 100%, 0 100%);
+      -webkit-clip-path: polygon(0% calc(var(--footer-notch) + var(--footer-corner-y)),
+          var(--footer-corner-x) var(--footer-notch),
+          calc(100% - var(--footer-corner-x)) var(--footer-notch-right, 0%),
+          100% calc(var(--footer-notch-right, 0%) + var(--footer-corner-y)),
+          100% calc(100% - var(--footer-corner-y)),
+          calc(100% - var(--footer-corner-x)) 100%,
+          var(--footer-corner-x) 100%,
+          0% calc(100% - var(--footer-corner-y)));
+      clip-path: polygon(0% calc(var(--footer-notch) + var(--footer-corner-y)),
+          var(--footer-corner-x) var(--footer-notch),
+          calc(100% - var(--footer-corner-x)) var(--footer-notch-right, 0%),
+          100% calc(var(--footer-notch-right, 0%) + var(--footer-corner-y)),
+          100% calc(100% - var(--footer-corner-y)),
+          calc(100% - var(--footer-corner-x)) 100%,
+          var(--footer-corner-x) 100%,
+          0% calc(100% - var(--footer-corner-y)));
       filter: blur(26px);
       opacity: .8;
       pointer-events: none;
@@ -901,154 +1044,159 @@
     modification ou diffusion interdite sans autorisation écrite de l’autrice.
   </div>
 
-  <!-- COLONNE GAUCHE -->
-  <div class="controls">
-    <div class="action-card">
-      <h2 class="action-title"><span class="action-number">1.</span>Importer un logo</h2>
-      <p class="action-instructions">Chargez le logo (PNG/JPG) puis ajustez sa taille.</p>
-      <input id="logoInput" type="file" accept="image/*" />
-      <div class="range-control">
-        <label for="logoScaleRange">Taille logo <span id="logoScaleValue">100%</span></label>
-        <input id="logoScaleRange" type="range" min="50" max="150" value="100" />
+  <div class="workspace">
+    <!-- COLONNE GAUCHE -->
+    <div class="controls">
+      <div class="action-card">
+        <h2 class="action-title"><span class="action-number">1.</span>Importer un logo</h2>
+        <p class="action-instructions">Chargez le logo (PNG/JPG) puis ajustez-le directement sur l’aperçu (drag + zoom).
+        </p>
+        <input id="logoInput" type="file" accept="image/*" />
+      </div>
+
+      <div class="action-card">
+        <h2 class="action-title"><span class="action-number">2.</span>Importer l'image produit</h2>
+        <p class="action-instructions">Sélectionnez la photo du produit et appliquez le détourage.</p>
+        <input id="productInput" type="file" accept="image/*" />
+
+        <fieldset class="detourage-panel">
+          <legend>🪄 Détourage</legend>
+          <div class="detourage-modes">
+            <label><input type="radio" name="detourageMode" value="auto" checked />Auto (recommandé)</label>
+            <label><input type="radio" name="detourageMode" value="ia" />Forcer IA (U²-Net)</label>
+            <label><input type="radio" name="detourageMode" value="color" />Forcer détourage Couleur</label>
+          </div>
+          <div class="tolerance-control" id="toleranceControl">
+            <label for="toleranceRange">Tolérance <span id="toleranceValue">40</span></label>
+            <input type="range" id="toleranceRange" min="0" max="60" value="40" />
+          </div>
+          <div class="model-choice">
+            <span>Modèle IA</span>
+            <label>
+              <input type="radio" name="u2netModel" value="u2netp.onnx" checked />
+              <span>u2netp.onnx <small>(fond uni)</small></span>
+            </label>
+            <label>
+              <input type="radio" name="u2netModel" value="u2net.onnx" />
+              <span>u2net.onnx <small>(images encombrées)</small></span>
+            </label>
+          </div>
+          <p class="detourage-note">Les images restent sur votre appareil.</p>
+        </fieldset>
+        <div class="detourage-status" id="detourageStatus">Initialisation de l'IA…</div>
+        <progress id="detourageProgress" class="progress" max="100" value="0" hidden></progress>
       </div>
     </div>
 
-    <div class="action-card">
-      <h2 class="action-title"><span class="action-number">2.</span>Importer l'image produit</h2>
-      <p class="action-instructions">Sélectionnez la photo du produit et appliquez le détourage.</p>
-      <input id="productInput" type="file" accept="image/*" />
+    <!-- PREVIEW CENTRE -->
+    <!-- PREVIEW CENTRE -->
+    <div class="preview-container">
+      <div class="affiche" id="affiche">
+        <div id="bgLayer"></div>
+        <div class="header-left">
+          <p class="promo-title" id="afficheTitle" data-editable="header-title" data-label="Titre promo"
+            contenteditable="true" spellcheck="false">Promo d'automne - Vitamine D</p>
+          <p class="promo-date" id="afficheDate" data-editable="header-date" data-label="Date/accroche"
+            contenteditable="true" spellcheck="false">Du 1er au 15 novembre</p>
+        </div>
+        <button type="button" class="drag-handle-star header-star" id="headerDragHandle"
+          aria-label="Déplacer le texte du bandeau haut">✶</button>
 
-      <fieldset class="detourage-panel">
-        <legend>🪄 Détourage</legend>
-        <div class="detourage-modes">
-          <label><input type="radio" name="detourageMode" value="auto" checked />Auto (recommandé)</label>
-          <label><input type="radio" name="detourageMode" value="ia" />Forcer IA (U²-Net)</label>
-          <label><input type="radio" name="detourageMode" value="color" />Forcer détourage Couleur</label>
+        <div class="logo" id="afficheLogo"><span class="placeholder">logo</span></div>
+        <div class="gommette" id="afficheBadge"><span id="afficheBadgeText" data-editable="badge"
+            data-label="Texte gommette" contenteditable="true" spellcheck="false">-20%</span></div>
+        <div class="product-image" id="afficheProduct">
+          <div class="product-placeholder">Photo du produit<br />ici</div>
         </div>
-        <div class="tolerance-control" id="toleranceControl">
-          <label for="toleranceRange">Tolérance <span id="toleranceValue">40</span></label>
-          <input type="range" id="toleranceRange" min="0" max="60" value="40" />
+
+        <div class="footer-band">
+          <div class="footer-title" id="afficheProductName" data-editable="footer-title" data-label="Titre bas"
+            contenteditable="true" spellcheck="false">Vitamine D3 Senior 1000 UI</div>
+          <div class="footer-subtitle" id="afficheProductSubtitle" data-editable="footer-subtitle"
+            data-label="Sous-titre bas" contenteditable="true" spellcheck="false">Demandez conseil à votre pharmacien
+          </div>
         </div>
-        <div class="model-choice">
-          <span>Modèle IA</span>
-          <label>
-            <input type="radio" name="u2netModel" value="u2netp.onnx" checked />
-            <span>u2netp.onnx <small>(fond uni)</small></span>
-          </label>
-          <label>
-            <input type="radio" name="u2netModel" value="u2net.onnx" />
-            <span>u2net.onnx <small>(images encombrées)</small></span>
-          </label>
+        <button type="button" class="drag-handle-star footer-star" id="footerDragHandle"
+          aria-label="Déplacer le texte du bandeau bas">✶</button>
+      </div>
+    </div>
+
+    <!-- PANNEAU DROIT : Création & Contrôles -->
+    <div class="controls controls-right">
+      <div class="action-card">
+        <h2 class="action-title"><span class="action-number">3.</span>Modifier le texte</h2>
+        <p class="action-instructions">Cliquez directement sur les zones de texte de l'affiche pour les modifier puis
+          ajustez-les via la barre contextuelle qui apparaît juste en dessous.</p>
+        <div class="editor-status" id="editorStatus">Sélectionnez un bloc de texte pour afficher la réglette
+          contextuelle.</div>
+      </div>
+
+      <div class="action-card">
+        <h2 class="action-title"><span class="action-number">4.</span>Modifier les couleurs</h2>
+        <p class="action-instructions">Choisissez un type d'arrière-plan puis ajustez le dégradé et la couleur des
+          bandeaux.</p>
+
+        <div class="bg-mode">
+          <label class="bg-mode-option"><input type="radio" name="bgMode" value="solid" />Couleur unie</label>
+          <input type="color" id="solidBgColor" value="#eaf7f1" />
+
+          <label class="bg-mode-option"><input type="radio" name="bgMode" value="image" />Image modèle</label>
+          <input type="file" id="bgImageInput" accept="image/*" />
+          <button type="button" id="bgImageClearBtn" class="secondary" disabled>Retirer l'image</button>
+
+          <label class="bg-mode-option"><input type="radio" name="bgMode" value="generated" checked />Fond
+            généré</label>
+          <select id="bgStyleSelect">
+            <option value="bubbles">Bulles</option>
+            <option value="waves">Ondes</option>
+            <option value="dots">Pointillé</option>
+            <option value="cross">Motif croix</option>
+          </select>
+
+          <div class="palette-choice">
+            <label><input type="radio" name="bgPaletteMode" value="logo" checked />Palette du logo</label>
+            <label><input type="radio" name="bgPaletteMode" value="custom" />Dégradé personnalisé</label>
+          </div>
+          <div class="custom-palette-fields" id="customPaletteFields">
+            <input type="color" id="customColorA" value="#0A7F5A" />
+            <input type="color" id="customColorB" value="#A4D4AE" />
+          </div>
+          <button type="button" id="bgRandomBtn" class="secondary">Aléatoire</button>
         </div>
-        <p class="detourage-note">Les images restent sur votre appareil.</p>
-      </fieldset>
-      <div class="detourage-status" id="detourageStatus">Initialisation de l'IA…</div>
-      <progress id="detourageProgress" class="progress" max="100" value="0" hidden></progress>
+
+      </div>
+    </div>
+
+  </div>
+  </div>
+
+  <div id="contextToolbar" class="context-toolbar">
+    <div id="bandToolbar" class="toolbar-section">
+      <label for="toolbarBandColor" style="margin:0;font-size:.7rem;">Bandeaux</label>
+      <input type="color" id="toolbarBandColor" value="#0a7f5a" />
+      <input type="range" id="toolbarBandOpacity" min="0" max="100" value="95" />
+      <span id="toolbarBandOpacityValue">95%</span>
+    </div>
+    <div id="textToolbar" class="toolbar-section">
+      <select id="toolbarFontSelect">
+        <option value="Poppins">Poppins</option>
+        <option value="Playfair Display">Playfair Display</option>
+        <option value="Montserrat">Montserrat</option>
+        <option value="Source Serif Pro">Source Serif Pro</option>
+        <option value="Raleway">Raleway</option>
+      </select>
+      <div class="size-controls">
+        <button type="button" class="toolbar-button" data-size="minus">−</button>
+        <button type="button" class="toolbar-button" data-size="plus">+</button>
+      </div>
+      <input type="color" id="toolbarTextColor" value="#0a7f5a" />
     </div>
   </div>
 
-  <!-- PREVIEW CENTRE -->
-  <!-- PREVIEW CENTRE -->
-  <div class="preview-container">
-    <div class="affiche" id="affiche">
-      <div id="bgLayer"></div>
-      <div class="header-left">
-        <p class="promo-title" id="afficheTitle" data-editable="header-title" data-label="Titre promo"
-          contenteditable="true" spellcheck="false">Promo d'automne - Vitamine D</p>
-        <p class="promo-date" id="afficheDate" data-editable="header-date" data-label="Date/accroche"
-          contenteditable="true" spellcheck="false">Du 1er au 15 novembre</p>
-      </div>
-      <button type="button" class="drag-handle-star header-star" id="headerDragHandle"
-        aria-label="Déplacer le texte du bandeau haut">✶</button>
-
-      <div class="logo" id="afficheLogo"><span class="placeholder">logo</span></div>
-      <div class="gommette" id="afficheBadge"><span id="afficheBadgeText" data-editable="badge"
-          data-label="Texte gommette" contenteditable="true" spellcheck="false">-20%</span></div>
-      <div class="product-image" id="afficheProduct">
-        <div class="product-placeholder">Photo du produit<br />ici</div>
-      </div>
-
-      <div class="footer-band">
-        <div class="footer-title" id="afficheProductName" data-editable="footer-title" data-label="Titre bas"
-          contenteditable="true" spellcheck="false">Vitamine D3 Senior 1000 UI</div>
-        <div class="footer-subtitle" id="afficheProductSubtitle" data-editable="footer-subtitle"
-          data-label="Sous-titre bas" contenteditable="true" spellcheck="false">Demandez conseil à votre pharmacien
-        </div>
-      </div>
-      <button type="button" class="drag-handle-star footer-star" id="footerDragHandle"
-        aria-label="Déplacer le texte du bandeau bas">✶</button>
-    </div>
-  </div>
-
-  <!-- PANNEAU DROIT : Création & Contrôles -->
-  <div class="controls controls-right">
-    <div class="action-card">
-      <h2 class="action-title"><span class="action-number">3.</span>Modifier le texte</h2>
-      <p class="action-instructions">Cliquez sur un texte de l'affiche puis personnalisez sa police, sa taille et sa
-        couleur.</p>
-      <div class="editor-status" id="editorStatus">Sélectionnez un bloc de texte.</div>
-      <div class="style-panel">
-        <label for="fontFamilySelect">Police</label>
-        <select id="fontFamilySelect">
-          <option value="Poppins">Poppins</option>
-          <option value="Playfair Display">Playfair Display</option>
-          <option value="Montserrat">Montserrat</option>
-          <option value="Source Serif Pro">Source Serif Pro</option>
-          <option value="Raleway">Raleway</option>
-        </select>
-
-        <label for="fontSizeRange">Taille <span id="fontSizeValue">24px</span></label>
-        <input type="range" id="fontSizeRange" min="14" max="64" value="24" />
-
-        <label for="fontColorInput">Couleur</label>
-        <input type="color" id="fontColorInput" value="#0a7f5a" />
-      </div>
-    </div>
-
-    <div class="action-card">
-      <h2 class="action-title"><span class="action-number">4.</span>Modifier les couleurs</h2>
-      <p class="action-instructions">Choisissez un type d'arrière-plan puis ajustez le dégradé et la couleur des
-        bandeaux.</p>
-
-      <div class="bg-mode">
-        <label class="bg-mode-option"><input type="radio" name="bgMode" value="solid" />Couleur unie</label>
-        <input type="color" id="solidBgColor" value="#eaf7f1" />
-
-        <label class="bg-mode-option"><input type="radio" name="bgMode" value="image" />Image modèle</label>
-        <input type="file" id="bgImageInput" accept="image/*" />
-        <button type="button" id="bgImageClearBtn" class="secondary" disabled>Retirer l'image</button>
-
-        <label class="bg-mode-option"><input type="radio" name="bgMode" value="generated" checked />Fond généré</label>
-        <select id="bgStyleSelect">
-          <option value="bubbles">Bulles</option>
-          <option value="waves">Ondes</option>
-          <option value="dots">Pointillé</option>
-          <option value="cross">Motif croix</option>
-        </select>
-
-        <div class="palette-choice">
-          <label><input type="radio" name="bgPaletteMode" value="logo" checked />Palette du logo</label>
-          <label><input type="radio" name="bgPaletteMode" value="custom" />Dégradé personnalisé</label>
-        </div>
-        <div class="custom-palette-fields" id="customPaletteFields">
-          <input type="color" id="customColorA" value="#0A7F5A" />
-          <input type="color" id="customColorB" value="#A4D4AE" />
-        </div>
-        <button type="button" id="bgRandomBtn" class="secondary">Aléatoire</button>
-      </div>
-
-      <div class="band-color-panel">
-        <label for="bandColorInput">Couleur des bandeaux</label>
-        <input type="color" id="bandColorInput" value="#0a7f5a" />
-        <label for="bandAlphaRange">Opacité <span id="bandAlphaValue">95%</span></label>
-        <input type="range" id="bandAlphaRange" min="0" max="100" value="95" />
-      </div>
-
-      <div class="action-buttons">
-        <button type="button" id="updatePosterBtn">Mettre à jour l'affiche</button>
-        <button type="button" id="downloadPosterBtn" class="download-btn">Télécharger l'affiche</button>
-      </div>
-    </div>
+  <div class="global-actions">
+    <button type="button" id="updatePosterBtn">Mettre à jour l'affiche</button>
+    <button type="button" id="resetPosterBtn" class="secondary">Réinitialiser l'affiche</button>
+    <button type="button" id="downloadPosterBtn" class="download-btn">Télécharger l'affiche</button>
   </div>
 
   <!-- SCRIPTS -->
@@ -1075,8 +1223,6 @@
     // --- Références DOM ---
     const logoInput = document.getElementById('logoInput');
     const productInput = document.getElementById('productInput');
-    const logoScaleRange = document.getElementById('logoScaleRange');
-    const logoScaleValue = document.getElementById('logoScaleValue');
     const detourageStatusEl = document.getElementById('detourageStatus');
     const detourProgress = document.getElementById('detourageProgress');
     const toleranceRange = document.getElementById('toleranceRange');
@@ -1089,6 +1235,7 @@
     const afficheTitle = document.getElementById('afficheTitle');
     const afficheDate = document.getElementById('afficheDate');
     const afficheBadge = document.getElementById('afficheBadge');
+    const afficheBadgeText = document.getElementById('afficheBadgeText');
     const afficheProductName = document.getElementById('afficheProductName');
     const afficheProductSubtitle = document.getElementById('afficheProductSubtitle');
     const afficheLogo = document.getElementById('afficheLogo');
@@ -1097,6 +1244,7 @@
     const bgRandomBtn = document.getElementById('bgRandomBtn');
     const bgLayer = document.getElementById('bgLayer');
     const updatePosterBtn = document.getElementById('updatePosterBtn');
+    const resetPosterBtn = document.getElementById('resetPosterBtn');
     const downloadPosterBtn = document.getElementById('downloadPosterBtn');
     const bgModeInputs = document.querySelectorAll('input[name="bgMode"]');
     const solidBgColorInput = document.getElementById('solidBgColor');
@@ -1106,25 +1254,54 @@
     const customPaletteFields = document.getElementById('customPaletteFields');
     const customColorAInput = document.getElementById('customColorA');
     const customColorBInput = document.getElementById('customColorB');
-    const bandColorInput = document.getElementById('bandColorInput');
-    const bandAlphaRange = document.getElementById('bandAlphaRange');
-    const bandAlphaValue = document.getElementById('bandAlphaValue');
-    const fontFamilySelect = document.getElementById('fontFamilySelect');
-    const fontSizeRange = document.getElementById('fontSizeRange');
-    const fontSizeValue = document.getElementById('fontSizeValue');
-    const fontColorInput = document.getElementById('fontColorInput');
     const editorStatus = document.getElementById('editorStatus');
     const editableElements = document.querySelectorAll('[data-editable]');
     const headerDragHandle = document.getElementById('headerDragHandle');
     const footerDragHandle = document.getElementById('footerDragHandle');
+    const headerBlock = document.querySelector('.header-left');
+    const footerBlock = document.querySelector('.footer-band');
+    const contextToolbar = document.getElementById('contextToolbar');
+    const bandToolbar = document.getElementById('bandToolbar');
+    const textToolbar = document.getElementById('textToolbar');
+    const toolbarBandColor = document.getElementById('toolbarBandColor');
+    const toolbarBandOpacity = document.getElementById('toolbarBandOpacity');
+    const toolbarBandOpacityValue = document.getElementById('toolbarBandOpacityValue');
+    const toolbarFontSelect = document.getElementById('toolbarFontSelect');
+    const toolbarTextColor = document.getElementById('toolbarTextColor');
+    const sizeButtons = document.querySelectorAll('.size-controls .toolbar-button');
 
     const root = document.documentElement;
 
     const DEFAULT_COLORS = ['#0A7F5A', '#4EB190', '#9FD7B8'];
+    const DEFAULT_CUSTOM_A = '#0A7F5A';
+    const DEFAULT_CUSTOM_B = '#A4D4AE';
+    const DEFAULT_BAND_COLOR = '#0a7f5a';
+    const DEFAULT_TOLERANCE = 40;
+    const DEFAULT_SOLID_BG = '#eaf7f1';
     const sampleCanvas = document.createElement('canvas');
     const sampleCtx = sampleCanvas.getContext('2d');
     let brandColors = [];
     let colorThiefInstance = null;
+    const DEFAULT_TEXTS = Object.freeze({
+      title: "Promo d'automne - Vitamine D",
+      date: 'Du 1er au 15 novembre',
+      badge: '-20%',
+      productName: 'Vitamine D3 Senior 1000 UI',
+      productSubtitle: 'Demandez conseil à votre pharmacien',
+    });
+    const DEFAULT_PLACEHOLDERS = Object.freeze({
+      logo: '<span class="placeholder">logo</span>',
+      product: '<div class="product-placeholder">Photo du produit<br />ici</div>',
+    });
+    const EDGE_TOLERANCE = 26;
+    const POSTER_BASE_WIDTH = 600;
+    const HEADER_WIDTH_LIMITS = [45, 95];
+    const HEADER_DEPTH_LIMITS = [90, 280];
+    const HEADER_CHAMFER_LIMITS = [55, 100];
+    const FOOTER_DEPTH_LIMITS = [120, 360];
+    const FOOTER_NOTCH_LIMITS = [0, 40];
+    const GOMMETTE_WIDTH_LIMITS = [90, 280];
+    const GOMMETTE_HEIGHT_LIMITS = [90, 280];
 
     const state = {
       lastLogoImage: null,
@@ -1145,7 +1322,35 @@
     ];
     let bgImageDataURL = null;
     const baseBackground = getComputedStyle(affiche).background;
+    let activeToolbarMode = null;
+    let activeBandTarget = null;
+    let bandDragConfig = null;
+    let textDragConfig = null;
     let html2canvasPromise;
+    const textOffsets = new WeakMap();
+    const bandShiftVars = new Map([
+      [headerBlock, { xVar: '--header-shift-x', yVar: '--header-shift-y' }],
+      [footerBlock, { xVar: '--footer-shift-x', yVar: '--footer-shift-y' }],
+    ]);
+    const TEXT_DRAG_LIMITS = { x: [-220, 220], y: [-160, 240] };
+    const BAND_DRAG_LIMITS = { x: [-240, 240], y: [-240, 240] };
+    const createTextDragState = () => ({
+      enabled: false,
+      pointerId: null,
+      startX: 0,
+      startY: 0,
+      baseX: 0,
+      baseY: 0,
+    });
+    textDragConfig = createTextDragState();
+    bandDragConfig = {
+      pointerId: null,
+      startX: 0,
+      startY: 0,
+      baseX: 0,
+      baseY: 0,
+      target: null,
+    };
 
     const selectedModelInput = document.querySelector('input[name="u2netModel"]:checked');
     if (selectedModelInput?.value) {
@@ -1215,11 +1420,26 @@
     };
 
     const enableTextDragMode = (enabled) => {
-      if (!affiche) return;
-      affiche.classList.toggle('has-model-bg', enabled);
       if (!enabled) {
         resetTextPositions();
       }
+    };
+
+    const manualBandOverrides = new Set();
+
+    const parseCssNumber = (cssVar, fallback = 0) => {
+      const value = parseFloat(getComputedStyle(root).getPropertyValue(cssVar));
+      return Number.isFinite(value) ? value : fallback;
+    };
+
+    const setBandVarManual = (cssVar, value, unit = 'px') => {
+      manualBandOverrides.add(cssVar);
+      setCssVarNumber(cssVar, value, unit);
+    };
+
+    const setBandVarIfUnlocked = (cssVar, value, unit = 'px') => {
+      if (manualBandOverrides.has(cssVar)) return;
+      setCssVarNumber(cssVar, value, unit);
     };
 
     const autoAdjustBands = () => {
@@ -1227,23 +1447,152 @@
       const headerChars = Math.max(headerText.length, 12);
       const headerWidth = clampValue(50 + headerChars * 0.4, 50, 95);
       const headerDepth = clampValue(110 + headerChars * 0.45, 90, 240);
-      setCssVarNumber('--header-width', headerWidth, '%');
-      setCssVarNumber('--header-depth', headerDepth, 'px');
+      setBandVarIfUnlocked('--header-width', headerWidth, '%');
+      setBandVarIfUnlocked('--header-depth', headerDepth, 'px');
 
       const footerText = `${afficheProductName?.textContent || ''} ${afficheProductSubtitle?.textContent || ''}`.trim();
       const footerChars = Math.max(footerText.length, 18);
       const footerDepth = clampValue(150 + footerChars * 0.3, 120, 300);
       const footerNotch = clampValue(8 + footerChars * 0.04, 4, 18);
-      setCssVarNumber('--footer-depth', footerDepth, 'px');
-      setCssVarNumber('--footer-notch', footerNotch, '%');
+      setBandVarIfUnlocked('--footer-depth', footerDepth, 'px');
+      setBandVarIfUnlocked('--footer-notch', footerNotch, '%');
     };
 
     const updateBandColor = () => {
-      const colorHex = bandColorInput?.value || '#0a7f5a';
-      const alpha = clampValue((bandAlphaRange?.value || 95) / 100, 0, 1);
-      if (bandAlphaValue) bandAlphaValue.textContent = `${Math.round(alpha * 100)}%`;
+      const colorHex = toolbarBandColor?.value || '#0a7f5a';
+      const alpha = clampValue((toolbarBandOpacity?.value || 95) / 100, 0, 1);
+      if (toolbarBandOpacityValue) toolbarBandOpacityValue.textContent = `${Math.round(alpha * 100)}%`;
       const rgbaColor = hexToRgba(colorHex, alpha);
       root.style.setProperty('--band-color', rgbaColor);
+    };
+
+    const resetDraggableTransforms = () => {
+      const defaults = {
+        '--header-shift-x': '0px',
+        '--header-shift-y': '0px',
+        '--footer-shift-x': '0px',
+        '--footer-shift-y': '0px',
+        '--product-shift-x': '0px',
+        '--product-shift-y': '0px',
+        '--product-scale': '1',
+        '--gommette-shift-x': '0px',
+        '--gommette-shift-y': '0px',
+        '--gommette-scale': '1',
+        '--logo-shift-x': '0px',
+        '--logo-shift-y': '0px',
+        '--logo-scale': '1',
+      };
+      Object.entries(defaults).forEach(([varName, value]) => root.style.setProperty(varName, value));
+    };
+
+    const restorePlaceholder = (container, html) => {
+      if (!container) return;
+      container.innerHTML = html;
+      container.classList.remove('has-image');
+    };
+
+    const resetEditableBlocks = () => {
+      const pairs = [
+        [afficheTitle, DEFAULT_TEXTS.title],
+        [afficheDate, DEFAULT_TEXTS.date],
+        [afficheBadgeText, DEFAULT_TEXTS.badge],
+        [afficheProductName, DEFAULT_TEXTS.productName],
+        [afficheProductSubtitle, DEFAULT_TEXTS.productSubtitle],
+      ];
+      pairs.forEach(([el, text]) => {
+        if (!el) return;
+        el.textContent = text;
+        el.style.fontFamily = '';
+        el.style.fontSize = '';
+        el.style.color = '';
+        el.style.transform = '';
+        textOffsets.delete(el);
+      });
+    };
+
+    const resetBandControlsToDefault = () => {
+      if (toolbarBandColor) toolbarBandColor.value = DEFAULT_BAND_COLOR;
+      if (toolbarBandOpacity) toolbarBandOpacity.value = 95;
+      if (toolbarBandOpacityValue) toolbarBandOpacityValue.textContent = '95%';
+      updateBandColor();
+    };
+
+    const resetDetourageControls = () => {
+      detourageModeInputs.forEach((input) => {
+        input.checked = input.value === DETOUR_MODE.AUTO;
+      });
+      modelChoiceInputs.forEach((input) => {
+        const isDefault = input.value === DEFAULT_MODEL_CHOICE;
+        input.checked = isDefault;
+        if (isDefault) modelChoice = input.value;
+      });
+      if (toleranceRange) {
+        toleranceRange.value = DEFAULT_TOLERANCE;
+        updateToleranceLabel();
+      }
+      setToleranceVisibility(false);
+      setDetourageStatus(`Réinitialisé. Modèle ${getModelLabel()} prêt.`, 'idle');
+    };
+
+    const resetBackgroundSettings = () => {
+      brandColors = [];
+      bgImageDataURL = null;
+      if (bgImageInput) bgImageInput.value = '';
+      bgModeInputs.forEach((input) => {
+        input.checked = input.value === 'generated';
+      });
+      paletteModeInputs.forEach((input) => {
+        input.checked = input.value === 'logo';
+      });
+      if (solidBgColorInput) solidBgColorInput.value = DEFAULT_SOLID_BG;
+      if (customColorAInput) customColorAInput.value = DEFAULT_CUSTOM_A;
+      if (customColorBInput) customColorBInput.value = DEFAULT_CUSTOM_B;
+      currentPaletteMode = 'logo';
+      setBackgroundMode('generated', { forceRandom: true });
+    };
+
+    const clearMediaState = () => {
+      state.lastLogoImage = null;
+      state.lastProductImage = null;
+      state.lastLogoFile = null;
+      state.lastProductFile = null;
+      state.lastLogoDataURL = null;
+      state.lastProductMode = null;
+      state.lastLogoMode = null;
+      state.logoManualColor = null;
+      logoInput && (logoInput.value = '');
+      productInput && (productInput.value = '');
+      restorePlaceholder(afficheLogo, DEFAULT_PLACEHOLDERS.logo);
+      restorePlaceholder(afficheProduct, DEFAULT_PLACEHOLDERS.product);
+      afficheLogo?.classList.remove('dragging');
+      afficheProduct?.classList.remove('dragging');
+    };
+
+    const resetMorphableShapes = () => {
+      manualBandOverrides.clear();
+      root.style.setProperty('--header-chamfer', '85%');
+      root.style.setProperty('--footer-notch-right', '0%');
+      root.style.setProperty('--gommette-width', '150px');
+      root.style.setProperty('--gommette-height', '150px');
+    };
+
+    const resetPoster = () => {
+      clearActiveEditable();
+      hideContextToolbar();
+      resetMorphableShapes();
+      resetEditableBlocks();
+      resetDraggableTransforms();
+      clearMediaState();
+      resetBandControlsToDefault();
+      resetBackgroundSettings();
+      customPalette = [
+        customColorAInput?.value || DEFAULT_CUSTOM_A,
+        customColorBInput?.value || DEFAULT_CUSTOM_B,
+      ];
+      resetDetourageControls();
+      if (bgImageClearBtn) bgImageClearBtn.setAttribute('disabled', 'disabled');
+      autoAdjustBands();
+      syncBackgroundControls();
     };
 
     const applySolidBackground = () => {
@@ -1371,14 +1720,78 @@
       autoAdjustBands();
     });
 
+    resetPosterBtn?.addEventListener('click', () => {
+      resetPoster();
+    });
+
+    const suspendTransformsForCapture = () => {
+      if (!affiche) return () => { };
+      const posterRect = affiche.getBoundingClientRect();
+      const adjustments = [];
+
+      const recordStyle = (el, prop) => {
+        let entry = adjustments.find((item) => item.el === el);
+        if (!entry) {
+          entry = { el, props: {} };
+          adjustments.push(entry);
+        }
+        if (!(prop in entry.props)) {
+          entry.props[prop] = el.style[prop] || '';
+        }
+      };
+
+      const transformTargets = [
+        headerBlock,
+        footerBlock,
+        afficheProduct,
+        afficheBadge,
+        afficheLogo,
+      ];
+
+      transformTargets.forEach((el) => {
+        if (!el) return;
+        const rect = el.getBoundingClientRect();
+        ['transform', 'width', 'height', 'left', 'top', 'right', 'bottom'].forEach((prop) => recordStyle(el, prop));
+        el.style.transform = 'none';
+        el.style.width = `${rect.width}px`;
+        el.style.height = `${rect.height}px`;
+        el.style.left = `${rect.left - posterRect.left}px`;
+        el.style.top = `${rect.top - posterRect.top}px`;
+        el.style.right = 'auto';
+        el.style.bottom = 'auto';
+      });
+
+      [afficheProduct, afficheLogo].forEach((el) => {
+        if (!el) return;
+        recordStyle(el, 'overflow');
+        el.style.overflow = 'visible';
+      });
+
+      return () => {
+        adjustments.forEach(({ el, props }) => {
+          if (!el) return;
+          Object.entries(props).forEach(([prop, value]) => {
+            if (value === '') {
+              el.style.removeProperty(prop);
+            } else {
+              el.style[prop] = value;
+            }
+          });
+        });
+      };
+    };
+
     downloadPosterBtn?.addEventListener('click', async () => {
       if (!affiche) return;
+      let restore = () => { };
       try {
         const html2canvas = await ensureHtml2Canvas();
+        restore = suspendTransformsForCapture();
         const canvas = await html2canvas(affiche, {
           backgroundColor: null,
           scale: Math.min(2, window.devicePixelRatio || 1.5),
         });
+        restore();
         const dataURL = canvas.toDataURL('image/png');
         const link = document.createElement('a');
         link.href = dataURL;
@@ -1389,6 +1802,8 @@
       } catch (error) {
         console.error('Téléchargement impossible', error);
         alert("Impossible de générer l'image. Réessayez ou utilisez le mode plein écran.");
+      } finally {
+        restore();
       }
     });
 
@@ -1418,17 +1833,15 @@
       if (!element) return;
       const styles = window.getComputedStyle(element);
       const family = FONT_OPTIONS.find((font) => styles.fontFamily.toLowerCase().includes(font.toLowerCase())) || FONT_OPTIONS[0];
-      if (fontFamilySelect) fontFamilySelect.value = family;
-      const size = clampValue(parseInt(styles.fontSize, 10) || 24, 14, 64);
-      if (fontSizeRange) {
-        fontSizeRange.value = size;
-        if (fontSizeValue) fontSizeValue.textContent = `${size}px`;
-      }
-      if (fontColorInput) fontColorInput.value = rgbStringToHex(styles.color);
+      if (toolbarFontSelect) toolbarFontSelect.value = family;
+      if (toolbarTextColor) toolbarTextColor.value = rgbStringToHex(styles.color);
     };
 
     const setActiveEditable = (element) => {
-      if (activeEditable === element) return;
+      if (activeEditable === element) {
+        textDragConfig.enabled = Boolean(element);
+        return;
+      }
       if (activeEditable) activeEditable.classList.remove('is-editing');
       activeEditable = element;
       if (activeEditable) {
@@ -1438,6 +1851,7 @@
       } else if (editorStatus) {
         editorStatus.textContent = 'Sélectionnez un bloc de texte.';
       }
+      textDragConfig.enabled = Boolean(activeEditable);
     };
 
     const clearActiveEditable = () => {
@@ -1446,54 +1860,437 @@
       }
       activeEditable = null;
       if (editorStatus) editorStatus.textContent = 'Sélectionnez un bloc de texte.';
+      textDragConfig.enabled = false;
+    };
+
+    const getElementAnchor = (element) => {
+      if (!element) {
+        return {
+          x: window.innerWidth / 2,
+          y: window.innerHeight / 2,
+        };
+      }
+      const rect = element.getBoundingClientRect();
+      return {
+        x: rect.left + rect.width / 2,
+        y: rect.bottom + 6,
+      };
+    };
+
+    const getAnchorFromEvent = (event, element) => {
+      if (event && typeof event.clientX === 'number') {
+        return { x: event.clientX, y: event.clientY };
+      }
+      return getElementAnchor(element);
+    };
+
+    const positionContextToolbar = (anchor) => {
+      if (!contextToolbar || !anchor) return;
+      const { x, y } = anchor;
+      const toolbarRect = contextToolbar.getBoundingClientRect();
+      const padding = 12;
+      let left = x + padding + window.scrollX;
+      let top = y + padding + window.scrollY;
+      const maxLeft = window.scrollX + window.innerWidth - toolbarRect.width - padding;
+      const maxTop = window.scrollY + window.innerHeight - toolbarRect.height - padding;
+      left = clamp(left, window.scrollX + padding, Math.max(window.scrollX + padding, maxLeft));
+      top = clamp(top, window.scrollY + padding, Math.max(window.scrollY + padding, maxTop));
+      contextToolbar.style.left = `${left}px`;
+      contextToolbar.style.top = `${top}px`;
+    };
+
+    const toggleToolbarSections = (mode) => {
+      if (!contextToolbar) return;
+      if (bandToolbar) bandToolbar.style.display = mode === 'band' ? 'inline-flex' : 'none';
+      if (textToolbar) textToolbar.style.display = mode === 'text' ? 'inline-flex' : 'none';
+    };
+
+    const showContextToolbar = (mode, anchor) => {
+      if (!contextToolbar) return;
+      activeToolbarMode = mode;
+      toggleToolbarSections(mode);
+      contextToolbar.classList.add('is-visible');
+      requestAnimationFrame(() => positionContextToolbar(anchor));
+    };
+
+    const hideContextToolbar = () => {
+      if (!contextToolbar) return;
+      contextToolbar.classList.remove('is-visible');
+      activeToolbarMode = null;
+      activeBandTarget = null;
+      if (bandDragConfig.pointerId && bandDragConfig.target?.releasePointerCapture) {
+        bandDragConfig.target.releasePointerCapture(bandDragConfig.pointerId);
+      }
+      bandDragConfig.pointerId = null;
+      bandDragConfig.target = null;
+      if (textDragConfig.pointerId && activeEditable?.releasePointerCapture) {
+        activeEditable.releasePointerCapture(textDragConfig.pointerId);
+      }
+      textDragConfig.enabled = false;
+      textDragConfig.pointerId = null;
+    };
+
+    const parseBandColorVar = () => {
+      const raw = (getComputedStyle(root).getPropertyValue('--band-color') || '#0a7f5a').trim();
+      if (raw.startsWith('#')) {
+        return { hex: raw, alpha: 1 };
+      }
+      const match = raw.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/i);
+      if (!match) {
+        return { hex: '#0a7f5a', alpha: 1 };
+      }
+      const [, rs, gs, bs, alpha = '1'] = match;
+      const hex = rgbArrayToHex([Number(rs), Number(gs), Number(bs)]);
+      return { hex, alpha: clampValue(parseFloat(alpha) || 1, 0, 1) };
+    };
+
+    const syncBandInputsFromCss = () => {
+      if (!toolbarBandColor || !toolbarBandOpacity) return;
+      const { hex, alpha } = parseBandColorVar();
+      toolbarBandColor.value = hex;
+      const percent = Math.round(alpha * 100);
+      toolbarBandOpacity.value = percent;
+      if (toolbarBandOpacityValue) toolbarBandOpacityValue.textContent = `${percent}%`;
+    };
+
+    const showBandToolbarFor = (target, event) => {
+      if (!target) return;
+      activeBandTarget = target;
+      syncBandInputsFromCss();
+      bandDragConfig.target = target;
+      showContextToolbar('band', getAnchorFromEvent(event, target));
+    };
+
+    const showTextToolbarFor = (element, event) => {
+      if (!element) return;
+      setActiveEditable(element);
+      showContextToolbar('text', getAnchorFromEvent(event, element));
+    };
+
+    const applyTextOffset = (element, x, y) => {
+      if (!element) return;
+      element.style.transform = `translate(${x}px, ${y}px)`;
+      textOffsets.set(element, { x, y });
+    };
+
+    const ensureTextOffset = (element) => textOffsets.get(element) || { x: 0, y: 0 };
+
+    const setupEditableDrag = (element) => {
+      if (!element) return;
+      element.addEventListener('pointerdown', (event) => {
+        if (!textDragConfig.enabled || activeEditable !== element) return;
+        textDragConfig.pointerId = event.pointerId;
+        textDragConfig.startX = event.clientX;
+        textDragConfig.startY = event.clientY;
+        const { x, y } = ensureTextOffset(element);
+        textDragConfig.baseX = x;
+        textDragConfig.baseY = y;
+        element.setPointerCapture(event.pointerId);
+        event.preventDefault();
+
+        const handleMove = (moveEvent) => {
+          if (moveEvent.pointerId !== textDragConfig.pointerId) return;
+          const dx = moveEvent.clientX - textDragConfig.startX;
+          const dy = moveEvent.clientY - textDragConfig.startY;
+          const nextX = clampValue(textDragConfig.baseX + dx, TEXT_DRAG_LIMITS.x[0], TEXT_DRAG_LIMITS.x[1]);
+          const nextY = clampValue(textDragConfig.baseY + dy, TEXT_DRAG_LIMITS.y[0], TEXT_DRAG_LIMITS.y[1]);
+          applyTextOffset(element, nextX, nextY);
+        };
+
+        const release = (endEvent) => {
+          if (endEvent.pointerId !== textDragConfig.pointerId) return;
+          element.releasePointerCapture(textDragConfig.pointerId);
+          element.removeEventListener('pointermove', handleMove);
+          element.removeEventListener('pointerup', release);
+          element.removeEventListener('pointercancel', release);
+          textDragConfig.pointerId = null;
+        };
+
+        element.addEventListener('pointermove', handleMove);
+        element.addEventListener('pointerup', release);
+        element.addEventListener('pointercancel', release);
+      });
     };
 
     editableElements.forEach((el) => {
       el.setAttribute('contenteditable', 'true');
       el.setAttribute('spellcheck', 'false');
-      el.addEventListener('focus', () => setActiveEditable(el));
+      el.addEventListener('focus', (event) => {
+        showTextToolbarFor(el, event);
+      });
       el.addEventListener('click', (event) => {
-        setActiveEditable(el);
         event.stopPropagation();
+        showTextToolbarFor(el, event);
       });
       el.addEventListener('input', () => {
         autoAdjustBands();
       });
+      setupEditableDrag(el);
     });
 
-    document.addEventListener('click', (event) => {
-      if (!event.target.closest('[data-editable]') && !event.target.closest('.style-panel')) {
-        clearActiveEditable();
-      }
+    document.addEventListener('pointerdown', (event) => {
+      if (contextToolbar?.contains(event.target)) return;
+      if (event.target.closest('[data-editable]')) return;
+      if (event.target.closest('.header-left') || event.target.closest('.footer-band')) return;
+      clearActiveEditable();
+      hideContextToolbar();
     });
+
+    const setupHeaderMorphing = () => {
+      if (!headerBlock || !affiche) return;
+      headerBlock.addEventListener('pointerdown', (event) => {
+        if (event.target.closest('[data-editable]')) return;
+        const rect = headerBlock.getBoundingClientRect();
+        const offsetX = event.clientX - rect.left;
+        const offsetY = event.clientY - rect.top;
+        const nearRight = rect.width - offsetX <= EDGE_TOLERANCE;
+        const nearBottom = rect.height - offsetY <= EDGE_TOLERANCE;
+        let mode = null;
+        if (nearRight && nearBottom) {
+          mode = 'corner';
+        } else if (nearRight) {
+          mode = 'width';
+        } else if (nearBottom) {
+          mode = 'depth';
+        }
+        if (!mode) return;
+        event.preventDefault();
+        const pointerId = event.pointerId;
+        const startX = event.clientX;
+        const startY = event.clientY;
+        const base = {
+          width: parseCssNumber('--header-width', 70),
+          depth: parseCssNumber('--header-depth', 140),
+          chamfer: parseCssNumber('--header-chamfer', 85),
+          posterWidth: affiche.clientWidth || POSTER_BASE_WIDTH,
+          rectWidth: rect.width || POSTER_BASE_WIDTH,
+        };
+        const handleMove = (moveEvent) => {
+          if (moveEvent.pointerId !== pointerId) return;
+          const dx = moveEvent.clientX - startX;
+          const dy = moveEvent.clientY - startY;
+          if (mode === 'width') {
+            const deltaPercent = (dx / base.posterWidth) * 100;
+            const next = clampValue(base.width + deltaPercent, HEADER_WIDTH_LIMITS[0], HEADER_WIDTH_LIMITS[1]);
+            setBandVarManual('--header-width', next, '%');
+          } else if (mode === 'depth') {
+            const next = clampValue(base.depth + dy, HEADER_DEPTH_LIMITS[0], HEADER_DEPTH_LIMITS[1]);
+            setBandVarManual('--header-depth', next, 'px');
+          } else {
+            const deltaPercent = (dx / base.rectWidth) * 100;
+            const next = clampValue(base.chamfer + deltaPercent, HEADER_CHAMFER_LIMITS[0], HEADER_CHAMFER_LIMITS[1]);
+            setBandVarManual('--header-chamfer', next, '%');
+          }
+        };
+        const cleanup = (endEvent) => {
+          if (endEvent.pointerId !== pointerId) return;
+          headerBlock.releasePointerCapture(pointerId);
+          headerBlock.removeEventListener('pointermove', handleMove);
+          headerBlock.removeEventListener('pointerup', cleanup);
+          headerBlock.removeEventListener('pointercancel', cleanup);
+        };
+        headerBlock.setPointerCapture(pointerId);
+        headerBlock.addEventListener('pointermove', handleMove);
+        headerBlock.addEventListener('pointerup', cleanup);
+        headerBlock.addEventListener('pointercancel', cleanup);
+      });
+    };
+
+    const setupFooterMorphing = () => {
+      if (!footerBlock) return;
+      footerBlock.addEventListener('pointerdown', (event) => {
+        if (event.target.closest('[data-editable]')) return;
+        const rect = footerBlock.getBoundingClientRect();
+        const offsetX = event.clientX - rect.left;
+        const offsetY = event.clientY - rect.top;
+        const nearTop = offsetY <= EDGE_TOLERANCE;
+        const nearBottom = rect.height - offsetY <= EDGE_TOLERANCE;
+        let mode = null;
+        if (nearTop && offsetX <= 120) {
+          mode = 'notch-left';
+        } else if (nearTop && rect.width - offsetX <= 120) {
+          mode = 'notch-right';
+        } else if (nearBottom) {
+          mode = 'depth';
+        }
+        if (!mode) return;
+        event.preventDefault();
+        const pointerId = event.pointerId;
+        const startY = event.clientY;
+        const base = {
+          depth: parseCssNumber('--footer-depth', 160),
+          notchLeft: parseCssNumber('--footer-notch', 8),
+          notchRight: parseCssNumber('--footer-notch-right', 0),
+          rectHeight: rect.height || 200,
+        };
+        const handleMove = (moveEvent) => {
+          if (moveEvent.pointerId !== pointerId) return;
+          const dy = moveEvent.clientY - startY;
+          if (mode === 'depth') {
+            const next = clampValue(base.depth + dy, FOOTER_DEPTH_LIMITS[0], FOOTER_DEPTH_LIMITS[1]);
+            setBandVarManual('--footer-depth', next, 'px');
+          } else if (mode === 'notch-left') {
+            const deltaPercent = (dy / base.rectHeight) * 100;
+            const next = clampValue(base.notchLeft + deltaPercent, FOOTER_NOTCH_LIMITS[0], FOOTER_NOTCH_LIMITS[1]);
+            setBandVarManual('--footer-notch', next, '%');
+          } else if (mode === 'notch-right') {
+            const deltaPercent = (dy / base.rectHeight) * 100;
+            const next = clampValue(base.notchRight + deltaPercent, FOOTER_NOTCH_LIMITS[0], FOOTER_NOTCH_LIMITS[1]);
+            setBandVarManual('--footer-notch-right', next, '%');
+          }
+        };
+        const cleanup = (endEvent) => {
+          if (endEvent.pointerId !== pointerId) return;
+          footerBlock.releasePointerCapture(pointerId);
+          footerBlock.removeEventListener('pointermove', handleMove);
+          footerBlock.removeEventListener('pointerup', cleanup);
+          footerBlock.removeEventListener('pointercancel', cleanup);
+        };
+        footerBlock.setPointerCapture(pointerId);
+        footerBlock.addEventListener('pointermove', handleMove);
+        footerBlock.addEventListener('pointerup', cleanup);
+        footerBlock.addEventListener('pointercancel', cleanup);
+      });
+    };
+
+    const setupGommetteMorphing = () => {
+      if (!afficheBadge) return;
+      afficheBadge.addEventListener('pointerdown', (event) => {
+        if (event.target.closest('[data-editable]')) return;
+        const rect = afficheBadge.getBoundingClientRect();
+        const offsetX = event.clientX - rect.left;
+        const offsetY = event.clientY - rect.top;
+        const nearHorizontalEdge = offsetX <= EDGE_TOLERANCE || rect.width - offsetX <= EDGE_TOLERANCE;
+        const nearVerticalEdge = offsetY <= EDGE_TOLERANCE || rect.height - offsetY <= EDGE_TOLERANCE;
+        let mode = null;
+        if (nearHorizontalEdge && nearVerticalEdge) {
+          mode = 'both';
+        } else if (nearHorizontalEdge) {
+          mode = 'width';
+        } else if (nearVerticalEdge) {
+          mode = 'height';
+        }
+        if (!mode) return;
+        event.preventDefault();
+        const pointerId = event.pointerId;
+        const startX = event.clientX;
+        const startY = event.clientY;
+        const base = {
+          width: parseCssNumber('--gommette-width', 150),
+          height: parseCssNumber('--gommette-height', 150),
+        };
+        const applyDimensions = (deltaX, deltaY) => {
+          if (mode === 'width' || mode === 'both') {
+            const nextWidth = clampValue(base.width + deltaX * 2, GOMMETTE_WIDTH_LIMITS[0], GOMMETTE_WIDTH_LIMITS[1]);
+            root.style.setProperty('--gommette-width', `${nextWidth}px`);
+          }
+          if (mode === 'height' || mode === 'both') {
+            const nextHeight = clampValue(base.height + deltaY * 2, GOMMETTE_HEIGHT_LIMITS[0], GOMMETTE_HEIGHT_LIMITS[1]);
+            root.style.setProperty('--gommette-height', `${nextHeight}px`);
+          }
+        };
+        const handleMove = (moveEvent) => {
+          if (moveEvent.pointerId !== pointerId) return;
+          const dx = moveEvent.clientX - startX;
+          const dy = moveEvent.clientY - startY;
+          applyDimensions(dx, dy);
+        };
+        const cleanup = (endEvent) => {
+          if (endEvent.pointerId !== pointerId) return;
+          afficheBadge.releasePointerCapture(pointerId);
+          afficheBadge.removeEventListener('pointermove', handleMove);
+          afficheBadge.removeEventListener('pointerup', cleanup);
+          afficheBadge.removeEventListener('pointercancel', cleanup);
+        };
+        afficheBadge.setPointerCapture(pointerId);
+        afficheBadge.addEventListener('pointermove', handleMove);
+        afficheBadge.addEventListener('pointerup', cleanup);
+        afficheBadge.addEventListener('pointercancel', cleanup);
+      });
+    };
+
+    setupHeaderMorphing();
+    setupFooterMorphing();
+    setupGommetteMorphing();
 
     document.addEventListener('keydown', (event) => {
       if (event.key === 'Escape') {
         clearActiveEditable();
+        hideContextToolbar();
       }
     });
-
-    fontFamilySelect?.addEventListener('change', () => {
+    toolbarFontSelect?.addEventListener('change', () => {
       if (!activeEditable) return;
-      activeEditable.style.fontFamily = fontFamilySelect.value;
+      activeEditable.style.fontFamily = toolbarFontSelect.value;
     });
 
-    fontSizeRange?.addEventListener('input', () => {
-      if (!fontSizeValue) return;
-      fontSizeValue.textContent = `${fontSizeRange.value}px`;
+    toolbarTextColor?.addEventListener('input', () => {
       if (!activeEditable) return;
-      activeEditable.style.fontSize = `${fontSizeRange.value}px`;
-      autoAdjustBands();
+      activeEditable.style.color = toolbarTextColor.value;
     });
 
-    fontColorInput?.addEventListener('input', () => {
-      if (!activeEditable) return;
-      activeEditable.style.color = fontColorInput.value;
+    sizeButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        if (!activeEditable) return;
+        const delta = button.dataset.size === 'plus' ? 2 : -2;
+        const styles = window.getComputedStyle(activeEditable);
+        const current = parseInt(styles.fontSize, 10) || 24;
+        const next = clampValue(current + delta, 12, 72);
+        activeEditable.style.fontSize = `${next}px`;
+        autoAdjustBands();
+      });
     });
 
-    bandColorInput?.addEventListener('input', updateBandColor);
-    bandAlphaRange?.addEventListener('input', updateBandColor);
+    toolbarBandColor?.addEventListener('input', updateBandColor);
+    toolbarBandOpacity?.addEventListener('input', updateBandColor);
 
+    const attachBandInteractions = (element) => {
+      if (!element) return;
+      element.addEventListener('click', (event) => {
+        if (event.target.closest('[data-editable]')) return;
+        event.stopPropagation();
+        showBandToolbarFor(element, event);
+      });
+
+      element.addEventListener('pointerdown', (event) => {
+        if (event.target.closest('[data-editable]')) return;
+        const vars = bandShiftVars.get(element);
+        if (!vars) return;
+        bandDragConfig.target = element;
+        bandDragConfig.pointerId = event.pointerId;
+        bandDragConfig.startX = event.clientX;
+        bandDragConfig.startY = event.clientY;
+        bandDragConfig.baseX = getCssVarNumber(vars.xVar);
+        bandDragConfig.baseY = getCssVarNumber(vars.yVar);
+        element.setPointerCapture(event.pointerId);
+
+        const handleMove = (moveEvent) => {
+          if (moveEvent.pointerId !== bandDragConfig.pointerId) return;
+          const dx = moveEvent.clientX - bandDragConfig.startX;
+          const dy = moveEvent.clientY - bandDragConfig.startY;
+          const nextX = clampValue(bandDragConfig.baseX + dx, BAND_DRAG_LIMITS.x[0], BAND_DRAG_LIMITS.x[1]);
+          const nextY = clampValue(bandDragConfig.baseY + dy, BAND_DRAG_LIMITS.y[0], BAND_DRAG_LIMITS.y[1]);
+          root.style.setProperty(vars.xVar, `${nextX}px`);
+          root.style.setProperty(vars.yVar, `${nextY}px`);
+        };
+
+        const release = (endEvent) => {
+          if (endEvent.pointerId !== bandDragConfig.pointerId) return;
+          element.releasePointerCapture(bandDragConfig.pointerId);
+          element.removeEventListener('pointermove', handleMove);
+          element.removeEventListener('pointerup', release);
+          element.removeEventListener('pointercancel', release);
+          bandDragConfig.pointerId = null;
+        };
+
+        element.addEventListener('pointermove', handleMove);
+        element.addEventListener('pointerup', release);
+        element.addEventListener('pointercancel', release);
+      });
+    };
+
+    attachBandInteractions(headerBlock);
+    attachBandInteractions(footerBlock);
     const getToleranceValue = () => Number(toleranceRange?.value || 40);
 
     const setToleranceVisibility = (visible) => {
@@ -1502,9 +2299,9 @@
     };
     setToleranceVisibility(false);
 
-    const updateToleranceLabel = () => {
+    function updateToleranceLabel() {
       if (toleranceValue) toleranceValue.textContent = getToleranceValue();
-    };
+    }
     updateToleranceLabel();
     if (toleranceRange) {
       toleranceRange.addEventListener('input', async () => {
@@ -2286,6 +3083,8 @@
       scaleVar,
       minScale = 0.5,
       maxScale = 2.5,
+      clampX = [-300, 300],
+      clampY = [-300, 300],
     }) => {
       if (!element) return;
       const state = {
@@ -2295,6 +3094,8 @@
       };
 
       const apply = () => {
+        state.x = clampValue(state.x, clampX[0], clampX[1]);
+        state.y = clampValue(state.y, clampY[0], clampY[1]);
         root.style.setProperty(dxVar, `${state.x}px`);
         root.style.setProperty(dyVar, `${state.y}px`);
         root.style.setProperty(scaleVar, String(state.scale));
@@ -2334,6 +3135,7 @@
       };
 
       const handlePointerDown = (event) => {
+        if (event.defaultPrevented) return;
         if (event.target && event.target.closest('[data-editable]')) {
           return;
         }
@@ -2425,8 +3227,10 @@
       dxVar: '--logo-shift-x',
       dyVar: '--logo-shift-y',
       scaleVar: '--logo-scale',
-      minScale: 0.4,
-      maxScale: 1.8,
+      minScale: 0.3,
+      maxScale: 2.3,
+      clampX: [-420, 420],
+      clampY: [-320, 320],
     });
 
     const setupTextDragHandle = (handle, xVar, yVar) => {
@@ -2476,19 +3280,9 @@
     setupTextDragHandle(footerDragHandle, '--footer-shift-x', '--footer-shift-y');
 
     // --- Contrôles bandeaux ---
-    if (logoScaleRange) {
-      const applyLogoScale = (val) => {
-        const pct = `${val}%`;
-        const scale = (val / 100).toFixed(2);
-        root.style.setProperty('--logo-scale', scale);
-        if (logoScaleValue) logoScaleValue.textContent = pct;
-      };
-      applyLogoScale(logoScaleRange.value);
-      logoScaleRange.addEventListener('input', (event) => applyLogoScale(event.target.value));
-    }
-
     const initialBgMode = Array.from(bgModeInputs).find((input) => input.checked)?.value || 'solid';
     setBackgroundMode(initialBgMode);
+    syncBandInputsFromCss();
     updateBandColor();
     autoAdjustBands();
   </script>
