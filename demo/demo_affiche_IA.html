@@ -41,6 +41,10 @@
       --gommette-scale: 1;
       --gommette-width: 150px;
       --gommette-height: 150px;
+      --header-corner-x: 6%;
+      --header-corner-y: 12%;
+      --footer-corner-x: 5%;
+      --footer-corner-y: 10%;
     }
 
     * {
@@ -714,8 +718,22 @@
       width: clamp(45%, var(--header-width), 95%);
       min-height: clamp(90px, var(--header-depth), 280px);
       padding: clamp(12px, calc(var(--header-depth) * 0.15), 32px) 18px clamp(18px, calc(var(--header-depth) * 0.35), 48px) 22px;
-      border-bottom-right-radius: 38px 42px;
-      clip-path: polygon(0 0, 100% 0, var(--header-chamfer, 85%) 100%, 0 100%);
+      border-radius: 34px;
+      overflow: hidden;
+      -webkit-clip-path: polygon(0% var(--header-corner-y),
+          var(--header-corner-x) 0%,
+          calc(100% - var(--header-corner-x)) 0%,
+          100% var(--header-corner-y),
+          var(--header-chamfer, 85%) 100%,
+          var(--header-corner-x) 100%,
+          0% calc(100% - var(--header-corner-y)));
+      clip-path: polygon(0% var(--header-corner-y),
+          var(--header-corner-x) 0%,
+          calc(100% - var(--header-corner-x)) 0%,
+          100% var(--header-corner-y),
+          var(--header-chamfer, 85%) 100%,
+          var(--header-corner-x) 100%,
+          0% calc(100% - var(--header-corner-y)));
       z-index: 12;
       box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
       transition: width .2s ease, min-height .2s ease, padding .2s ease, transform .2s ease;
@@ -731,7 +749,20 @@
           rgba(255, 255, 255, .35) 6%,
           rgba(255, 255, 255, .15) 20%,
           rgba(255, 255, 255, 0) 40%);
-      clip-path: polygon(0 0, 100% 0, var(--header-chamfer, 85%) 100%, 0 100%);
+      -webkit-clip-path: polygon(0% var(--header-corner-y),
+          var(--header-corner-x) 0%,
+          calc(100% - var(--header-corner-x)) 0%,
+          100% var(--header-corner-y),
+          var(--header-chamfer, 85%) 100%,
+          var(--header-corner-x) 100%,
+          0% calc(100% - var(--header-corner-y)));
+      clip-path: polygon(0% var(--header-corner-y),
+          var(--header-corner-x) 0%,
+          calc(100% - var(--header-corner-x)) 0%,
+          100% var(--header-corner-y),
+          var(--header-chamfer, 85%) 100%,
+          var(--header-corner-x) 100%,
+          0% calc(100% - var(--header-corner-y)));
       filter: blur(18px);
       opacity: .75;
       z-index: -1;
@@ -938,7 +969,24 @@
       display: flex;
       flex-direction: column;
       gap: 6px;
-      clip-path: polygon(0 var(--footer-notch), 100% var(--footer-notch-right, 0%), 100% 100%, 0 100%);
+      border-radius: 36px;
+      overflow: hidden;
+      -webkit-clip-path: polygon(0% calc(var(--footer-notch) + var(--footer-corner-y)),
+          var(--footer-corner-x) var(--footer-notch),
+          calc(100% - var(--footer-corner-x)) var(--footer-notch-right, 0%),
+          100% calc(var(--footer-notch-right, 0%) + var(--footer-corner-y)),
+          100% calc(100% - var(--footer-corner-y)),
+          calc(100% - var(--footer-corner-x)) 100%,
+          var(--footer-corner-x) 100%,
+          0% calc(100% - var(--footer-corner-y)));
+      clip-path: polygon(0% calc(var(--footer-notch) + var(--footer-corner-y)),
+          var(--footer-corner-x) var(--footer-notch),
+          calc(100% - var(--footer-corner-x)) var(--footer-notch-right, 0%),
+          100% calc(var(--footer-notch-right, 0%) + var(--footer-corner-y)),
+          100% calc(100% - var(--footer-corner-y)),
+          calc(100% - var(--footer-corner-x)) 100%,
+          var(--footer-corner-x) 100%,
+          0% calc(100% - var(--footer-corner-y)));
       transition: .2s ease;
       backdrop-filter: blur(1px);
       isolation: isolate;
@@ -955,7 +1003,22 @@
           rgba(255, 255, 255, .25) 0%,
           rgba(255, 255, 255, .05) 55%,
           rgba(255, 255, 255, 0) 100%);
-      clip-path: polygon(0 var(--footer-notch), 100% var(--footer-notch-right, 0%), 100% 100%, 0 100%);
+      -webkit-clip-path: polygon(0% calc(var(--footer-notch) + var(--footer-corner-y)),
+          var(--footer-corner-x) var(--footer-notch),
+          calc(100% - var(--footer-corner-x)) var(--footer-notch-right, 0%),
+          100% calc(var(--footer-notch-right, 0%) + var(--footer-corner-y)),
+          100% calc(100% - var(--footer-corner-y)),
+          calc(100% - var(--footer-corner-x)) 100%,
+          var(--footer-corner-x) 100%,
+          0% calc(100% - var(--footer-corner-y)));
+      clip-path: polygon(0% calc(var(--footer-notch) + var(--footer-corner-y)),
+          var(--footer-corner-x) var(--footer-notch),
+          calc(100% - var(--footer-corner-x)) var(--footer-notch-right, 0%),
+          100% calc(var(--footer-notch-right, 0%) + var(--footer-corner-y)),
+          100% calc(100% - var(--footer-corner-y)),
+          calc(100% - var(--footer-corner-x)) 100%,
+          var(--footer-corner-x) 100%,
+          0% calc(100% - var(--footer-corner-y)));
       filter: blur(26px);
       opacity: .8;
       pointer-events: none;
@@ -1172,6 +1235,7 @@
     const afficheTitle = document.getElementById('afficheTitle');
     const afficheDate = document.getElementById('afficheDate');
     const afficheBadge = document.getElementById('afficheBadge');
+    const afficheBadgeText = document.getElementById('afficheBadgeText');
     const afficheProductName = document.getElementById('afficheProductName');
     const afficheProductSubtitle = document.getElementById('afficheProductSubtitle');
     const afficheLogo = document.getElementById('afficheLogo');
