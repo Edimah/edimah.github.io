@@ -22,6 +22,11 @@ layout: default
       {% if page.last_updated %}, last updated on {{ page.last_updated | date: '%B %d, %Y' }}{% endif %}
       {% if page.meta %}• {{ page.meta }}{% endif %}
     </p>
+    {% if page.image %}
+    <div class="post-hero my-4">
+      <img class="img-fluid rounded" src="{{ page.image | relative_url }}" alt="{{ page.title }} header image">
+    </div>
+    {% endif %}
     <p class="post-tags">
       {% if url_beginning == '/blog/' %}
         <a href="{{ year | prepend: '/blog/' | relative_url }}"> <i class="fa-solid fa-calendar fa-sm"></i> {{ year }} </a>
