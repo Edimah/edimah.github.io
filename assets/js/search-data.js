@@ -16,6 +16,13 @@ ninja.data = [{
           handler: () => {
             window.location.href = "/blog/";
           },
+        },{id: "nav-portfolio",
+          title: "portfolio",
+          description: "",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/portfolio/";
+          },
         },{id: "nav-projects",
           title: "projects",
           description: "A modest but growing list of personal projects",
@@ -36,13 +43,6 @@ ninja.data = [{
           section: "Navigation",
           handler: () => {
             window.location.href = "/freelance/";
-          },
-        },{id: "nav-actualités-santé-amp-stats",
-          title: "Actualités Santé &amp; Stats",
-          description: "",
-          section: "Navigation",
-          handler: () => {
-            window.location.href = "/santepub/";
           },
         },{id: "nav-cv",
           title: "CV",
