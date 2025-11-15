@@ -1197,13 +1197,12 @@
     // --- Constantes & chemins dynamiques ---
     const DETOUR_MODE = Object.freeze({ AUTO: 'auto', IA: 'ia', COLOR: 'color' });
     const DEFAULT_MODEL_CHOICE = 'u2netp.onnx';
-    const U2NET_RELEASE_URL = 'https://huggingface.co/edimah/u2net/resolve/main/u2net.onnx';
     const resolveAssetUrl = (relativePath) => new URL(relativePath, import.meta.url).href;
     const MODULE_PATH = resolveAssetUrl('../assets/js/bgremoval.mjs');
     let modelChoice = DEFAULT_MODEL_CHOICE;
     const MODEL_URLS = {
       'u2netp.onnx': resolveAssetUrl('../models/u2netp.onnx'),
-      'u2net.onnx': U2NET_RELEASE_URL,
+      'u2net.onnx': resolveAssetUrl('../models/u2net.onnx'),
     };
     const MODEL_LABELS = {
       'u2netp.onnx': 'U²-Net (fond uni)',
@@ -1305,6 +1304,7 @@
       lastProductMode: null,
       logoManualColor: null,
     };
+    let currentDetourJobId = 0;
 
     let currentBgMode = 'solid';
     let currentPaletteMode = 'logo';
@@ -1670,7 +1670,7 @@
         customColorBInput?.value || '#A4D4AE',
       ];
       if (currentBgMode === 'generated' && currentPaletteMode === 'custom') {
-        regenerateBackground();
+        requestBackgroundRegen();
       }
     };
 
@@ -1682,7 +1682,7 @@
         if (!input.checked) return;
         currentPaletteMode = input.value;
         syncBackgroundControls();
-        if (currentBgMode === 'generated') regenerateBackground();
+        if (currentBgMode === 'generated') requestBackgroundRegen();
       });
     });
 
@@ -2390,7 +2390,7 @@
         const palette = thief.getPalette(image, 3) || [];
         brandColors = palette.map((rgb) => rgbArrayToHex(rgb));
         if (currentBgMode === 'generated' && currentPaletteMode === 'logo') {
-          regenerateBackground();
+          requestBackgroundRegen();
         }
       } catch (err) {
         console.warn('Impossible de récupérer la palette du logo', err);
@@ -2606,13 +2606,27 @@
       const render = rendererMap[style] || bgBubbles;
       render(palette);
     };
+    let regenBgTimeout = null;
+    let pendingBgOptions = null;
+    const requestBackgroundRegen = (options = {}) => {
+      pendingBgOptions = options;
+      if (regenBgTimeout) {
+        clearTimeout(regenBgTimeout);
+      }
+      regenBgTimeout = setTimeout(() => {
+        regenBgTimeout = null;
+        const opts = pendingBgOptions || {};
+        pendingBgOptions = null;
+        regenerateBackground(opts);
+      }, 200);
+    };
 
     bgStyleSelect?.addEventListener('change', () => {
-      if (currentBgMode === 'generated') regenerateBackground();
+      if (currentBgMode === 'generated') requestBackgroundRegen();
     });
     bgRandomBtn?.addEventListener('click', () => {
       if (currentBgMode !== 'generated') return;
-      regenerateBackground({ forceRandom: true });
+      requestBackgroundRegen({ forceRandom: true });
     });
 
     modelChoiceInputs.forEach((input) => {
@@ -2987,10 +3001,20 @@
     const handleLogoChange = async () => {
       const file = logoInput?.files?.[0];
       if (!file) return;
+      if (!file.type?.startsWith('image/')) {
+        alert('Veuillez sélectionner un fichier image (PNG, JPEG, WEBP…).');
+        return;
+      }
+      if (file.size > 10 * 1024 * 1024) {
+        alert('Image trop lourde (> 10 Mo). Merci de réduire la taille avant import.');
+        return;
+      }
+      const jobId = ++currentDetourJobId;
       setDetourageStatus('Détection du logo…', 'loading');
       let lastDataURL;
       try {
         const { image, dataURL } = await fileToImage(file);
+        if (jobId !== currentDetourJobId) return;
         state.lastLogoImage = image;
         state.lastLogoFile = file;
         state.lastLogoDataURL = dataURL;
@@ -2999,11 +3023,13 @@
         extractBrandColors(image);
 
         const result = await smartDetour(file, image, getSelectedDetourMode(), { isLogo: true });
+        if (jobId !== currentDetourJobId) return;
         injectImage(afficheLogo, result.dataURL);
         state.lastLogoMode = result.modeUsed;
         setToleranceVisibility(result.modeUsed === DETOUR_MODE.COLOR);
         setDetourageStatus(result.modeUsed === DETOUR_MODE.IA ? 'Logo détouré par IA ✅' : 'Logo détouré ✅');
       } catch (err) {
+        if (jobId !== currentDetourJobId) return;
         console.error('Logo detour error', err);
         const isFlatMask = err?.message === 'flat_mask';
         const message = isFlatMask ? 'IA confuse sur ce logo, testez "Couleur".' : 'Échec détourage logo.';
@@ -3014,22 +3040,35 @@
           setToleranceVisibility(getSelectedDetourMode() === DETOUR_MODE.COLOR);
         }
       } finally {
-        regenerateBackground({ forceRandom: true });
+        if (jobId === currentDetourJobId) {
+          requestBackgroundRegen({ forceRandom: true });
+        }
       }
     };
 
     const handleProductChange = async () => {
       const file = productInput?.files?.[0];
       if (!file) return;
+      if (!file.type?.startsWith('image/')) {
+        alert('Veuillez sélectionner un fichier image (PNG, JPEG, WEBP…).');
+        return;
+      }
+      if (file.size > 10 * 1024 * 1024) {
+        alert('Image trop lourde (> 10 Mo). Merci de réduire la taille avant import.');
+        return;
+      }
+      const jobId = ++currentDetourJobId;
       setDetourageStatus('Détourage du produit…', 'loading');
       let lastDataURL;
       try {
         const { image, dataURL } = await fileToImage(file);
+        if (jobId !== currentDetourJobId) return;
         state.lastProductImage = image;
         state.lastProductFile = file;
         lastDataURL = dataURL;
 
         const result = await smartDetour(file, image, getSelectedDetourMode());
+        if (jobId !== currentDetourJobId) return;
         injectImage(afficheProduct, result.dataURL);
         state.lastProductMode = result.modeUsed;
         lastDataURL = result.dataURL;
@@ -3040,6 +3079,7 @@
           setDetourageStatus('Produit détouré (Couleur) ✅');
         }
       } catch (err) {
+        if (jobId !== currentDetourJobId) return;
         console.error('Product detour error', err);
         const isFlatMask = err?.message === 'flat_mask';
         const msg = isFlatMask
