@@ -57,6 +57,74 @@
       gap: 18px;
       align-items: stretch;
     }
+    #appRoot[aria-hidden="true"] {
+      pointer-events: none;
+      user-select: none;
+    }
+    .pin-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      padding: 20px;
+    }
+    .pin-overlay.is-hidden {
+      display: none;
+    }
+    .pin-dialog {
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+      padding: 26px 24px 28px;
+      text-align: center;
+      max-width: 360px;
+      width: 100%;
+      border: 1px solid rgba(10, 127, 90, 0.12);
+    }
+    .pin-dialog h1 {
+      margin: 0 0 8px;
+      font-size: 1.25rem;
+      color: #0a7f5a;
+    }
+    .pin-dialog p {
+      margin: 0 0 18px;
+      font-size: 0.92rem;
+      color: #2d3f38;
+      line-height: 1.35;
+    }
+    .pin-dialog input[type="password"] {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid #cfdad4;
+      font-size: 1rem;
+      text-align: center;
+      margin-bottom: 12px;
+      font-family: inherit;
+    }
+    .pin-dialog button {
+      width: 100%;
+      border: none;
+      background: #0a7f5a;
+      color: #fff;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .beta-banner {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #0a7f5a;
+      font-weight: 600;
+      margin-bottom: 4px;
+      display: block;
+    }
 
     /* PANNEAUX */
     .controls {
@@ -1030,7 +1098,18 @@
 
 <body>
 
-  <div class="workspace">
+  <div id="pinOverlay" class="pin-overlay" role="dialog" aria-modal="true" aria-labelledby="pinOverlayTitle">
+    <div class="pin-dialog">
+      <h1 id="pinOverlayTitle">Accès bêta</h1>
+      <p>Cette préversion est réservée aux testeuses & testeurs disposant d&#39;un code.</p>
+      <input id="pinCodeInput" type="password" inputmode="numeric" pattern="\\d{4,8}" maxlength="8"
+        autocomplete="one-time-code" placeholder="Entrez le PIN" aria-label="PIN d&#39;accès" />
+      <button type="button" id="pinSubmitBtn">Valider</button>
+    </div>
+  </div>
+
+  <div id="appRoot" aria-hidden="true">
+    <div class="workspace">
     <!-- COLONNE GAUCHE -->
     <div class="controls">
       <div class="action-card">
@@ -1194,6 +1273,53 @@
   <!-- SCRIPTS -->
   <!-- SCRIPTS -->
   <script type="module">
+    // --- Accès bêta (retirer ce bloc pour désactiver la porte d'entrée) ---
+    const BETA_PIN = '1234'; // Modifiez ce code ici chaque semaine pour renouveler l'accès partagé.
+    const PIN_STORAGE_KEY = 'betaAccessGranted'; // Effacez cette clé dans localStorage pour forcer une nouvelle saisie.
+    const pinOverlay = document.getElementById('pinOverlay');
+    const pinInput = document.getElementById('pinCodeInput');
+    const pinSubmitBtn = document.getElementById('pinSubmitBtn');
+    const appRoot = document.getElementById('appRoot');
+    const hidePinOverlay = () => {
+      if (pinOverlay && !pinOverlay.classList.contains('is-hidden')) {
+        pinOverlay.classList.add('is-hidden');
+      }
+      appRoot?.removeAttribute('aria-hidden');
+    };
+    const showPinOverlay = () => {
+      pinOverlay?.classList.remove('is-hidden');
+      appRoot?.setAttribute('aria-hidden', 'true');
+    };
+    const checkPin = () => {
+      const entered = pinInput?.value?.trim() || '';
+      if (entered !== BETA_PIN) {
+        alert('Code incorrect. Réessayez ou contactez la personne qui vous l’a fourni.');
+        if (pinInput) {
+          pinInput.value = '';
+          pinInput.focus();
+        }
+        return;
+      }
+      localStorage.setItem(PIN_STORAGE_KEY, 'true'); // Supprimez cette ligne + l’overlay pour retirer complètement la protection.
+      hidePinOverlay();
+    };
+    const initBetaGate = () => {
+      if (localStorage.getItem(PIN_STORAGE_KEY) === 'true') {
+        hidePinOverlay();
+      } else {
+        showPinOverlay();
+        pinInput?.focus();
+      }
+    };
+    pinSubmitBtn?.addEventListener('click', checkPin);
+    pinInput?.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        checkPin();
+      }
+    });
+    initBetaGate();
+
     // --- Constantes & chemins dynamiques ---
     const DETOUR_MODE = Object.freeze({ AUTO: 'auto', IA: 'ia', COLOR: 'color' });
     const DEFAULT_MODEL_CHOICE = 'u2netp.onnx';
@@ -3323,9 +3449,11 @@
   </script>
 
   <footer class="site-footer">
+    <div class="beta-banner">Bêta – non commercial</div>
     © 2025 Edimah SYNESIUS SONGO — Tous droits réservés. Produit protégé par le droit d’auteur. Reproduction,
     modification ou diffusion interdite sans autorisation écrite de l’autrice.
   </footer>
+</div>
 </body>
 
 </html>
