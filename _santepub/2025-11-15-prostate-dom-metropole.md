@@ -14,9 +14,7 @@ Dans le cadre de Novembre Bleu 🔷, ce billet cherche à fournir un point d’a
 
 ## Données & Méthode
 
-Les données utilisées sont issues des relevés des incidence du cancer de la prostate dans le monde en 2022.
-
-Les taux utilisés sont les taux d’incidence standardisés monde (TSM) pour 100 000 habitants.
+Les données utilisées proviennent des relevés d'incidence du cancer de la prostate dans le monde en 2022 [^1]. Les taux utilisés sont les taux d’incidence standardisés monde (_TSM_, ou _ASR_ dans le monde anglophone) pour 100 000 habitants.
 
 > Important : J'ai extrait de la base de données et isolé les entrées correspondant aux territoires français.
 > Les taux d’incidence ne proviennent pas d’une méthodologie homogène. Les comparaisons doivent donc être interprétées avec prudence.
@@ -82,11 +80,11 @@ Ces résultats doivent servir de support aux actions locales : la sensibilisatio
 
 L’incidence élevée dans ces territoires n’est pas une fatalité : il existe des mesures de prévention et de détection précoce. Et de plus en plus d'initiatives locales pronent l'accès à l'information et aux soins adéquats.
 
-Des actions menées par les associations et les acteurs du monde de la santé se multiplient.
+Les actions menées par les associations et les acteurs du monde de la santé se multiplient. Les chiffres justifient cette tendance.
 
 ## Références
 
-[^1]: IARC / WHO. _GLOBOCAN 2022: Prostate cancer incidence by country_. Disponible via https://gco.iarc.fr/today/ ou téléchargement des tables CSV (consulté en 2024).
+[^1]: IARC / WHO. _GLOBOCAN 2022: Prostate cancer incidence by country_. Disponible via https://gco.iarc.fr/today/, téléchargement des tables CSV correspondant aux taux d'incidence du cancer de la prostate et filtré par pays ("Countries") (consulté en 2025) avant traitement de données externe.
 [^2]: Bousquet P.J. et al. “Le cancer de la prostate aux Antilles françaises : état des lieux.” _Bulletin Épidémiologique Hebdomadaire_ (BEH), 15 novembre 2016. https://beh.santepubliquefrance.fr/beh/2016/39-40/2016_39-40_6.html.
 [^3]: Benafif S., Eeles R. “Genetic predisposition to prostate cancer.” _Nature Reviews Urology_, 2018. https://www.nature.com/articles/nrurol.2018.22.
 [^4]: INSERM. _Exposition aux pesticides et au chlordécone_. Rapport 2019. https://www.inserm.fr/wp-content/uploads/2019-06/inserm-rapportexpositionauxpesticidesetauchlordecone-2019.pdf.
