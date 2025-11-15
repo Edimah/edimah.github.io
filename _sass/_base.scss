@@ -936,6 +936,38 @@ html.transition *:after {
       }
     }
   }
+
+  .post-hero-banner {
+    position: relative;
+    margin: 1.25rem auto 1.75rem;
+    max-width: 520px;
+
+    img {
+      width: 100%;
+      height: auto;
+      max-height: 260px;
+      border-radius: 0.85rem;
+      border: 1px solid var(--global-divider-color);
+      object-fit: cover;
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    .post-hero-overlay {
+      position: absolute;
+      left: 10%;
+      right: 10%;
+      bottom: 12px;
+      background-color: var(--global-bg-color);
+      color: var(--global-text-color);
+      padding: 0.65rem 1rem;
+      border-radius: 0.65rem;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+
+      .post-title {
+        font-size: 1.5rem;
+      }
+    }
+  }
 }
 
 progress {
