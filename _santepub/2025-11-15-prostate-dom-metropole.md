@@ -8,7 +8,7 @@ date: 2025-11-15
 
 # Résumé 🧵
 
-À partir des données fiables disponibles dans GLOBOCAN/IARC[^1], j’ai comparé les taux d’incidence standardisés du **cancer de la prostate** en France métropolitaine et dans plusieurs territoires d’Outre-mer.
+À partir des données fiables disponibles auprès de l'Observatoire Mondial du Cancer de l'OMS, (GLOBACAN/IARC)[^1], j’ai comparé les taux d’incidence standardisés du **cancer de la prostate** en France métropolitaine et dans plusieurs territoires d’Outre-mer.
 
 Les écarts sont importants : la Guadeloupe et la Martinique présentent des valeurs nettement supérieures à la moyenne métropolitaine, et aux autres territoires étudiés.
 
@@ -21,11 +21,11 @@ Dans le cadre de Novembre Bleu 🔷, ce billet cherche à fournir un point d’a
 
 ### Traitement des données
 
-Les données ont été traitées sous R (`tidyverse`, `ggplot2`) à partir des valeurs relevées : la base mondiale a été filtrée sur R pour isoler les territoires français.
+Les données ont été traitées sous R (`tidyverse`, `ggplot2`) : la base mondiale a été filtrée sur R pour isoler les territoires français.
 
-Les méthodologies variant d’un territoire à l’autre, les comparaisons doivent rester prudentes. [^2]
+⚠️ Les méthodologies variant d’un territoire à l’autre, les comparaisons doivent rester prudentes. [^2]
 
-La base résultante incluait les territoire suivants, sur lesquels nous avons donc basé notre étude :
+La base résultante inclue les territoires suivants, sur lesquels nous avons basé notre étude :
 
 - France métropolitaine
 - Guadeloupe
