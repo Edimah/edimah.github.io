@@ -24,13 +24,13 @@ tabs: true
 - **Analyses statistiques structurées** : modèles bayésiens ou hiérarchiques, séries temporelles, estimation d’incertitudes pour appuyer la décision.
 - **Analyses prédictives calmes** : scoring, classification, NLP léger ; livrables reproductibles en notebooks ou scripts prêts à intégrer.
 - **Données de santé & visualisations** : exploitation de bases publiques ou privées, mise en forme claire pour les décideurs.
-- **Transfert de compétences** : ateliers d’introduction aux stats/IA adaptés au niveau des équipes.
+- **Transfert de compétences** : ateliers d’introduction aux stats/IA adaptés aux attentes des équipes.
 
-| Besoin fréquent | Ce que je livre | Résultat attendu |
-| --- | --- | --- |
-| Comprendre un phénomène métier | Modèles transparents + note méthodologique | Lecture partagée et actionnable |
-| Tester un cas d’usage IA/ML | Prototype end-to-end (data → API/notebook) | Décision rapide sur la suite à donner |
-| Rendre des chiffres lisibles | Visualisations, dashboards ou rapports | Matériel prêt pour les comités/clients |
+| Besoin fréquent                | Ce que je livre                            | Résultat attendu                       |
+| ------------------------------ | ------------------------------------------ | -------------------------------------- |
+| Comprendre un phénomène métier | Modèles transparents + note méthodologique | Lecture partagée et actionnable        |
+| Tester un cas d’usage IA/ML    | Prototype end-to-end (data → API/notebook) | Décision rapide sur la suite à donner  |
+| Rendre des chiffres lisibles   | Visualisations, dashboards ou rapports     | Matériel prêt pour les comités/clients |
 
 ### Domaines familiers
 
@@ -40,26 +40,12 @@ tabs: true
 
 ---
 
-## Approche de collaboration
+## Approche
 
 1. **Clarifier** la question métier, les métriques utiles et les contraintes d’usage.
 2. **Structurer** les données (qualité, lignage, documentation de chaque transformation).
 3. **Construire** le modèle, le prototype ou la visualisation la plus simple possible.
 4. **Transmettre** : code commenté, rapport court, passation orale ou atelier ciblé.
-
-<details>
-<summary>Exemples d’interventions récentes</summary>
-
-- Mise à jour d’un modèle de prévision d’activité officinale, avec intervalles d’incertitude.
-- Analyse exploratoire de données d’enquêtes santé pour préparer une note institutionnelle.
-- Prototype NLP léger pour catégoriser des retours clients sensibles.
-- Session d’acculturation IA pour équipes métier (2h), centrée sur des cas concrets.
-
-</details>
-
-- [x] Clarté méthodologique.
-- [x] Simplicité technique.
-- [x] Livrables immédiatement exploitables par les équipes métier.
 
 ---
 
@@ -115,11 +101,11 @@ tabs: true
 - **Health data & visuals**: public or proprietary datasets turned into clear narratives for stakeholders.
 - **Capability building**: workshops on statistical fundamentals and AI literacy tailored to non-technical teams.
 
-| Typical need | What I deliver | Expected outcome |
-| --- | --- | --- |
-| Understand a business signal | Transparent models + methodology brief | Shared, actionable insight |
-| Test an AI/ML use case | End-to-end prototype (data → API/notebook) | Faster go/no-go decision |
-| Make numbers readable | Visualisations, dashboards, or concise reports | Ready-to-share materials |
+| Typical need                 | What I deliver                                 | Expected outcome           |
+| ---------------------------- | ---------------------------------------------- | -------------------------- |
+| Understand a business signal | Transparent models + methodology brief         | Shared, actionable insight |
+| Test an AI/ML use case       | End-to-end prototype (data → API/notebook)     | Faster go/no-go decision   |
+| Make numbers readable        | Visualisations, dashboards, or concise reports | Ready-to-share materials   |
 
 ### Familiar fields
 
