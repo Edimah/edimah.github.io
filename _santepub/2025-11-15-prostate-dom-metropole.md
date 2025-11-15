@@ -14,10 +14,10 @@ Dans le cadre de Novembre Bleu 🔷, ce billet cherche à fournir un point d’a
 
 ## Données & Méthode
 
-Les données utilisées proviennent des relevés d'incidence du cancer de la prostate dans le monde en 2022 [^1]. Les taux utilisés sont les taux d’incidence standardisés monde (_TSM_, ou _ASR_ dans le monde anglophone) pour 100 000 habitants.
+**Données** : relevés d'incidence du cancer de la prostate (GLOBOCAN 2022)[^1].  
+**Indicateur** : taux d’incidence standardisés monde (_TSM_ / _ASR_) pour 100 000 habitants.
 
-> Important : J'ai extrait de la base de données et isolé les entrées correspondant aux territoires français.
-> Les taux d’incidence ne proviennent pas d’une méthodologie homogène. Les comparaisons doivent donc être interprétées avec prudence.
+> **Important** : la base mondiale a été filtrée pour isoler les territoires français. Les méthodologies variant d’un territoire à l’autre, les comparaisons doivent rester prudentes.
 
 \*Territoires inclus :
 
@@ -26,7 +26,7 @@ Les données utilisées proviennent des relevés d'incidence du cancer de la pro
 - Martinique
 - Guyane
 - La Réunion
-- Polynésie française \*
+- Polynésie française\*
 
 Les données ont été traitées sous R (tidyverse, ggplot2) à partir des valeurs relevées.
 
@@ -34,13 +34,20 @@ Le code complet et le dataset utilisé sont disponibles dans mon dépôt GitHub 
 
 ## Résultat
 
-Les incidences observées en Martinique et Guadeloupe sont environ 2 fois plus élevées que celles estimées pour la métropole.
+Les incidences observées en **Martinique** et **Guadeloupe** sont environ **2 fois plus élevées** que celles estimées pour la métropole.
 
 Cela rejoint les constats établis par Santé Publique France dans le Bulletin Epidemiologique Hebdomadaire (BEH) publié le 15 novembre 2016 : [_Le cancer de la prostate aux Antilles françaises : état des lieux_](https://beh.santepubliquefrance.fr/beh/2016/39-40/2016_39-40_6.html?utm_source=chatgpt.com)[^2].
 
-![Incidence du cancer de la prostate – comparaison DOM et métropole](/assets/img/santepub/prostate_dom_metropole.png)
-
-<small>Visualisation (FR) issue du script R `prostate_continental_FR_overseas.R`, données GLOBOCAN 2022[^1].</small>
+<div class="row justify-content-center my-4">
+  <div class="col-lg-10">
+    <figure class="figure">
+      <img class="figure-img img-fluid rounded shadow-sm" src="/assets/img/santepub/prostate_dom_metropole.png" alt="Incidence du cancer de la prostate – DOM et métropole">
+      <figcaption class="figure-caption text-center">
+        Incidence standardisée (TSM) – DOM vs métropole, source GLOBOCAN 2022[^1] (script R <code>prostate_continental_FR_overseas.R</code>).
+      </figcaption>
+    </figure>
+  </div>
+</div>
 
 ## Discussion : comment comprendre ces écarts ?
 
