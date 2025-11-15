@@ -7,10 +7,6 @@ nav_order: 3
 tabs: true
 ---
 
-<div class="text-center mb-4">
-  <strong>Sélectionnez l’univers que vous souhaitez parcourir</strong>
-</div>
-
 {% tabs portfolio-view %}
 
 {% tab portfolio-view Statistiques et Santé Publique (en français) %}
