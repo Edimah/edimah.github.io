@@ -12,27 +12,27 @@ Les écarts sont importants : la Guadeloupe et la Martinique présentent des val
 
 Dans le cadre de Novembre Bleu 🔷, ce billet cherche à fournir un point d’appui chiffré pour la **sensibilisation** et à ouvrir la discussion sur les facteurs possibles — génétiques, environnementaux et socio-économiques.
 
-## Données & Méthode
+# Données & Méthode
 
 **Données** : relevés d'incidence du cancer de la prostate (GLOBOCAN 2022)[^1].  
 **Indicateur** : taux d’incidence standardisés monde (_TSM_ / _ASR_) pour 100 000 habitants.
 
 > **Important** : la base mondiale a été filtrée pour isoler les territoires français. Les méthodologies variant d’un territoire à l’autre, les comparaisons doivent rester prudentes.
 
-\*Territoires inclus :
+Territoires inclus :
 
 - France métropolitaine
 - Guadeloupe
 - Martinique
 - Guyane
 - La Réunion
-- Polynésie française\*
+- Polynésie française
 
 Les données ont été traitées sous R (tidyverse, ggplot2) à partir des valeurs relevées.
 
 Le code complet et le dataset utilisé sont disponibles dans mon dépôt GitHub [public-health](https://github.com/Edimah/public-health).
 
-## Résultat
+# Résultat
 
 Les incidences observées en **Martinique** et **Guadeloupe** sont environ **2 fois plus élevées** que celles estimées pour la métropole.
 
@@ -49,7 +49,7 @@ Cela rejoint les constats établis par Santé Publique France dans le Bulletin E
   </div>
 </div>
 
-## Discussion : comment comprendre ces écarts ?
+# Discussion : comment comprendre ces écarts ?
 
 Les écarts d’incidence observés sont documentés dans plusieurs rapports et publications scientifiques. Aucun facteur ne suffit à lui seul ; il s’agit a priori d’un phénomène multifactoriel qui inclut
 
@@ -81,7 +81,7 @@ Plusieurs analyses (SPF, HCSP) soulignent :
 - une surveillance moins systématique des groupes à risque
   Ces éléments contribuent à des diagnostics parfois plus tardifs.
 
-## Prévention : faisons compter les données
+# Prévention : faisons compter les données
 
 Ces résultats doivent servir de support aux actions locales : la sensibilisation reste le premier rempart à l'évolution de cette maladie.
 
@@ -91,7 +91,7 @@ Les actions menées par les associations et les acteurs du monde de la santé se
 
 _Image de couverture générée avec DALL-E._
 
-## Références
+# Références
 
 [^1]: IARC / WHO. _GLOBOCAN 2022: Prostate cancer incidence by country_. Disponible via https://gco.iarc.fr/today/, téléchargement des tables CSV correspondant aux taux d'incidence du cancer de la prostate et filtré par pays ("Countries") (consulté en 2025) avant traitement de données externe.
 [^2]: Bousquet P.J. et al. “Le cancer de la prostate aux Antilles françaises : état des lieux.” _Bulletin Épidémiologique Hebdomadaire_ (BEH), 15 novembre 2016. https://beh.santepubliquefrance.fr/beh/2016/39-40/2016_39-40_6.html.
