@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Incidence du cancer de la prostate en France d'Outre Mer et Métropolitaine"
-excerpt: "Visualiser l'écart d'incidence entre les départements d'outre-mer et l'Hexagone en 2022."
+excerpt: "Visualiser l'écart d'incidence entre des territoires français ultramarins et l'Hexagone en 2022."
 image: /assets/img/santepub/prostate_thumbnail.png
 date: 2025-11-15
 ---
@@ -16,12 +16,16 @@ Dans le cadre de Novembre Bleu 🔷, ce billet cherche à fournir un point d’a
 
 # Données & Méthode
 
-**Données** : relevés d'incidence du cancer de la prostate (GLOBOCAN 2022)[^1].  
-**Indicateur** : taux d’incidence standardisés monde (_TSM_ / _ASR_) pour 100 000 habitants.
+**Données** : relevés d'incidence du cancer de la prostate (GLOBOCAN 2022)[^1] par pays.  
+**Indicateur** : taux d’incidence standardisés monde (_TSM_ / _ASR_ en français) pour 100 000 habitants.
 
-> **Important** : la base mondiale a été filtrée pour isoler les territoires français. Les méthodologies variant d’un territoire à l’autre, les comparaisons doivent rester prudentes.
+### Traitement des données
 
-Territoires inclus (dont les données étaient disponibles) :
+Les données ont été traitées sous R (`tidyverse`, `ggplot2`) à partir des valeurs relevées : la base mondiale a été filtrée sur R pour isoler les territoires français.
+
+Les méthodologies variant d’un territoire à l’autre, les comparaisons doivent rester prudentes. [^2]
+
+La base résultante incluait les territoire suivants, sur lesquels nous avons donc basé notre étude :
 
 - France métropolitaine
 - Guadeloupe
@@ -30,24 +34,51 @@ Territoires inclus (dont les données étaient disponibles) :
 - La Réunion
 - Polynésie française
 
-Les données ont été traitées sous R (`tidyverse`, `ggplot2`) à partir des valeurs relevées.
-
 Le code complet et le dataset utilisés sont disponibles dans mon dépôt GitHub [public-health](https://github.com/Edimah/public-health).
 
-# Résultat
+L'aborescence des fichiers concernés est la suivante :
 
-Les incidences observées en **Martinique** et **Guadeloupe** sont environ **2 fois plus élevées** que celles estimées pour la métropole.
+```
+📂 public-health/
+├── cancers/
+│   └── prostate_continental_FR_overseas.R
+├── data/
+│   ├── dataset-inc-males-in-2022-prostate.csv
+│   ├── french_prostate_incidence_2022.csv
+│   └── french_prostate_incidence_2022.rds
+└── exports/
+    ├── prostate_asr_table_en.csv
+    ├── prostate_asr_table_en.md
+    ├── prostate_incidence_france_overseas_en.png
+    ├── prostate_incidence_france_overseas_fr.png
+    ├── prostate_tsm_table_fr.csv
+    └── prostate_tsm_table_fr.md
+```
 
-Cela rejoint les constats établis par Santé Publique France dans le Bulletin Epidemiologique Hebdomadaire (BEH) publié le 15 novembre 2016 : [_Le cancer de la prostate aux Antilles françaises : état des lieux_](https://beh.santepubliquefrance.fr/beh/2016/39-40/2016_39-40_6.html?utm_source=chatgpt.com)[^2].
+Le script R `prostate_continental_FR_overseas.R` :
+
+1. lit le CSV brut (`dataset-inc-males-in-2022-prostate.csv`) dans `data/`,
+2. crée les jeux filtrés (CSV/RDS) dans le ficher `data/`,
+3. puis alimente les visuels et tableaux qui sont déposés dans `exports/`.
+
+# Résultats
+
+Les résultats de ce traitement sont résumés dans le tableau suivant :
 
 | Région                | TSM (monde) |
-|:----------------------|------------:|
+| :-------------------- | ----------: |
 | Guadeloupe            |       157.5 |
 | Martinique            |       134.3 |
 | Guyane française      |        94.1 |
 | France métropolitaine |        82.3 |
 | Polynésie française   |        62.3 |
 | La Réunion            |        59.6 |
+
+> On observe que les incidences observées en **Martinique** et **Guadeloupe** sont environ **2 fois plus élevées** que celles de la Métropole, et presque 3 fois plus élevées que celles de La Réunion.
+
+Cela rejoint les constats établis par Santé Publique France dans le Bulletin Epidemiologique Hebdomadaire (BEH) publié le 15 novembre 2016 : [_Le cancer de la prostate aux Antilles françaises : état des lieux_](https://beh.santepubliquefrance.fr/beh/2016/39-40/2016_39-40_6.html?utm_source=chatgpt.com)[^3].
+
+Le tableau peut être résumé sous forme d'histogramme. Ci-dessous nos comparons ainsi l'incidence du cancer de la prostate dans les cinq territoire d'Outre-Mer étudiés (en bleu) avec celle de la Métropole (en gris).
 
 <div class="row justify-content-center my-4">
   <div class="col-lg-10">
@@ -67,12 +98,12 @@ Les écarts d’incidence observés sont documentés dans plusieurs rapports et 
 ### 1. Des facteurs génétiques
 
 Les hommes d’ascendance africaine présentent un risque plus élevé de développer un cancer de la prostate.
-Les populations antillaises sont donc plus exposées à ce facteur[^3].
+Les populations antillaises sont donc plus exposées à ce facteur[^4].
 
 ### 2. Exposition environnementale : le chlordécone
 
 Un certain nombre d'études menées aux Antilles montrent une association entre l’exposition au chlordécone et un risque accru de cancer de la prostate — sans établir une causalité directe. Il serait pourtant malhonnête de ne pas le mentionner.
-Sources : INSERM (2019) et synthèse du Sénat (2019)[^4][^5].
+Sources : INSERM (2019) et synthèse du Sénat (2019)[^5][^6].
 
 ### 3. Modes de vie et facteurs socio-économiques
 
@@ -81,7 +112,7 @@ De nombreuses raisons sont évoquées dans la littérature :
 - taux élevés de surpoids et obésité,
 - accès inégal au dépistage,
 - retards et interruptions dans les parcours de soins,  
-  Et ce parmi d'autres déterminants sociaux défavorables dans ces territoires[^6][^7]
+  Et ce parmi d'autres déterminants sociaux défavorables dans ces territoires[^7][^8]
 
 ### 4. Organisation des soins et dépistage
 
@@ -105,9 +136,10 @@ _Image de couverture générée avec DALL-E._
 # Références
 
 [^1]: IARC / WHO. _GLOBOCAN 2022: Prostate cancer incidence by country_. Disponible via https://gco.iarc.fr/today/, téléchargement des tables CSV correspondant aux taux d'incidence du cancer de la prostate et filtré par pays ("Countries") (consulté en 2025) avant traitement de données externe.
-[^2]: Bousquet P.J. et al. “Le cancer de la prostate aux Antilles françaises : état des lieux.” _Bulletin Épidémiologique Hebdomadaire_ (BEH), 15 novembre 2016. https://beh.santepubliquefrance.fr/beh/2016/39-40/2016_39-40_6.html.
-[^3]: Benafif S., Eeles R. “Genetic predisposition to prostate cancer.” _Nature Reviews Urology_, 2018. https://www.nature.com/articles/nrurol.2018.22.
-[^4]: INSERM. _Exposition aux pesticides et au chlordécone_. Rapport 2019. https://www.inserm.fr/wp-content/uploads/2019-06/inserm-rapportexpositionauxpesticidesetauchlordecone-2019.pdf.
-[^5]: Sénat. “Chlordécone et cancer de la prostate.” Question écrite n°0587S, 2019. https://www.senat.fr/questions/base/2019/qSEQ19010587S.html.
-[^6]: HCSP. _Inégalités sociales et cancer aux Antilles_. Rapport 2022. https://www.hcsp.fr/Explore.cgi/Telecharger?NomFichier=ad913637.pdf.
-[^7]: Le Quotidien du Médecin. “Guadeloupe, Martinique, La Réunion : constat amer pour les premières études de survie du cancer.” 2023. https://www.lequotidiendumedecin.fr/actu-medicale/guadeloupe-martinique-la-reunion-constat-amer-pour-les-premieres-etudes-de-survie-du-cancer.
+[^2]: IARC / WHO. _GLOBOCAN 2022: Data & methods by country_. Disponible via https://gco.iarc.who.int/today/en/data-sources-methods-by-country-detailed?tab=5 (consulté en 2025)
+[^3]: Bousquet P.J. et al. “Le cancer de la prostate aux Antilles françaises : état des lieux.” _Bulletin Épidémiologique Hebdomadaire_ (BEH), 15 novembre 2016. https://beh.santepubliquefrance.fr/beh/2016/39-40/2016_39-40_6.html.
+[^4]: Benafif S., Eeles R. “Genetic predisposition to prostate cancer.” _Nature Reviews Urology_, 2018. https://www.nature.com/articles/nrurol.2018.22.
+[^5]: INSERM. _Exposition aux pesticides et au chlordécone_. Rapport 2019. https://www.inserm.fr/wp-content/uploads/2019-06/inserm-rapportexpositionauxpesticidesetauchlordecone-2019.pdf.
+[^6]: Sénat. “Chlordécone et cancer de la prostate.” Question écrite n°0587S, 2019. https://www.senat.fr/questions/base/2019/qSEQ19010587S.html.
+[^7]: HCSP. _Inégalités sociales et cancer aux Antilles_. Rapport 2022. https://www.hcsp.fr/Explore.cgi/Telecharger?NomFichier=ad913637.pdf.
+[^8]: Le Quotidien du Médecin. “Guadeloupe, Martinique, La Réunion : constat amer pour les premières études de survie du cancer.” 2023. https://www.lequotidiendumedecin.fr/actu-medicale/guadeloupe-martinique-la-reunion-constat-amer-pour-les-premieres-etudes-de-survie-du-cancer.
