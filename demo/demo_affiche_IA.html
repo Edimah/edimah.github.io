@@ -41,10 +41,6 @@
       --gommette-scale: 1;
       --gommette-width: 150px;
       --gommette-height: 150px;
-      --header-corner-x: 6%;
-      --header-corner-y: 12%;
-      --footer-corner-x: 5%;
-      --footer-corner-y: 10%;
     }
 
     * {
@@ -395,14 +391,13 @@
 
     .global-actions {
       display: flex;
-      gap: 14px;
-      justify-content: center;
-      padding: 0 12px 32px;
-      flex-wrap: wrap;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 8px;
     }
 
     .global-actions button {
-      flex: 1 1 240px;
+      width: 100%;
       font-size: 1rem;
       padding: 14px;
     }
@@ -411,6 +406,15 @@
       background: #fff;
       color: var(--green);
       border: 1px solid rgba(10, 127, 90, .2);
+    }
+
+    .site-footer {
+      margin: 32px auto 12px;
+      text-align: center;
+      font-size: .7rem;
+      color: #2f463d;
+      letter-spacing: .01em;
+      max-width: 960px;
     }
 
     .context-toolbar {
@@ -718,22 +722,9 @@
       width: clamp(45%, var(--header-width), 95%);
       min-height: clamp(90px, var(--header-depth), 280px);
       padding: clamp(12px, calc(var(--header-depth) * 0.15), 32px) 18px clamp(18px, calc(var(--header-depth) * 0.35), 48px) 22px;
-      border-radius: 34px;
-      overflow: hidden;
-      -webkit-clip-path: polygon(0% var(--header-corner-y),
-          var(--header-corner-x) 0%,
-          calc(100% - var(--header-corner-x)) 0%,
-          100% var(--header-corner-y),
-          var(--header-chamfer, 85%) 100%,
-          var(--header-corner-x) 100%,
-          0% calc(100% - var(--header-corner-y)));
-      clip-path: polygon(0% var(--header-corner-y),
-          var(--header-corner-x) 0%,
-          calc(100% - var(--header-corner-x)) 0%,
-          100% var(--header-corner-y),
-          var(--header-chamfer, 85%) 100%,
-          var(--header-corner-x) 100%,
-          0% calc(100% - var(--header-corner-y)));
+      border-bottom-right-radius: 38px 42px;
+      -webkit-clip-path: polygon(0 0, 100% 0, var(--header-chamfer, 85%) 100%, 0 100%);
+      clip-path: polygon(0 0, 100% 0, var(--header-chamfer, 85%) 100%, 0 100%);
       z-index: 12;
       box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
       transition: width .2s ease, min-height .2s ease, padding .2s ease, transform .2s ease;
@@ -749,24 +740,24 @@
           rgba(255, 255, 255, .35) 6%,
           rgba(255, 255, 255, .15) 20%,
           rgba(255, 255, 255, 0) 40%);
-      -webkit-clip-path: polygon(0% var(--header-corner-y),
-          var(--header-corner-x) 0%,
-          calc(100% - var(--header-corner-x)) 0%,
-          100% var(--header-corner-y),
-          var(--header-chamfer, 85%) 100%,
-          var(--header-corner-x) 100%,
-          0% calc(100% - var(--header-corner-y)));
-      clip-path: polygon(0% var(--header-corner-y),
-          var(--header-corner-x) 0%,
-          calc(100% - var(--header-corner-x)) 0%,
-          100% var(--header-corner-y),
-          var(--header-chamfer, 85%) 100%,
-          var(--header-corner-x) 100%,
-          0% calc(100% - var(--header-corner-y)));
+      -webkit-clip-path: polygon(0 0, 100% 0, var(--header-chamfer, 85%) 100%, 0 100%);
+      clip-path: polygon(0 0, 100% 0, var(--header-chamfer, 85%) 100%, 0 100%);
       filter: blur(18px);
       opacity: .75;
       z-index: -1;
       pointer-events: none;
+    }
+
+    @supports (clip-path: path('M0 0')) {
+      .header-left {
+        -webkit-clip-path: path("M0 0 H 100% L 100% 78% Q 100% 100% 82% 100% L 85% 100% L 0 100% Z");
+        clip-path: path("M0 0 H 100% L 100% 78% Q 100% 100% 82% 100% L 85% 100% L 0 100% Z");
+      }
+
+      .header-left::after {
+        -webkit-clip-path: path("M0 0 H 100% L 100% 78% Q 100% 100% 82% 100% L 85% 100% L 0 100% Z");
+        clip-path: path("M0 0 H 100% L 100% 78% Q 100% 100% 82% 100% L 85% 100% L 0 100% Z");
+      }
     }
 
     .header-left .promo-title {
@@ -1038,53 +1029,60 @@
 </head>
 
 <body>
-  <div
-    style="position:fixed;top:6px;left:6px;background:rgba(0,0,0,0.7);color:#fff;padding:6px 10px;border-radius:6px;font-size:.62rem;z-index:1000;letter-spacing:.01em;">
-    © 2025 Edimah SYNESIUS SONGO — Tous droits réservés. Produit protégé par le droit d’auteur. Reproduction,
-    modification ou diffusion interdite sans autorisation écrite de l’autrice.
-  </div>
 
   <div class="workspace">
     <!-- COLONNE GAUCHE -->
     <div class="controls">
       <div class="action-card">
-        <h2 class="action-title"><span class="action-number">1.</span>Importer un logo</h2>
-        <p class="action-instructions">Chargez le logo (PNG/JPG) puis ajustez-le directement sur l’aperçu (drag + zoom).
-        </p>
+        <h2 class="action-title"><span class="action-number">1.</span>Importer le logo</h2>
         <input id="logoInput" type="file" accept="image/*" />
+        <p class="action-instructions">Taille et emplacement ajustables directement sur l'affiche.
+        </p>
       </div>
 
       <div class="action-card">
-        <h2 class="action-title"><span class="action-number">2.</span>Importer l'image produit</h2>
-        <p class="action-instructions">Sélectionnez la photo du produit et appliquez le détourage.</p>
+        <h2 class="action-title"><span class="action-number">2.</span>Importer une photo du produit</h2>
+        <p class="action-instructions">Photo <b><u>centrée</u></b>, prise :</p>
+        <ul class="action-instructions">
+          <li>depuis <i>votre appareil</i> 📸</li>
+          <li>ou <i>sur internet </i> 🌐</li>
+        </ul>
         <input id="productInput" type="file" accept="image/*" />
-
+        <p class="action-instructions"><b>L'IA retire automatiquement l'arrière-plan de la photo.</b></p>
         <fieldset class="detourage-panel">
-          <legend>🪄 Détourage</legend>
+          <legend>🪄 Paramètres de détourage par IA</legend>
           <div class="detourage-modes">
             <label><input type="radio" name="detourageMode" value="auto" checked />Auto (recommandé)</label>
             <label><input type="radio" name="detourageMode" value="ia" />Forcer IA (U²-Net)</label>
-            <label><input type="radio" name="detourageMode" value="color" />Forcer détourage Couleur</label>
+            <label><input type="radio" name="detourageMode" value="color" />Forcer détourage sans IA</label>
           </div>
           <div class="tolerance-control" id="toleranceControl">
             <label for="toleranceRange">Tolérance <span id="toleranceValue">40</span></label>
             <input type="range" id="toleranceRange" min="0" max="60" value="40" />
           </div>
-          <div class="model-choice">
-            <span>Modèle IA</span>
+          <div class="model-choice" style="color:DodgerBlue;">
+            <span>Modèle d'IA utilisé</span>
             <label>
               <input type="radio" name="u2netModel" value="u2netp.onnx" checked />
-              <span>u2netp.onnx <small>(fond uni)</small></span>
+              <span>fond uni <small>(u2netp.onnx)</small></span>
             </label>
             <label>
               <input type="radio" name="u2netModel" value="u2net.onnx" />
-              <span>u2net.onnx <small>(images encombrées)</small></span>
+              <span>fond encombré <small>(u2net.onnx)</small></span>
             </label>
           </div>
           <p class="detourage-note">Les images restent sur votre appareil.</p>
         </fieldset>
         <div class="detourage-status" id="detourageStatus">Initialisation de l'IA…</div>
         <progress id="detourageProgress" class="progress" max="100" value="0" hidden></progress>
+      </div>
+
+      <div class="action-card">
+        <div class="global-actions">
+          <button type="button" id="updatePosterBtn">Mettre à jour l'affiche</button>
+          <button type="button" id="resetPosterBtn" class="secondary">Réinitialiser l'affiche</button>
+          <button type="button" id="downloadPosterBtn" class="download-btn">Télécharger l'affiche</button>
+        </div>
       </div>
     </div>
 
@@ -1191,12 +1189,6 @@
       </div>
       <input type="color" id="toolbarTextColor" value="#0a7f5a" />
     </div>
-  </div>
-
-  <div class="global-actions">
-    <button type="button" id="updatePosterBtn">Mettre à jour l'affiche</button>
-    <button type="button" id="resetPosterBtn" class="secondary">Réinitialiser l'affiche</button>
-    <button type="button" id="downloadPosterBtn" class="download-btn">Télécharger l'affiche</button>
   </div>
 
   <!-- SCRIPTS -->
@@ -2039,6 +2031,7 @@
     const setupHeaderMorphing = () => {
       if (!headerBlock || !affiche) return;
       headerBlock.addEventListener('pointerdown', (event) => {
+        if (event.defaultPrevented) return;
         if (event.target.closest('[data-editable]')) return;
         const rect = headerBlock.getBoundingClientRect();
         const offsetX = event.clientX - rect.left;
@@ -2099,6 +2092,7 @@
     const setupFooterMorphing = () => {
       if (!footerBlock) return;
       footerBlock.addEventListener('pointerdown', (event) => {
+        if (event.defaultPrevented) return;
         if (event.target.closest('[data-editable]')) return;
         const rect = footerBlock.getBoundingClientRect();
         const offsetX = event.clientX - rect.left;
@@ -2156,6 +2150,7 @@
     const setupGommetteMorphing = () => {
       if (!afficheBadge) return;
       afficheBadge.addEventListener('pointerdown', (event) => {
+        if (event.defaultPrevented) return;
         if (event.target.closest('[data-editable]')) return;
         const rect = afficheBadge.getBoundingClientRect();
         const offsetX = event.clientX - rect.left;
@@ -3287,6 +3282,10 @@
     autoAdjustBands();
   </script>
 
+  <footer class="site-footer">
+    © 2025 Edimah SYNESIUS SONGO — Tous droits réservés. Produit protégé par le droit d’auteur. Reproduction,
+    modification ou diffusion interdite sans autorisation écrite de l’autrice.
+  </footer>
 </body>
 
 </html>

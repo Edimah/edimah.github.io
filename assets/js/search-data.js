@@ -37,6 +37,13 @@ ninja.data = [{
           handler: () => {
             window.location.href = "/freelance/";
           },
+        },{id: "nav-actualités-santé-amp-stats",
+          title: "Actualités Santé &amp; Stats",
+          description: "",
+          section: "Navigation",
+          handler: () => {
+            window.location.href = "/santepub/";
+          },
         },{id: "nav-cv",
           title: "CV",
           description: "Curriculum Vitae",
@@ -60,6 +67,11 @@ ninja.data = [{
           description: "Explore 20 months of personal Apple Health metrics through R visualisations 🏃🏿‍♀️📊",
           section: "Projects",handler: () => {
               window.location.href = "/projects/apple_health_project/";
+            },},{id: "santepub-incidence-du-cancer-de-la-prostate-en-france-d-39-outre-mer-et-métropolitaine",
+          title: 'Incidence du cancer de la prostate en France d&amp;#39;Outre Mer et Métropolitaine',
+          description: "",
+          section: "Santepub",handler: () => {
+              window.location.href = "/santepub/2025-11-15-prostate-dom-metropole/";
             },},{
         id: 'social-email',
         title: 'email',
