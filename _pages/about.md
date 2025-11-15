@@ -24,6 +24,8 @@ latest_posts:
   limit: 3 # leave blank to include all the blog posts
 ---
 
-I did applied maths in school. Now I spend some of my time practicing music, fitness and chess.
+Trained in applied mathematics, I work at the intersection of Bayesian and computational statistics, machine learning, and data analytics.
 
-Here, I lightly explore their intersections, through notes, projects, and experiments.
+Outside consulting and research, I practice music theory, MIR, bouldering, and chess, and I explore how these domains inform each other — structure, rhythm, optimisation, signal.
+
+This site collects notes, projects, and lightweight experiments.
