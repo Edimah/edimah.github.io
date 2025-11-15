@@ -25,7 +25,7 @@ Les données ont été traitées sous R (`tidyverse`, `ggplot2`) : la base mondi
 
 ⚠️ Les méthodologies variant d’un territoire à l’autre, les comparaisons doivent rester prudentes. [^2]
 
-La base résultante inclue les territoires suivants, sur lesquels nous avons basé notre étude :
+La base résultante inclut les territoires suivants, sur lesquels nous avons basé notre étude :
 
 - France métropolitaine
 - Guadeloupe
