@@ -2,8 +2,7 @@
 layout: default
 permalink: /santepub/
 title: Actualités Santé & Stats
-nav: true
-nav_order: 5.5
+nav: false
 ---
 
 <div class="post">
