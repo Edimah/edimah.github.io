@@ -6,6 +6,8 @@ image: /assets/img/santepub/prostate_thumbnail.png
 date: 2025-11-15
 ---
 
+# Résumé 🧵
+
 À partir des données fiables disponibles dans GLOBOCAN/IARC[^1], j’ai comparé les taux d’incidence standardisés du **cancer de la prostate** en France métropolitaine et dans plusieurs territoires d’Outre-mer.
 
 Les écarts sont importants : la Guadeloupe et la Martinique présentent des valeurs nettement supérieures à la moyenne métropolitaine, et aux autres territoires étudiés.
@@ -19,7 +21,7 @@ Dans le cadre de Novembre Bleu 🔷, ce billet cherche à fournir un point d’a
 
 > **Important** : la base mondiale a été filtrée pour isoler les territoires français. Les méthodologies variant d’un territoire à l’autre, les comparaisons doivent rester prudentes.
 
-Territoires inclus :
+Territoires inclus (dont les données étaient disponibles) :
 
 - France métropolitaine
 - Guadeloupe
@@ -28,15 +30,24 @@ Territoires inclus :
 - La Réunion
 - Polynésie française
 
-Les données ont été traitées sous R (tidyverse, ggplot2) à partir des valeurs relevées.
+Les données ont été traitées sous R (`tidyverse`, `ggplot2`) à partir des valeurs relevées.
 
-Le code complet et le dataset utilisé sont disponibles dans mon dépôt GitHub [public-health](https://github.com/Edimah/public-health).
+Le code complet et le dataset utilisés sont disponibles dans mon dépôt GitHub [public-health](https://github.com/Edimah/public-health).
 
 # Résultat
 
 Les incidences observées en **Martinique** et **Guadeloupe** sont environ **2 fois plus élevées** que celles estimées pour la métropole.
 
 Cela rejoint les constats établis par Santé Publique France dans le Bulletin Epidemiologique Hebdomadaire (BEH) publié le 15 novembre 2016 : [_Le cancer de la prostate aux Antilles françaises : état des lieux_](https://beh.santepubliquefrance.fr/beh/2016/39-40/2016_39-40_6.html?utm_source=chatgpt.com)[^2].
+
+| Région                | TSM (monde) |
+|:----------------------|------------:|
+| Guadeloupe            |       157.5 |
+| Martinique            |       134.3 |
+| Guyane française      |        94.1 |
+| France métropolitaine |        82.3 |
+| Polynésie française   |        62.3 |
+| La Réunion            |        59.6 |
 
 <div class="row justify-content-center my-4">
   <div class="col-lg-10">
