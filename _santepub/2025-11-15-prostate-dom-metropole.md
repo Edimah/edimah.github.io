@@ -89,6 +89,8 @@ L’incidence élevée dans ces territoires n’est pas une fatalité : il exist
 
 Les actions menées par les associations et les acteurs du monde de la santé se multiplient. Les chiffres justifient cette tendance.
 
+_Image de couverture générée avec DALL-E._
+
 ## Références
 
 [^1]: IARC / WHO. _GLOBOCAN 2022: Prostate cancer incidence by country_. Disponible via https://gco.iarc.fr/today/, téléchargement des tables CSV correspondant aux taux d'incidence du cancer de la prostate et filtré par pays ("Countries") (consulté en 2025) avant traitement de données externe.
