@@ -58,6 +58,83 @@
       align-items: stretch;
     }
 
+    #appRoot[aria-hidden="true"] {
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .pin-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      padding: 20px;
+    }
+
+    .pin-overlay.is-hidden {
+      display: none;
+    }
+
+    .pin-dialog {
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+      padding: 26px 24px 28px;
+      text-align: center;
+      max-width: 360px;
+      width: 100%;
+      border: 1px solid rgba(10, 127, 90, 0.12);
+    }
+
+    .pin-dialog h1 {
+      margin: 0 0 8px;
+      font-size: 1.25rem;
+      color: #0a7f5a;
+    }
+
+    .pin-dialog p {
+      margin: 0 0 18px;
+      font-size: 0.92rem;
+      color: #2d3f38;
+      line-height: 1.35;
+    }
+
+    .pin-dialog input[type="password"] {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid #cfdad4;
+      font-size: 1rem;
+      text-align: center;
+      margin-bottom: 12px;
+      font-family: inherit;
+    }
+
+    .pin-dialog button {
+      width: 100%;
+      border: none;
+      background: #0a7f5a;
+      color: #fff;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .beta-banner {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #0a7f5a;
+      font-weight: 600;
+      margin-bottom: 4px;
+      display: block;
+    }
+
     /* PANNEAUX */
     .controls {
       width: 360px;
@@ -1030,142 +1107,153 @@
 
 <body>
 
-  <div class="workspace">
-    <!-- COLONNE GAUCHE -->
-    <div class="controls">
-      <div class="action-card">
-        <h2 class="action-title"><span class="action-number">1.</span>Importer le logo</h2>
-        <input id="logoInput" type="file" accept="image/*" />
-        <p class="action-instructions">Taille et emplacement ajustables directement sur l'affiche.
-        </p>
-      </div>
-
-      <div class="action-card">
-        <h2 class="action-title"><span class="action-number">2.</span>Importer une photo du produit</h2>
-        <p class="action-instructions">Photo <b><u>centrée</u></b>, prise :</p>
-        <ul class="action-instructions">
-          <li>depuis <i>votre appareil</i> 📸</li>
-          <li>ou <i>sur internet </i> 🌐</li>
-        </ul>
-        <input id="productInput" type="file" accept="image/*" />
-        <p class="action-instructions"><b>L'IA retire automatiquement l'arrière-plan de la photo.</b></p>
-        <fieldset class="detourage-panel">
-          <legend>🪄 Paramètres de détourage par IA</legend>
-          <div class="detourage-modes">
-            <label><input type="radio" name="detourageMode" value="auto" checked />Auto (recommandé)</label>
-            <label><input type="radio" name="detourageMode" value="ia" />Forcer IA (U²-Net)</label>
-            <label><input type="radio" name="detourageMode" value="color" />Forcer détourage sans IA</label>
-          </div>
-          <div class="tolerance-control" id="toleranceControl">
-            <label for="toleranceRange">Tolérance <span id="toleranceValue">40</span></label>
-            <input type="range" id="toleranceRange" min="0" max="60" value="40" />
-          </div>
-          <div class="model-choice" style="color:DodgerBlue;">
-            <span>Modèle d'IA utilisé</span>
-            <label>
-              <input type="radio" name="u2netModel" value="u2netp.onnx" checked />
-              <span>fond uni <small>(u2netp.onnx)</small></span>
-            </label>
-            <label>
-              <input type="radio" name="u2netModel" value="u2net.onnx" />
-              <span>fond encombré <small>(u2net.onnx)</small></span>
-            </label>
-          </div>
-          <p class="detourage-note">Les images restent sur votre appareil.</p>
-        </fieldset>
-        <div class="detourage-status" id="detourageStatus">Initialisation de l'IA…</div>
-        <progress id="detourageProgress" class="progress" max="100" value="0" hidden></progress>
-      </div>
-
-      <div class="action-card">
-        <div class="global-actions">
-          <button type="button" id="updatePosterBtn">Mettre à jour l'affiche</button>
-          <button type="button" id="resetPosterBtn" class="secondary">Réinitialiser l'affiche</button>
-          <button type="button" id="downloadPosterBtn" class="download-btn">Télécharger l'affiche</button>
-        </div>
-      </div>
+  <div id="pinOverlay" class="pin-overlay" role="dialog" aria-modal="true" aria-labelledby="pinOverlayTitle">
+    <div class="pin-dialog">
+      <h1 id="pinOverlayTitle">Accès bêta</h1>
+      <p>Cette préversion est réservée aux testeuses & testeurs disposant d&#39;un code.</p>
+      <input id="pinCodeInput" type="password" inputmode="numeric" pattern="\\d{4,8}" maxlength="8"
+        autocomplete="one-time-code" placeholder="Entrez le PIN" aria-label="PIN d&#39;accès" />
+      <button type="button" id="pinSubmitBtn">Valider</button>
     </div>
-
-    <!-- PREVIEW CENTRE -->
-    <!-- PREVIEW CENTRE -->
-    <div class="preview-container">
-      <div class="affiche" id="affiche">
-        <div id="bgLayer"></div>
-        <div class="header-left">
-          <p class="promo-title" id="afficheTitle" data-editable="header-title" data-label="Titre promo"
-            contenteditable="true" spellcheck="false">Promo d'automne - Vitamine D</p>
-          <p class="promo-date" id="afficheDate" data-editable="header-date" data-label="Date/accroche"
-            contenteditable="true" spellcheck="false">Du 1er au 15 novembre</p>
-        </div>
-        <button type="button" class="drag-handle-star header-star" id="headerDragHandle"
-          aria-label="Déplacer le texte du bandeau haut">✶</button>
-
-        <div class="logo" id="afficheLogo"><span class="placeholder">logo</span></div>
-        <div class="gommette" id="afficheBadge"><span id="afficheBadgeText" data-editable="badge"
-            data-label="Texte gommette" contenteditable="true" spellcheck="false">-20%</span></div>
-        <div class="product-image" id="afficheProduct">
-          <div class="product-placeholder">Photo du produit<br />ici</div>
-        </div>
-
-        <div class="footer-band">
-          <div class="footer-title" id="afficheProductName" data-editable="footer-title" data-label="Titre bas"
-            contenteditable="true" spellcheck="false">Vitamine D3 Senior 1000 UI</div>
-          <div class="footer-subtitle" id="afficheProductSubtitle" data-editable="footer-subtitle"
-            data-label="Sous-titre bas" contenteditable="true" spellcheck="false">Demandez conseil à votre pharmacien
-          </div>
-        </div>
-        <button type="button" class="drag-handle-star footer-star" id="footerDragHandle"
-          aria-label="Déplacer le texte du bandeau bas">✶</button>
-      </div>
-    </div>
-
-    <!-- PANNEAU DROIT : Création & Contrôles -->
-    <div class="controls controls-right">
-      <div class="action-card">
-        <h2 class="action-title"><span class="action-number">3.</span>Modifier le texte</h2>
-        <p class="action-instructions">Cliquez directement sur les zones de texte de l'affiche pour les modifier puis
-          ajustez-les via la barre contextuelle qui apparaît juste en dessous.</p>
-        <div class="editor-status" id="editorStatus">Sélectionnez un bloc de texte pour afficher la réglette
-          contextuelle.</div>
-      </div>
-
-      <div class="action-card">
-        <h2 class="action-title"><span class="action-number">4.</span>Modifier les couleurs</h2>
-        <p class="action-instructions">Choisissez un type d'arrière-plan puis ajustez le dégradé et la couleur des
-          bandeaux.</p>
-
-        <div class="bg-mode">
-          <label class="bg-mode-option"><input type="radio" name="bgMode" value="solid" />Couleur unie</label>
-          <input type="color" id="solidBgColor" value="#eaf7f1" />
-
-          <label class="bg-mode-option"><input type="radio" name="bgMode" value="image" />Image modèle</label>
-          <input type="file" id="bgImageInput" accept="image/*" />
-          <button type="button" id="bgImageClearBtn" class="secondary" disabled>Retirer l'image</button>
-
-          <label class="bg-mode-option"><input type="radio" name="bgMode" value="generated" checked />Fond
-            généré</label>
-          <select id="bgStyleSelect">
-            <option value="bubbles">Bulles</option>
-            <option value="waves">Ondes</option>
-            <option value="dots">Pointillé</option>
-            <option value="cross">Motif croix</option>
-          </select>
-
-          <div class="palette-choice">
-            <label><input type="radio" name="bgPaletteMode" value="logo" checked />Palette du logo</label>
-            <label><input type="radio" name="bgPaletteMode" value="custom" />Dégradé personnalisé</label>
-          </div>
-          <div class="custom-palette-fields" id="customPaletteFields">
-            <input type="color" id="customColorA" value="#0A7F5A" />
-            <input type="color" id="customColorB" value="#A4D4AE" />
-          </div>
-          <button type="button" id="bgRandomBtn" class="secondary">Aléatoire</button>
-        </div>
-
-      </div>
-    </div>
-
   </div>
+
+  <div id="appRoot" aria-hidden="true">
+    <div class="workspace">
+      <!-- COLONNE GAUCHE -->
+      <div class="controls">
+        <div class="action-card">
+          <h2 class="action-title"><span class="action-number">1.</span>Importer le logo</h2>
+          <input id="logoInput" type="file" accept="image/*" />
+          <p class="action-instructions">Taille et emplacement ajustables directement sur l'affiche.
+          </p>
+        </div>
+
+        <div class="action-card">
+          <h2 class="action-title"><span class="action-number">2.</span>Importer une photo du produit</h2>
+          <p class="action-instructions">Photo <b><u>centrée</u></b>, prise :</p>
+          <ul class="action-instructions">
+            <li>depuis <i>votre appareil</i> 📸</li>
+            <li>ou <i>sur internet </i> 🌐</li>
+          </ul>
+          <input id="productInput" type="file" accept="image/*" />
+          <p class="action-instructions"><b>L'IA retire automatiquement l'arrière-plan de la photo.</b></p>
+          <fieldset class="detourage-panel">
+            <legend>🪄 Paramètres de détourage par IA</legend>
+            <div class="detourage-modes">
+              <label><input type="radio" name="detourageMode" value="auto" checked />Auto (recommandé)</label>
+              <label><input type="radio" name="detourageMode" value="ia" />Forcer IA (U²-Net)</label>
+              <label><input type="radio" name="detourageMode" value="color" />Forcer détourage sans IA</label>
+            </div>
+            <div class="tolerance-control" id="toleranceControl">
+              <label for="toleranceRange">Tolérance <span id="toleranceValue">40</span></label>
+              <input type="range" id="toleranceRange" min="0" max="60" value="40" />
+            </div>
+            <div class="model-choice" style="color:DodgerBlue;">
+              <span>Modèle d'IA utilisé</span>
+              <label>
+                <input type="radio" name="u2netModel" value="u2netp.onnx" checked />
+                <span>fond uni <small>(u2netp.onnx)</small></span>
+              </label>
+              <label>
+                <input type="radio" name="u2netModel" value="u2net.onnx" />
+                <span>fond encombré <small>(u2net.onnx)</small></span>
+              </label>
+            </div>
+            <p class="detourage-note">Les images restent sur votre appareil.</p>
+          </fieldset>
+          <div class="detourage-status" id="detourageStatus">Initialisation de l'IA…</div>
+          <progress id="detourageProgress" class="progress" max="100" value="0" hidden></progress>
+        </div>
+
+        <div class="action-card">
+          <div class="global-actions">
+            <button type="button" id="updatePosterBtn">Mettre à jour l'affiche</button>
+            <button type="button" id="resetPosterBtn" class="secondary">Réinitialiser l'affiche</button>
+            <button type="button" id="downloadPosterBtn" class="download-btn">Télécharger l'affiche</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PREVIEW CENTRE -->
+      <!-- PREVIEW CENTRE -->
+      <div class="preview-container">
+        <div class="affiche" id="affiche">
+          <div id="bgLayer"></div>
+          <div class="header-left">
+            <p class="promo-title" id="afficheTitle" data-editable="header-title" data-label="Titre promo"
+              contenteditable="true" spellcheck="false">Promo d'automne - Vitamine D</p>
+            <p class="promo-date" id="afficheDate" data-editable="header-date" data-label="Date/accroche"
+              contenteditable="true" spellcheck="false">Du 1er au 15 novembre</p>
+          </div>
+          <button type="button" class="drag-handle-star header-star" id="headerDragHandle"
+            aria-label="Déplacer le texte du bandeau haut">✶</button>
+
+          <div class="logo" id="afficheLogo"><span class="placeholder">logo</span></div>
+          <div class="gommette" id="afficheBadge"><span id="afficheBadgeText" data-editable="badge"
+              data-label="Texte gommette" contenteditable="true" spellcheck="false">-20%</span></div>
+          <div class="product-image" id="afficheProduct">
+            <div class="product-placeholder">Photo du produit<br />ici</div>
+          </div>
+
+          <div class="footer-band">
+            <div class="footer-title" id="afficheProductName" data-editable="footer-title" data-label="Titre bas"
+              contenteditable="true" spellcheck="false">Vitamine D3 Senior 1000 UI</div>
+            <div class="footer-subtitle" id="afficheProductSubtitle" data-editable="footer-subtitle"
+              data-label="Sous-titre bas" contenteditable="true" spellcheck="false">Demandez conseil à votre pharmacien
+            </div>
+          </div>
+          <button type="button" class="drag-handle-star footer-star" id="footerDragHandle"
+            aria-label="Déplacer le texte du bandeau bas">✶</button>
+        </div>
+      </div>
+
+      <!-- PANNEAU DROIT : Création & Contrôles -->
+      <div class="controls controls-right">
+        <div class="action-card">
+          <h2 class="action-title"><span class="action-number">3.</span>Modifier le texte</h2>
+          <p class="action-instructions">Cliquez directement sur les zones de texte de l'affiche pour les modifier puis
+            ajustez-les via la barre contextuelle qui apparaît juste en dessous.</p>
+          <div class="editor-status" id="editorStatus">Sélectionnez un bloc de texte pour afficher la réglette
+            contextuelle.</div>
+        </div>
+
+        <div class="action-card">
+          <h2 class="action-title"><span class="action-number">4.</span>Modifier les couleurs</h2>
+          <p class="action-instructions">Choisissez un type d'arrière-plan puis ajustez le dégradé et la couleur des
+            bandeaux.</p>
+
+          <div class="bg-mode">
+            <label class="bg-mode-option"><input type="radio" name="bgMode" value="solid" />Couleur unie</label>
+            <input type="color" id="solidBgColor" value="#eaf7f1" />
+
+            <label class="bg-mode-option"><input type="radio" name="bgMode" value="image" />Image modèle</label>
+            <input type="file" id="bgImageInput" accept="image/*" />
+            <button type="button" id="bgImageClearBtn" class="secondary" disabled>Retirer l'image</button>
+
+            <label class="bg-mode-option"><input type="radio" name="bgMode" value="generated" checked />Fond
+              généré</label>
+            <select id="bgStyleSelect">
+              <option value="bubbles">Bulles</option>
+              <option value="waves">Ondes</option>
+              <option value="dots">Pointillé</option>
+              <option value="cross">Motif croix</option>
+            </select>
+
+            <div class="palette-choice">
+              <label><input type="radio" name="bgPaletteMode" value="logo" checked />Palette du logo</label>
+              <label><input type="radio" name="bgPaletteMode" value="custom" />Dégradé personnalisé</label>
+            </div>
+            <div class="custom-palette-fields" id="customPaletteFields">
+              <input type="color" id="customColorA" value="#0A7F5A" />
+              <input type="color" id="customColorB" value="#A4D4AE" />
+            </div>
+            <button type="button" id="bgRandomBtn" class="secondary">Aléatoire</button>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
   </div>
 
   <div id="contextToolbar" class="context-toolbar">
@@ -1194,6 +1282,53 @@
   <!-- SCRIPTS -->
   <!-- SCRIPTS -->
   <script type="module">
+    // --- Accès bêta (retirer ce bloc pour désactiver la porte d'entrée) ---
+    const BETA_PIN = '81693315'; // Modifiez ce code ici chaque semaine pour renouveler l'accès partagé.
+    const PIN_STORAGE_KEY = 'betaAccessGranted'; // Effacez cette clé dans localStorage pour forcer une nouvelle saisie.
+    const pinOverlay = document.getElementById('pinOverlay');
+    const pinInput = document.getElementById('pinCodeInput');
+    const pinSubmitBtn = document.getElementById('pinSubmitBtn');
+    const appRoot = document.getElementById('appRoot');
+    const hidePinOverlay = () => {
+      if (pinOverlay && !pinOverlay.classList.contains('is-hidden')) {
+        pinOverlay.classList.add('is-hidden');
+      }
+      appRoot?.removeAttribute('aria-hidden');
+    };
+    const showPinOverlay = () => {
+      pinOverlay?.classList.remove('is-hidden');
+      appRoot?.setAttribute('aria-hidden', 'true');
+    };
+    const checkPin = () => {
+      const entered = pinInput?.value?.trim() || '';
+      if (entered !== BETA_PIN) {
+        alert('Code incorrect. Réessayez ou contactez la personne qui vous l’a fourni.');
+        if (pinInput) {
+          pinInput.value = '';
+          pinInput.focus();
+        }
+        return;
+      }
+      localStorage.setItem(PIN_STORAGE_KEY, 'true'); // Supprimez cette ligne + l’overlay pour retirer complètement la protection.
+      hidePinOverlay();
+    };
+    const initBetaGate = () => {
+      if (localStorage.getItem(PIN_STORAGE_KEY) === 'true') {
+        hidePinOverlay();
+      } else {
+        showPinOverlay();
+        pinInput?.focus();
+      }
+    };
+    pinSubmitBtn?.addEventListener('click', checkPin);
+    pinInput?.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        checkPin();
+      }
+    });
+    initBetaGate();
+
     // --- Constantes & chemins dynamiques ---
     const DETOUR_MODE = Object.freeze({ AUTO: 'auto', IA: 'ia', COLOR: 'color' });
     const DEFAULT_MODEL_CHOICE = 'u2netp.onnx';
@@ -3323,9 +3458,11 @@
   </script>
 
   <footer class="site-footer">
+    <div class="beta-banner">Bêta – non commercial</div>
     © 2025 Edimah SYNESIUS SONGO — Tous droits réservés. Produit protégé par le droit d’auteur. Reproduction,
     modification ou diffusion interdite sans autorisation écrite de l’autrice.
   </footer>
+  </div>
 </body>
 
 </html>
