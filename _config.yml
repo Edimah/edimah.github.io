@@ -152,6 +152,9 @@ collections:
     output: true
   projects:
     output: true
+  santepub:
+    output: true
+    permalink: /santepub/:name/
 
 # -----------------------------------------------------------------------------
 # Jekyll settings
