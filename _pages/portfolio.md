@@ -6,8 +6,6 @@ nav: true
 nav_order: 3
 ---
 
-Bienvenue sur mon portfolio : une sélection rapide de projets et de visuels.
-
 ## Projects Gallery
 
 <div class="row row-cols-1 row-cols-md-2 g-4">
@@ -15,7 +13,7 @@ Bienvenue sur mon portfolio : une sélection rapide de projets et de visuels.
     <div class="card h-100 shadow-sm">
       <div class="card-body">
         <h3 class="card-title text-capitalize">Apple Health Data through R</h3>
-        <p class="card-text">20 mois de données Apple Health, parsées et visualisées en R (tidyverse, ggplot2).</p>
+        <p class="card-text">20months of Apple Health data.</p>
         <a class="stretched-link" href="/projects/#fitness">Voir la fiche projet</a>
       </div>
     </div>
