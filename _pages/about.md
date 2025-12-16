@@ -24,8 +24,10 @@ latest_posts:
   limit: 3 # leave blank to include all the blog posts
 ---
 
-Trained in applied mathematics, I work at the intersection of Bayesian and computational statistics, machine learning, and data analytics.
+Trained in applied mathematics, I have strong interests in Bayesian statistics, machine learning, and time series. Profesionally I leverage these skills to give more clarity to structures in their decision-making processes.
 
-Outside consulting and research, I practice music theory, MIR, bouldering, and chess, and I explore how these domains inform each other — structure, rhythm, optimisation, signal.
+What I am working on:
 
-This site collects notes, projects, and lightweight experiments.
+- Uncertainty maps by pathology types in french territory
+- Data chain audit (a public health case-study)
+- Cancer incidence rates differences
