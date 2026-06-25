@@ -6,7 +6,7 @@
     "email": "edimah.synesius-songo@proton.me",
     "phone": "",
     "url": "https://edimah.github.io/",
-    "summary": "Applied maths & statistics graduate with a strong interest in interdisciplinary fields.",
+    "summary": "Applied mathematician specialising in statistical inference and evaluation frameworks for quantitative systems in regulated environments.",
     "location": {
       "address": "",
       "postalCode": "",
@@ -25,7 +25,7 @@
   "work": [
     {
       "name": "IFP Energies Nouvelles & ONERA",
-      "position": "PhD Candidate & Research Engineer",
+      "position": "Research Engineer (CDD)",
       "url": "",
       "startDate": "2023-11-01",
       "endDate": "2024-06-30",
@@ -106,22 +106,22 @@
   "publications": [],
   "skills": [
     {
+      "name": "Statistics & Inference",
+      "level": "",
+      "icon": "",
+      "keywords": ["Bayesian Inference", "Statistical Modelling", "Uncertainty Quantification", "Sensitivity Analysis", "Computational Statistics", "Time Series Analysis"]
+    },
+    {
       "name": "Programming & Data Science",
       "level": "",
       "icon": "",
-      "keywords": ["R", "Python", "C++", "Git", "LaTeX", "Markdown", "R Shiny", "Jupyter"]
+      "keywords": ["R", "Python", "Git", "LaTeX", "Markdown", "Jupyter"]
     },
     {
       "name": "Mathematics & Machine Learning",
       "level": "",
       "icon": "",
       "keywords": ["Statistical Learning", "Deep Learning", "Optimisation", "Stochastic Processes", "Numerical Methods"]
-    },
-    {
-      "name": "Statistics & Uncertainty Quantification",
-      "level": "",
-      "icon": "",
-      "keywords": ["Sensitivity Analysis", "Uncertainty Quantification", "Bayesian Inference", "Computational Statistics", "Time Series Analysis"]
     }
   ],
   "languages": [

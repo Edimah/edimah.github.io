@@ -15,7 +15,7 @@ tabs: true
 
 {% tab freelance-lang Français %}
 
-> J’accompagne les structures qui ont besoin d’analyse statistique rigoureuse, de modélisation et de comprendre et déployer des outils d'IA.
+> J’accompagne les équipes dans la conception et la validation de cadres statistiques pour les outils de décision assistés par IA en environnements régulés.
 
 ---
 
@@ -24,7 +24,7 @@ tabs: true
 - **Analyses statistiques** : modèles bayésiens ou hiérarchiques, séries temporelles, estimation d’incertitudes pour appuyer la décision.
 - **Analyses prédictives** : scoring, classification, NLP léger ; livrables reproductibles en notebooks ou scripts prêts à intégrer.
 - **Analyse de données & visualisations** : exploitation de bases publiques ou privées, mise en forme claire pour les décideurs.
-- **Transfert de compétences** : ateliers d’introduction aux stats/IA adaptés aux attentes des équipes.
+- **Cadres d’évaluation** : conception de cadres d’évaluation statistique pour les systèmes d’IA dans les environnements régulés (santé, finance, assurance).
 
 ---
 
@@ -43,39 +43,13 @@ tabs: true
 
 ### 🤝 [Contact direct par email](mailto:edimah.synesius-songo@proton.me)
 
-### 📊 Exemples de projets
-
-<div class="project-carousel">
-  {% assign project_cards = site.projects | where_exp: "p", "p.draft != true" | sort: "importance" | reverse %}
-  {% if project_cards == empty %}
-    {% assign project_cards = site.santepub %}
-  {% endif %}
-  {% for item in project_cards limit: 6 %}
-    {% assign summary = item.excerpt | default: item.description | default: item.content %}
-    {% assign summary = summary | strip_html | truncate: 140 %}
-    <article class="project-card">
-      {% if item.image %}
-        <div class="project-card__thumb">
-          <img src="{{ item.image | relative_url }}" alt="Illustration {{ item.title }}">
-        </div>
-      {% endif %}
-      <h4><a href="{{ item.url | relative_url }}">{{ item.title }}</a></h4>
-      <p class="project-card__summary">{{ summary }}</p>
-      <p class="project-card__meta">
-        {% if item.date %}
-          {{ item.date | date: "%d %b %Y" }} ·
-        {% endif %}
-        {{ item.collection | default: "Projet" | capitalize }}
-      </p>
-    </article>
-  {% endfor %}
-</div>
+**Études de cas disponibles sur demande.** Focus actuel : méthodologie d’audit statistique pour les chaînes de données en santé publique.
 
 {% endtab %}
 
 {% tab freelance-lang English %}
 
-> I help teams with rigorous statistical analyses & modelling, and understanding and using lightweight AI tools.
+> I help teams design and validate statistical frameworks for AI-assisted decision tools in regulated environments.
 
 ---
 
@@ -84,7 +58,7 @@ tabs: true
 - **Statistical work**: Bayesian/hierarchical models, time series, uncertainty quantification for better decisions.
 - **Predictions**: scoring, classification, lightweight NLP; reproducible notebooks or scripts that plug into your stack.
 - **Data Analytics & Visualisation**: public or proprietary datasets turned into clear narratives for stakeholders.
-- **Traininng and skill transfer**: workshops on statistical fundamentals and AI literacy tailored to non-technical teams.
+- **Evaluation frameworks**: statistical conformity and reliability assessment for AI systems in regulated environments (health, finance, insurance).
 
 ---
 
@@ -103,33 +77,7 @@ tabs: true
 
 ### 🤝 Get in touch : [Email me directly](mailto:edimah.synesius-songo@proton.me)
 
-### 📊 Recent work highlights
-
-<div class="project-carousel">
-  {% assign project_cards = site.projects | where_exp: "p", "p.draft != true" | sort: "importance" | reverse %}
-  {% if project_cards == empty %}
-    {% assign project_cards = site.santepub %}
-  {% endif %}
-  {% for item in project_cards limit: 6 %}
-    {% assign summary = item.excerpt | default: item.description | default: item.content %}
-    {% assign summary = summary | strip_html | truncate: 140 %}
-    <article class="project-card">
-      {% if item.image %}
-        <div class="project-card__thumb">
-          <img src="{{ item.image | relative_url }}" alt="Illustration {{ item.title }}">
-        </div>
-      {% endif %}
-      <h4><a href="{{ item.url | relative_url }}">{{ item.title }}</a></h4>
-      <p class="project-card__summary">{{ summary }}</p>
-      <p class="project-card__meta">
-        {% if item.date %}
-          {{ item.date | date: "%d %b %Y" }} ·
-        {% endif %}
-        {{ item.collection | default: "Project" | capitalize }}
-      </p>
-    </article>
-  {% endfor %}
-</div>
+**Case studies available on request.** Current focus: statistical audit methodology for regulated public health data chains.
 
 {% endtab %}
 

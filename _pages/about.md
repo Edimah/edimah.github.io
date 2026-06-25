@@ -2,7 +2,7 @@
 layout: about
 title: about
 permalink: /
-subtitle: 🍃
+subtitle: Applied Mathematician · Statistical Frameworks for AI Measurement · Bayesian Inference
 
 profile:
   align: right
@@ -24,10 +24,10 @@ latest_posts:
   limit: 3 # leave blank to include all the blog posts
 ---
 
-Trained in applied mathematics, I have strong interests in Bayesian statistics, machine learning, and time series. Profesionally I leverage these skills to give more clarity to structures in their decision-making processes.
+I'm an applied mathematician working at the intersection of statistical inference and AI measurement. My background spans Bayesian model calibration in energy systems, data chain reliability in regulated public health, and independent consulting in statistical modelling for health and finance. I'm building toward rigorous evaluation frameworks for AI systems in high-stakes, EU-regulated environments — where the gap between what a model claims to do and what it actually does has real consequences.
 
 What I am working on:
 
-- Uncertainty maps by pathology types in french territory
-- Data chain audit (a public health case-study)
-- Cancer incidence rates differences
+- Statistical frameworks for AI conformity assessment (EU AI Act risk tiers)
+- Data chain audit methodology for regulated public health systems — case study in progress
+- Technical AI Safety course (BlueDot Impact, in progress)
