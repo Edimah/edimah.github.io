@@ -23,20 +23,6 @@ ninja.data = [{
           handler: () => {
             window.location.href = "/portfolio/";
           },
-        },{id: "nav-projects",
-          title: "projects",
-          description: "A modest but growing list of personal projects",
-          section: "Navigation",
-          handler: () => {
-            window.location.href = "/projects/";
-          },
-        },{id: "nav-repositories",
-          title: "repositories",
-          description: "My GitHub repositories.",
-          section: "Navigation",
-          handler: () => {
-            window.location.href = "/repositories/";
-          },
         },{id: "nav-freelance",
           title: "freelance",
           description: "",
@@ -51,7 +37,18 @@ ninja.data = [{
           handler: () => {
             window.location.href = "/cv/";
           },
-        },{id: "post-how-to-import-and-use-apple-health-data-with-r",
+        },{id: "post-hierarchical-bayesian-calibration-for-institutional-indicators-under-partial-coverage",
+        
+          title: "Hierarchical Bayesian Calibration for Institutional Indicators Under Partial Coverage",
+        
+        description: "When an institution reports a single aggregate rate, partial pooling reveals what naive averages hide.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/hierarchical-bayesian-calibration/";
+          
+        },
+      },{id: "post-how-to-import-and-use-apple-health-data-with-r",
         
           title: "How to import and use Apple Health data with R",
         
