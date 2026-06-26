@@ -109,7 +109,14 @@
       "name": "Statistics & Inference",
       "level": "",
       "icon": "",
-      "keywords": ["Bayesian Inference", "Statistical Modelling", "Uncertainty Quantification", "Sensitivity Analysis", "Computational Statistics", "Time Series Analysis"]
+      "keywords": [
+        "Bayesian Inference",
+        "Statistical Modelling",
+        "Uncertainty Quantification",
+        "Sensitivity Analysis",
+        "Computational Statistics",
+        "Time Series Analysis"
+      ]
     },
     {
       "name": "Programming & Data Science",
