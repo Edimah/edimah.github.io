@@ -14,7 +14,6 @@ pagination:
   trail:
     before: 1 # The number of links before the current page
     after: 3 # The number of links after the current page
-
 ---
 
 {% assign santepub_posts = site.santepub | sort: 'date' | reverse %}
@@ -103,6 +102,7 @@ pagination:
 <div class="post">
 
 {% if santepub_posts and santepub_posts.size > 0 %}
+
   <div class="header-bar">
     <h1>Actualités Santé & Stats</h1>
     <h2>Brèves analyses en français, avec visuel clé et sources citées.</h2>

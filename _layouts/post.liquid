@@ -19,14 +19,14 @@ layout: default
 <div class="post">
   <header class="post-header">
     {% if page.image %}
-    <div class="post-hero-banner text-center">
-      <img class="img-fluid" src="{{ page.image | relative_url }}" alt="{{ page.title }} header image">
-      <div class="post-hero-overlay">
-        <h1 class="post-title mb-0">{{ page.title }}</h1>
+      <div class="post-hero-banner text-center">
+        <img class="img-fluid" src="{{ page.image | relative_url }}" alt="{{ page.title }} header image">
+        <div class="post-hero-overlay">
+          <h1 class="post-title mb-0">{{ page.title }}</h1>
+        </div>
       </div>
-    </div>
     {% else %}
-    <h1 class="post-title">{{ page.title }}</h1>
+      <h1 class="post-title">{{ page.title }}</h1>
     {% endif %}
     <p class="post-meta">
       Created on {{ page.date | date: '%B %d, %Y' }}
