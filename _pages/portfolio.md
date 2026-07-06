@@ -13,8 +13,8 @@ nav_order: 3
     <div class="card h-100 shadow-sm">
       <div class="card-body">
         <h3 class="card-title text-capitalize">Apple Health Data through R</h3>
-        <p class="card-text">20months of Apple Health data.</p>
-        <a class="stretched-link" href="/projects/#fitness">Voir la fiche projet</a>
+        <p class="card-text">Twenty months of Apple Health data: a reproducible R pipeline from raw XML export to tidy datasets and interactive visuals.</p>
+        <a class="stretched-link" href="/projects/#fitness">View the project</a>
       </div>
     </div>
   </div>

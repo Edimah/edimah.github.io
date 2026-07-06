@@ -1,12 +1,12 @@
 {
   "basics": {
     "name": "Edimah SYNESIUS SONGO",
-    "label": "",
+    "label": "Applied Mathematician · Building Reliable AI Systems for Regulated Domains",
     "image": "",
     "email": "edimah.synesius-songo@proton.me",
     "phone": "",
     "url": "https://edimah.github.io/",
-    "summary": "Applied mathematician specialising in statistical inference and evaluation frameworks for quantitative systems in regulated environments.",
+    "summary": "Applied mathematician building reliable, mathematically grounded AI systems for regulated environments. Core toolkit: Bayesian and frequentist inference, optimisation for ML, kernel methods, deep learning, signal processing.",
     "location": {
       "address": "",
       "postalCode": "",
@@ -17,20 +17,47 @@
     "profiles": [
       {
         "network": "LinkedIn",
-        "username": "edimah-synesius",
-        "url": "https://linkedin.com/in/edimah-synesius"
+        "username": "edimahsynesius",
+        "url": "https://www.linkedin.com/in/edimahsynesius"
       }
     ]
   },
   "work": [
     {
+      "name": "CRCDC Guadeloupe, Saint-Martin, Saint-Barthélémy",
+      "position": "Data Lead (interim)",
+      "url": "",
+      "startDate": "2026-02-01",
+      "endDate": "",
+      "summary": "Rebuilding the end-to-end data chain of a regulated public health cancer-screening organisation.",
+      "highlights": [
+        "System audit, pipeline automation, and data governance on sensitive regulated health data",
+        "R-based statistical reporting for national regulating entities"
+      ]
+    },
+    {
+      "name": "Freelance",
+      "position": "Independent Consultant — AI Reliability, Statistical Modelling & EU AI Act Readiness",
+      "url": "",
+      "startDate": "2025-10-01",
+      "endDate": "",
+      "summary": "Statistical modelling and AI reliability consulting for regulated environments.",
+      "highlights": [
+        "Public health data chain audit and automation, anomaly detection frameworks, model evaluation methodology",
+        "Building toward EU AI Act readiness assessments for healthcare and financial services clients"
+      ]
+    },
+    {
       "name": "IFP Energies Nouvelles & ONERA",
       "position": "Research Engineer (CDD)",
       "url": "",
       "startDate": "2023-11-01",
-      "endDate": "2024-06-30",
-      "summary": "Research on sensitivity and explainability methods in complex system modeling.",
-      "highlights": ["Development of sensitivity and explainability indices in R and Python", "Uncertainty analysis for complex systems"]
+      "endDate": "2024-08-31",
+      "summary": "Uncertainty and sensitivity analysis for coupled multiphysics systems (electrical motors, propulsion).",
+      "highlights": [
+        "Variance-based sensitivity indices (Sobol) and kernel-based methods for high-dimensional input spaces",
+        "Exited to pursue a broader mathematical research agenda in AI systems and probabilistic ML"
+      ]
     },
     {
       "name": "EDF R&D",
@@ -38,10 +65,10 @@
       "url": "",
       "startDate": "2023-04-01",
       "endDate": "2023-09-30",
-      "summary": "Bayesian inference methods for physical models.",
+      "summary": "Bayesian calibration of physics models with uncertain inputs.",
       "highlights": [
         "Bayesian calibration of physical models with noisy data using Python and OpenTURNS",
-        "Designed new parameter adjustment strategies"
+        "MCMC sampling methods and exploration of unbiased parameter estimation via Markov-chain couplings"
       ]
     },
     {

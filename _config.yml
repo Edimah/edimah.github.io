@@ -9,12 +9,12 @@ last_name: SYNESIUS SONGO
 contact_note: >
   💌
 description: > # the ">" symbol means to ignore newlines until "footer_text:"
-  Applied mathematician specialising in statistical inference, Bayesian methods, and AI evaluation frameworks for regulated environments.
+  Applied mathematician building reliable, mathematically grounded AI systems for regulated environments — Bayesian inference, optimisation, kernel methods, deep learning, signal processing.
 footer_text: >
   Powered by <a href="https://jekyllrb.com/" target="_blank">Jekyll</a> with <a href="https://github.com/alshedivat/al-folio">al-folio</a> theme.
   Hosted by <a href="https://pages.github.com/" target="_blank">GitHub Pages</a>.
   Photos from <a href="https://unsplash.com" target="_blank">Unsplash</a>.
-keywords: applied mathematics, bayesian inference, statistical modelling, AI evaluation, EU AI Act, uncertainty quantification, machine learning, public health, regulated systems # add your own keywords or leave empty
+keywords: applied mathematics, bayesian inference, statistical modelling, machine learning, AI evaluation, EU AI Act, uncertainty quantification, kernel methods, signal processing, public health, regulated systems # add your own keywords or leave empty
 lang: en # the language of your site (for example: en, fr, cn, ru, etc.)
 icon: 🎶 # the emoji used as the favicon (alternatively, provide image name in /assets/img/)
 
@@ -87,7 +87,7 @@ bing_site_verification: # out your bing-site-verification ID (Bing Webmaster)
 # -----------------------------------------------------------------------------
 
 blog_name: Blog # blog_name will be displayed in your blog page
-blog_description: Short posts around various fields through data. # blog_description will be displayed below your blog_name
+blog_description: Statistical methods across domains, with one recurring question — how would I know whether to trust this? # blog_description will be displayed below your blog_name
 permalink: /blog/:year/:title/
 lsi: false # produce an index for related posts
 
