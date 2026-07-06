@@ -946,6 +946,9 @@
       .gommette.dragging,
       .logo.dragging {
         cursor: grabbing;
+        /* Sans ça, chaque pointermove est lissé sur 250 ms : l'élément traîne
+           derrière le curseur et le déplacement paraît saccadé. */
+        transition: none;
       }
 
       .product-placeholder {
@@ -3013,6 +3016,41 @@
         return img.width < 256 || img.height < 256;
       };
 
+      // Analyse la bordure de l'image : couleur moyenne et dispersion.
+      // Si le fond est quasi uni (packshot sur fond blanc), le détourage
+      // couleur déterministe est plus fiable que l'IA de saillance, qui a
+      // tendance à tout considérer comme saillant sur ce type de photo.
+      const analyzeBorder = (image) => {
+        const target = 160;
+        const scale = Math.min(1, target / Math.max(image.width, image.height));
+        const w = Math.max(4, Math.round(image.width * scale));
+        const h = Math.max(4, Math.round(image.height * scale));
+        sampleCanvas.width = w;
+        sampleCanvas.height = h;
+        sampleCtx.drawImage(image, 0, 0, w, h);
+        const { data } = sampleCtx.getImageData(0, 0, w, h);
+        const border = [];
+        const push = (x, y) => {
+          const i = (y * w + x) * 4;
+          border.push([data[i], data[i + 1], data[i + 2]]);
+        };
+        for (let x = 0; x < w; x += 1) {
+          push(x, 0);
+          push(x, h - 1);
+        }
+        for (let y = 1; y < h - 1; y += 1) {
+          push(0, y);
+          push(w - 1, y);
+        }
+        const n = border.length;
+        const mean = [0, 1, 2].map((c) => border.reduce((s, p) => s + p[c], 0) / n);
+        const dispersion = border.reduce((s, p) => s + Math.abs(p[0] - mean[0]) + Math.abs(p[1] - mean[1]) + Math.abs(p[2] - mean[2]), 0) / n;
+        return {
+          color: { r: Math.round(mean[0]), g: Math.round(mean[1]), b: Math.round(mean[2]) },
+          uniform: dispersion < 24,
+        };
+      };
+
       const applyUnsharpMask = (imageData) => {
         const { width, height, data } = imageData;
         const srcCopy = new Uint8ClampedArray(data);
@@ -3057,6 +3095,50 @@
           const db = Math.abs(data[i + 2] - keyColor.b);
           const diff = dr + dg + db;
           data[i + 3] = diff <= threshold ? 0 : 255;
+        }
+      };
+
+      // Détourage par diffusion depuis les bords : seules les zones couleur du
+      // fond CONNECTÉES à la bordure deviennent transparentes. Les zones
+      // claires à l'intérieur du produit (étiquette blanche, reflets…) sont
+      // préservées, contrairement au color key global gardé pour les logos
+      // (où les contre-formes fermées, comme l'intérieur d'un « o », doivent
+      // elles aussi devenir transparentes).
+      const applyBorderFloodKey = (imageData, keyColor, tolerance) => {
+        const { width, height, data } = imageData;
+        // Seuil par canal (x3 canaux) : plus permissif que le key global pour
+        // absorber les ombres douces au pied du produit.
+        const threshold = (Number.isFinite(tolerance) ? tolerance : 40) * 3;
+        const matches = (idx) => {
+          const base = idx * 4;
+          return Math.abs(data[base] - keyColor.r) + Math.abs(data[base + 1] - keyColor.g) + Math.abs(data[base + 2] - keyColor.b) <= threshold;
+        };
+        const visited = new Uint8Array(width * height);
+        const queue = [];
+        const seed = (x, y) => {
+          const idx = y * width + x;
+          if (!visited[idx] && matches(idx)) {
+            visited[idx] = 1;
+            queue.push(idx);
+          }
+        };
+        for (let x = 0; x < width; x += 1) {
+          seed(x, 0);
+          seed(x, height - 1);
+        }
+        for (let y = 0; y < height; y += 1) {
+          seed(0, y);
+          seed(width - 1, y);
+        }
+        while (queue.length) {
+          const idx = queue.pop();
+          data[idx * 4 + 3] = 0;
+          const x = idx % width;
+          const y = (idx - x) / width;
+          if (x > 0) seed(x - 1, y);
+          if (x < width - 1) seed(x + 1, y);
+          if (y > 0) seed(x, y - 1);
+          if (y < height - 1) seed(x, y + 1);
         }
       };
 
@@ -3144,7 +3226,7 @@
         writeAlpha(imageData, alpha);
       };
 
-      const runColorKeyDetour = async (image, { tolerance, keyColor }) => {
+      const runColorKeyDetour = async (image, { tolerance, keyColor, floodFromBorder = false }) => {
         const canvas = document.createElement("canvas");
         canvas.width = image.width;
         canvas.height = image.height;
@@ -3155,7 +3237,11 @@
         ctx.putImageData(imageData, 0, 0);
         const working = ctx.getImageData(0, 0, canvas.width, canvas.height);
         const sampledColor = keyColor || pickPixel(working, 0, 0);
-        applyColorKey(working, sampledColor, tolerance);
+        if (floodFromBorder) {
+          applyBorderFloodKey(working, sampledColor, tolerance);
+        } else {
+          applyColorKey(working, sampledColor, tolerance);
+        }
         softenAlpha(working);
         ctx.putImageData(working, 0, 0);
         return { dataURL: canvas.toDataURL("image/png"), sampledColor };
@@ -3203,11 +3289,16 @@
 
       const smartDetour = async (file, image, requestedMode, { isLogo = false, manualKeyColor = null, tolerance = getToleranceValue() } = {}) => {
         let effectiveMode = requestedMode;
+        const border = image && !isLogo ? analyzeBorder(image) : null;
+        let autoKeyColor = null;
         if (effectiveMode === DETOUR_MODE.AUTO) {
-          if (isLogo) {
+          if (isLogo || isLikelyLogo(file, image)) {
             effectiveMode = DETOUR_MODE.COLOR;
-          } else if (isLikelyLogo(file, image)) {
+          } else if (border?.uniform) {
+            // Packshot sur fond uni : couleur déterministe, l'IA de saillance
+            // est précisément le cas où elle échoue (tout est « saillant »).
             effectiveMode = DETOUR_MODE.COLOR;
+            autoKeyColor = border.color;
           } else {
             effectiveMode = DETOUR_MODE.IA;
           }
@@ -3231,7 +3322,10 @@
 
         const { dataURL, sampledColor } = await runColorKeyDetour(image, {
           tolerance,
-          keyColor: manualKeyColor,
+          // Pour les photos produit, la moyenne de bordure est un échantillon
+          // du fond plus stable que le pixel du coin (0,0).
+          keyColor: manualKeyColor || autoKeyColor || border?.color || null,
+          floodFromBorder: !isLogo,
         });
         return {
           dataURL,
@@ -3514,12 +3608,17 @@
         element.addEventListener("wheel", handleWheel, { passive: false });
       };
 
+      // Les bornes de déplacement couvrent toute l'affiche dans tous les
+      // formats (l'overflow:hidden de l'affiche fait office de garde-fou
+      // visuel) ; elles évitent seulement de perdre un élément hors de portée.
       setupTransformHandle(document.getElementById("afficheProduct"), {
         dxVar: "--product-shift-x",
         dyVar: "--product-shift-y",
         scaleVar: "--product-scale",
         minScale: 0.4,
         maxScale: 2.5,
+        clampX: [-440, 440],
+        clampY: [-400, 400],
       });
 
       setupTransformHandle(document.getElementById("afficheBadge"), {
@@ -3528,6 +3627,8 @@
         scaleVar: "--gommette-scale",
         minScale: 0.5,
         maxScale: 1.8,
+        clampX: [-720, 140],
+        clampY: [-160, 700],
       });
 
       setupTransformHandle(document.getElementById("afficheLogo"), {
@@ -3536,8 +3637,8 @@
         scaleVar: "--logo-scale",
         minScale: 0.3,
         maxScale: 2.3,
-        clampX: [-420, 420],
-        clampY: [-320, 320],
+        clampX: [-780, 200],
+        clampY: [-100, 780],
       });
 
       const setupTextDragHandle = (handle, xVar, yVar) => {
