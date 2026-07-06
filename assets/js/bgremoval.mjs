@@ -7,12 +7,12 @@
 
 // Version épinglée : une montée de version silencieuse du CDN ne doit pas
 // pouvoir casser l'outil (numThreads/simd et noms de fichiers .wasm varient).
-const ORT_VERSION = '1.27.0';
+const ORT_VERSION = "1.27.0";
 const ORT_CDN = `https://cdn.jsdelivr.net/npm/onnxruntime-web@${ORT_VERSION}/dist/ort.min.js`;
 const WASM_ASSETS = `https://cdn.jsdelivr.net/npm/onnxruntime-web@${ORT_VERSION}/dist/`;
 
-const DEFAULT_MODEL_URL = '/models/u2netp.onnx';
-const DEFAULT_PROVIDERS = ['webgpu', 'webgl', 'wasm'];
+const DEFAULT_MODEL_URL = "/models/u2netp.onnx";
+const DEFAULT_PROVIDERS = ["webgpu", "webgl", "wasm"];
 
 let ortLoadPromise;
 let ortModule;
@@ -36,12 +36,12 @@ async function downloadModel(modelUrl, onProgress) {
     return cached.buffer;
   }
 
-  const response = await fetch(modelUrl, { mode: 'cors' });
+  const response = await fetch(modelUrl, { mode: "cors" });
   if (!response.ok) {
     throw new Error(`Failed to download model: ${response.status} ${response.statusText}`);
   }
 
-  const total = Number(response.headers.get('content-length')) || 0;
+  const total = Number(response.headers.get("content-length")) || 0;
   const reader = response.body?.getReader();
 
   if (!reader) {
@@ -125,7 +125,7 @@ async function ensureOrt() {
     globalThis.ort = bootstrapOrt;
 
     ortLoadPromise = new Promise((resolve, reject) => {
-      const script = document.createElement('script');
+      const script = document.createElement("script");
       script.src = ORT_CDN;
       script.async = true;
       script.onload = () => {
@@ -137,7 +137,7 @@ async function ensureOrt() {
         configureOrtEnvironment(ortModule);
         resolve(ortModule);
       };
-      script.onerror = () => reject(new Error('Failed to load onnxruntime-web from CDN.'));
+      script.onerror = () => reject(new Error("Failed to load onnxruntime-web from CDN."));
       document.head.appendChild(script);
     });
   }
@@ -156,7 +156,7 @@ function configureOrtEnvironment(ort) {
     wasmEnv.simd = false;
   }
 
-  if (typeof navigator !== 'undefined' && /Safari/i.test(navigator.userAgent) && !/Chrome/i.test(navigator.userAgent)) {
+  if (typeof navigator !== "undefined" && /Safari/i.test(navigator.userAgent) && !/Chrome/i.test(navigator.userAgent)) {
     wasmEnv.numThreads = 1;
     wasmEnv.simd = false;
   }
@@ -169,11 +169,7 @@ function configureOrtEnvironment(ort) {
 /**
  * Creates (or reuses) a single shared inference session.
  */
-export async function initU2Net({
-  modelUrl = DEFAULT_MODEL_URL,
-  providers = DEFAULT_PROVIDERS,
-  onProgress = null,
-} = {}) {
+export async function initU2Net({ modelUrl = DEFAULT_MODEL_URL, providers = DEFAULT_PROVIDERS, onProgress = null } = {}) {
   const signature = JSON.stringify({ modelUrl, providers });
   if (sessionPromise && signature === currentSessionSignature) {
     return sessionPromise;
@@ -182,11 +178,13 @@ export async function initU2Net({
   if (sessionPromise && signature !== currentSessionSignature) {
     sessionPromise
       .then((session) => {
-        if (session && typeof session.release === 'function') {
+        if (session && typeof session.release === "function") {
           session.release();
         }
       })
-      .catch(() => { /* previous session init failed, nothing to release */ });
+      .catch(() => {
+        /* previous session init failed, nothing to release */
+      });
     sessionPromise = null;
     cachedProviderName = undefined;
   }
@@ -204,7 +202,7 @@ export async function initU2Net({
         }
         const session = await ort.InferenceSession.create(modelBuffer, {
           executionProviders: [provider],
-          graphOptimizationLevel: 'all',
+          graphOptimizationLevel: "all",
         });
         cachedProviderName = provider;
         return session;
@@ -214,11 +212,7 @@ export async function initU2Net({
       }
     }
 
-    throw new Error(
-      lastError
-        ? `Unable to initialise U²-Net session. Last error: ${lastError.message}`
-        : 'Unable to initialise U²-Net session.',
-    );
+    throw new Error(lastError ? `Unable to initialise U²-Net session. Last error: ${lastError.message}` : "Unable to initialise U²-Net session.");
   })().catch((error) => {
     currentSessionSignature = undefined;
     throw error;
@@ -257,7 +251,7 @@ function toTensorCHW(imageData) {
     tensorData[i + size * 2] = (data[base + 2] / maxVal - IMAGENET_MEAN[2]) / IMAGENET_STD[2];
   }
 
-  return new ortModule.Tensor('float32', tensorData, [1, 3, height, width]);
+  return new ortModule.Tensor("float32", tensorData, [1, 3, height, width]);
 }
 
 /**
@@ -397,18 +391,18 @@ function applyThresholdBlend(mask, width, height, threshold) {
 }
 
 function createCanvas(width, height) {
-  if (typeof OffscreenCanvas !== 'undefined') {
+  if (typeof OffscreenCanvas !== "undefined") {
     return new OffscreenCanvas(width, height);
   }
 
-  const canvas = document.createElement('canvas');
+  const canvas = document.createElement("canvas");
   canvas.width = width;
   canvas.height = height;
   return canvas;
 }
 
 async function fileToImageBitmap(file) {
-  if ('createImageBitmap' in globalThis) {
+  if ("createImageBitmap" in globalThis) {
     return createImageBitmap(file);
   }
 
@@ -450,7 +444,7 @@ function maybeSigmoid(data) {
  */
 export async function removeBgFromFile(file, { feather = 1.5, threshold = 0.7 } = {}) {
   if (!file) {
-    throw new Error('removeBgFromFile expects a File or Blob.');
+    throw new Error("removeBgFromFile expects a File or Blob.");
   }
 
   const session = await (sessionPromise || initU2Net());
@@ -460,16 +454,16 @@ export async function removeBgFromFile(file, { feather = 1.5, threshold = 0.7 } 
   const originalHeight = bitmap.height;
 
   // Keep the original resolution canvas for final compositing.
-  const composeCanvas = document.createElement('canvas');
+  const composeCanvas = document.createElement("canvas");
   composeCanvas.width = originalWidth;
   composeCanvas.height = originalHeight;
-  const composeCtx = composeCanvas.getContext('2d');
+  const composeCtx = composeCanvas.getContext("2d");
   composeCtx.drawImage(bitmap, 0, 0, originalWidth, originalHeight);
   const originalImageData = composeCtx.getImageData(0, 0, originalWidth, originalHeight);
 
   // Downscale to the network's expected 320x320 input so we never OOM on huge images.
   const procCanvas = createCanvas(320, 320);
-  const procCtx = procCanvas.getContext('2d');
+  const procCtx = procCanvas.getContext("2d");
   procCtx.drawImage(bitmap, 0, 0, 320, 320);
   const procImageData = procCtx.getImageData(0, 0, 320, 320);
 
@@ -496,10 +490,10 @@ export async function removeBgFromFile(file, { feather = 1.5, threshold = 0.7 } 
   composeCtx.putImageData(originalImageData, 0, 0);
 
   // Build an alpha-only preview image.
-  const alphaCanvas = document.createElement('canvas');
+  const alphaCanvas = document.createElement("canvas");
   alphaCanvas.width = originalWidth;
   alphaCanvas.height = originalHeight;
-  const alphaCtx = alphaCanvas.getContext('2d');
+  const alphaCtx = alphaCanvas.getContext("2d");
   const alphaImageData = alphaCtx.createImageData(originalWidth, originalHeight);
   for (let i = 0; i < totalPixels; i += 1) {
     const value = Math.round(alphaFloat[i] * 255);
@@ -511,10 +505,10 @@ export async function removeBgFromFile(file, { feather = 1.5, threshold = 0.7 } 
   }
   alphaCtx.putImageData(alphaImageData, 0, 0);
 
-  const rgbaDataURL = composeCanvas.toDataURL('image/png');
-  const alphaMask = alphaCanvas.toDataURL('image/png');
+  const rgbaDataURL = composeCanvas.toDataURL("image/png");
+  const alphaMask = alphaCanvas.toDataURL("image/png");
 
-  return { rgbaDataURL, alphaMask, provider: cachedProviderName || 'unknown' };
+  return { rgbaDataURL, alphaMask, provider: cachedProviderName || "unknown" };
 }
 
 export { toTensorCHW, normalizeMask, bilinearResizeMask, gaussianBlurMask, applyThresholdBlend };

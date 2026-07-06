@@ -35,14 +35,14 @@ website/
 
 ## Two content streams
 
-| | `_posts/` | `_santepub/` |
-|---|---|---|
-| Language | English | French |
-| Audience | General technical / research blog | French public-health data analyses |
-| URL pattern | `/blog/:year/:title/` | `/santepub/:name/` |
-| Shows up in… | Blog page, tag/category archives | Dedicated Santé Pub section |
-| Thumbnail image | Optional | **Required** (`image:` field) |
-| Tags & categories | Yes | No |
+|                   | `_posts/`                         | `_santepub/`                       |
+| ----------------- | --------------------------------- | ---------------------------------- |
+| Language          | English                           | French                             |
+| Audience          | General technical / research blog | French public-health data analyses |
+| URL pattern       | `/blog/:year/:title/`             | `/santepub/:name/`                 |
+| Shows up in…      | Blog page, tag/category archives  | Dedicated Santé Pub section        |
+| Thumbnail image   | Optional                          | **Required** (`image:` field)      |
+| Tags & categories | Yes                               | No                                 |
 
 ---
 
@@ -82,7 +82,7 @@ The `description` field is the blurb shown in the blog listing — keep it to on
 - Per-tag archive at `/blog/tags/:tag/`
 - Per-category archive at `/blog/categories/posts/`
 
-> **Note:** only the tags in `display_tags: ["dataviz", "chess", "fitness", "music"]` (_config.yml line 262) are shown as chips on the blog front page. Other tags are still archived and searchable — just not highlighted on the home view. Add a new tag to that list if you want it surfaced.
+> **Note:** only the tags in `display_tags: ["dataviz", "chess", "fitness", "music"]` (\_config.yml line 262) are shown as chips on the blog front page. Other tags are still archived and searchable — just not highlighted on the home view. Add a new tag to that list if you want it surfaced.
 
 ---
 
@@ -94,10 +94,7 @@ The `description` field is the blurb shown in the blog listing — keep it to on
 2. Reference with an absolute path:
 
 ```html
-<img src="/assets/img/my-chart.png"
-     alt="Descriptive alt text"
-     title="Caption"
-     style="max-width: 80%; height: auto;">
+<img src="/assets/img/my-chart.png" alt="Descriptive alt text" title="Caption" style="max-width: 80%; height: auto;" />
 ```
 
 ### Styled figure (Bootstrap, as used in santepub)
@@ -106,12 +103,8 @@ The `description` field is the blurb shown in the blog listing — keep it to on
 <div class="row justify-content-center my-4">
   <div class="col-lg-10">
     <figure class="figure">
-      <img class="figure-img img-fluid rounded shadow-sm"
-           src="/assets/img/my-chart.png"
-           alt="Descriptive alt text">
-      <figcaption class="figure-caption text-center">
-        Caption text here.
-      </figcaption>
+      <img class="figure-img img-fluid rounded shadow-sm" src="/assets/img/my-chart.png" alt="Descriptive alt text" />
+      <figcaption class="figure-caption text-center">Caption text here.</figcaption>
     </figure>
   </div>
 </div>
