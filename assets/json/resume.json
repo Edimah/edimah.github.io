@@ -129,7 +129,15 @@
     }
   ],
   "awards": [],
-  "certificates": [],
+  "certificates": [
+    {
+      "name": "Oxford Machine Learning Summer School",
+      "date": "",
+      "issuer": "OxML",
+      "url": "",
+      "icon": ""
+    }
+  ],
   "publications": [],
   "skills": [
     {
