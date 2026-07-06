@@ -2,10 +2,10 @@
 layout: page
 title: projects
 permalink: /projects/
-description: A modest but growing list of personal projects
+description: Personal projects — the same mathematical instinct applied to different surfaces
 nav: false
 nav_order: 3
-display_categories: [chess, fitness, music]
+display_categories: [fitness]
 horizontal: false
 ---
 

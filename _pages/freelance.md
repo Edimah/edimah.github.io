@@ -39,7 +39,7 @@ tabs: true
 
 ## Expérience & ancrage
 
-> Monde pharmaceutique, officines, épidémiologie et santé publique constituent mon terrain principal. J’y suis habitué aux contraintes qualité, à la documentation et aux délais serrés.
+> J’interviens là où l’erreur a des conséquences : santé publique, énergie, finance, assurance. Terrain actuel : la donnée de santé réglementée, avec la refonte de bout en bout de la chaîne de données d’un organisme public de dépistage des cancers ; auparavant, calibration bayésienne de modèles physiques (EDF) et analyse de sensibilité en grande dimension (IFP Energies nouvelles). Contraintes qualité, documentation et délais institutionnels serrés font partie du cadre habituel.
 
 ### 🤝 [Contact direct par email](mailto:edimah.synesius-songo@proton.me)
 
@@ -73,7 +73,7 @@ tabs: true
 
 ## Experience & focus
 
-> Pharmaceutical ecosystems, pharmacies, epidemiology, and public health are my core playground. I am used to quality constraints, documentation duties, and tight institutional timelines.
+> I work where failure has consequences: public health, energy, finance, insurance. Current ground: regulated health data — an end-to-end data chain rebuild for a public cancer-screening organisation — with prior research work in Bayesian calibration of physics models (EDF) and high-dimensional sensitivity analysis (IFP Energies nouvelles). Quality constraints, documentation duties, and tight institutional timelines are the usual operating conditions.
 
 ### 🤝 Get in touch : [Email me directly](mailto:edimah.synesius-songo@proton.me)
 
