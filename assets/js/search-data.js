@@ -37,18 +37,7 @@ ninja.data = [{
           handler: () => {
             window.location.href = "/cv/";
           },
-        },{id: "post-hierarchical-bayesian-calibration-for-institutional-indicators-under-partial-coverage",
-        
-          title: "Hierarchical Bayesian Calibration for Institutional Indicators Under Partial Coverage",
-        
-        description: "When an institution reports a single aggregate rate, partial pooling reveals what naive averages hide.",
-        section: "Posts",
-        handler: () => {
-          
-            window.location.href = "/blog/2026/hierarchical-bayesian-calibration/";
-          
-        },
-      },{id: "post-how-to-import-and-use-apple-health-data-with-r",
+        },{id: "post-how-to-import-and-use-apple-health-data-with-r",
         
           title: "How to import and use Apple Health data with R",
         
@@ -88,7 +77,7 @@ ninja.data = [{
         title: 'LinkedIn',
         section: 'Socials',
         handler: () => {
-          window.open("https://www.linkedin.com/in/edimah-synesius", "_blank");
+          window.open("https://www.linkedin.com/in/edimahsynesius", "_blank");
         },
       },{
       id: 'light-theme',
