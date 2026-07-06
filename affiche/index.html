@@ -1,11 +1,13 @@
-<!-- © 2025 Edimah SYNESIUS SONGO — Tous droits réservés. Produit protégé par le droit d’auteur. Reproduction, modification ou diffusion interdite sans autorisation écrite de l’autrice. -->
+<!-- © 2025-2026 Edimah SYNESIUS SONGO — Outil libre et open source. -->
 <!DOCTYPE html>
 <html lang="fr">
 
 <head>
   <meta charset="UTF-8" />
-  <title>Assistant Affiche IA - Démo</title>
+  <title>Générateur d'affiches pour officine — gratuit & open source</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description"
+    content="Créez en quelques minutes une affiche promotionnelle pour votre pharmacie : logo, photo produit détourée automatiquement par IA (sur votre appareil, aucun envoi de données), texte et couleurs personnalisables, export PNG et impression A4. Gratuit, sans compte." />
 
   <!-- Police -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -58,71 +60,25 @@
       align-items: stretch;
     }
 
-    #appRoot[aria-hidden="true"] {
-      pointer-events: none;
-      user-select: none;
-    }
-
-    .pin-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(255, 255, 255, 0.95);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 999;
-      padding: 20px;
-    }
-
-    .pin-overlay.is-hidden {
-      display: none;
-    }
-
-    .pin-dialog {
-      background: #fff;
-      border-radius: 14px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
-      padding: 26px 24px 28px;
+    .page-intro {
+      max-width: 960px;
+      margin: 0 auto;
       text-align: center;
-      max-width: 360px;
-      width: 100%;
-      border: 1px solid rgba(10, 127, 90, 0.12);
+      padding: 4px 12px 0;
     }
 
-    .pin-dialog h1 {
-      margin: 0 0 8px;
-      font-size: 1.25rem;
+    .page-intro h1 {
+      margin: 0 0 6px;
+      font-size: 1.45rem;
       color: #0a7f5a;
     }
 
-    .pin-dialog p {
-      margin: 0 0 18px;
-      font-size: 0.92rem;
+    .page-intro p {
+      margin: 0 auto;
+      max-width: 720px;
+      font-size: .88rem;
       color: #2d3f38;
-      line-height: 1.35;
-    }
-
-    .pin-dialog input[type="password"] {
-      width: 100%;
-      padding: 10px 12px;
-      border-radius: 10px;
-      border: 1px solid #cfdad4;
-      font-size: 1rem;
-      text-align: center;
-      margin-bottom: 12px;
-      font-family: inherit;
-    }
-
-    .pin-dialog button {
-      width: 100%;
-      border: none;
-      background: #0a7f5a;
-      color: #fff;
-      border-radius: 10px;
-      padding: 10px 14px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
+      line-height: 1.45;
     }
 
     .beta-banner {
@@ -1107,17 +1063,14 @@
 
 <body>
 
-  <div id="pinOverlay" class="pin-overlay" role="dialog" aria-modal="true" aria-labelledby="pinOverlayTitle">
-    <div class="pin-dialog">
-      <h1 id="pinOverlayTitle">Accès bêta</h1>
-      <p>Cette préversion est réservée aux testeuses & testeurs disposant d&#39;un code.</p>
-      <input id="pinCodeInput" type="password" inputmode="numeric" pattern="\\d{4,8}" maxlength="8"
-        autocomplete="one-time-code" placeholder="Entrez le PIN" aria-label="PIN d&#39;accès" />
-      <button type="button" id="pinSubmitBtn">Valider</button>
-    </div>
-  </div>
+  <header class="page-intro">
+    <h1>Générateur d'affiches pour officine</h1>
+    <p>Outil gratuit et open source : importez votre logo et une photo du produit (le fond est retiré automatiquement,
+      directement sur votre appareil), ajustez le texte et les couleurs, puis téléchargez ou imprimez l'affiche.
+      Aucune image n'est envoyée sur un serveur, aucun compte n'est requis.</p>
+  </header>
 
-  <div id="appRoot" aria-hidden="true">
+  <div id="appRoot">
     <div class="workspace">
       <!-- COLONNE GAUCHE -->
       <div class="controls">
@@ -1148,15 +1101,15 @@
               <label for="toleranceRange">Tolérance <span id="toleranceValue">40</span></label>
               <input type="range" id="toleranceRange" min="0" max="60" value="40" />
             </div>
-            <div class="model-choice" style="color:DodgerBlue;">
+            <div class="model-choice">
               <span>Modèle d'IA utilisé</span>
               <label>
                 <input type="radio" name="u2netModel" value="u2netp.onnx" checked />
-                <span>fond uni <small>(u2netp.onnx)</small></span>
+                <span>fond uni <small>(léger, ~4 Mo, recommandé)</small></span>
               </label>
               <label>
                 <input type="radio" name="u2netModel" value="u2net.onnx" />
-                <span>fond encombré <small>(u2net.onnx)</small></span>
+                <span>fond encombré <small>(précis, ~168 Mo, premier chargement long)</small></span>
               </label>
             </div>
             <p class="detourage-note">Les images restent sur votre appareil.</p>
@@ -1169,7 +1122,8 @@
           <div class="global-actions">
             <button type="button" id="updatePosterBtn">Mettre à jour l'affiche</button>
             <button type="button" id="resetPosterBtn" class="secondary">Réinitialiser l'affiche</button>
-            <button type="button" id="downloadPosterBtn" class="download-btn">Télécharger l'affiche</button>
+            <button type="button" id="downloadPosterBtn" class="download-btn">Télécharger l'affiche (PNG)</button>
+            <button type="button" id="printPosterBtn" class="secondary">Imprimer l'affiche (A4)</button>
           </div>
         </div>
       </div>
@@ -1282,53 +1236,6 @@
   <!-- SCRIPTS -->
   <!-- SCRIPTS -->
   <script type="module">
-    // --- Accès bêta (retirer ce bloc pour désactiver la porte d'entrée) ---
-    const BETA_PIN = '81693315'; // Modifiez ce code ici chaque semaine pour renouveler l'accès partagé.
-    const PIN_STORAGE_KEY = 'betaAccessGranted'; // Effacez cette clé dans localStorage pour forcer une nouvelle saisie.
-    const pinOverlay = document.getElementById('pinOverlay');
-    const pinInput = document.getElementById('pinCodeInput');
-    const pinSubmitBtn = document.getElementById('pinSubmitBtn');
-    const appRoot = document.getElementById('appRoot');
-    const hidePinOverlay = () => {
-      if (pinOverlay && !pinOverlay.classList.contains('is-hidden')) {
-        pinOverlay.classList.add('is-hidden');
-      }
-      appRoot?.removeAttribute('aria-hidden');
-    };
-    const showPinOverlay = () => {
-      pinOverlay?.classList.remove('is-hidden');
-      appRoot?.setAttribute('aria-hidden', 'true');
-    };
-    const checkPin = () => {
-      const entered = pinInput?.value?.trim() || '';
-      if (entered !== BETA_PIN) {
-        alert('Code incorrect. Réessayez ou contactez la personne qui vous l’a fourni.');
-        if (pinInput) {
-          pinInput.value = '';
-          pinInput.focus();
-        }
-        return;
-      }
-      localStorage.setItem(PIN_STORAGE_KEY, 'true'); // Supprimez cette ligne + l’overlay pour retirer complètement la protection.
-      hidePinOverlay();
-    };
-    const initBetaGate = () => {
-      if (localStorage.getItem(PIN_STORAGE_KEY) === 'true') {
-        hidePinOverlay();
-      } else {
-        showPinOverlay();
-        pinInput?.focus();
-      }
-    };
-    pinSubmitBtn?.addEventListener('click', checkPin);
-    pinInput?.addEventListener('keydown', (event) => {
-      if (event.key === 'Enter') {
-        event.preventDefault();
-        checkPin();
-      }
-    });
-    initBetaGate();
-
     // --- Constantes & chemins dynamiques ---
     const DETOUR_MODE = Object.freeze({ AUTO: 'auto', IA: 'ia', COLOR: 'color' });
     const DEFAULT_MODEL_CHOICE = 'u2netp.onnx';
@@ -1337,11 +1244,13 @@
     let modelChoice = DEFAULT_MODEL_CHOICE;
     const MODEL_URLS = {
       'u2netp.onnx': resolveAssetUrl('../models/u2netp.onnx'),
-      'u2net.onnx': resolveAssetUrl('../models/u2net.onnx'),
+      // Modèle complet (~168 Mo) : trop lourd pour GitHub Pages, servi depuis un
+      // miroir Hugging Face avec CORS ouvert (même binaire que l'original rembg).
+      'u2net.onnx': 'https://huggingface.co/tomjackson2023/rembg/resolve/main/u2net.onnx',
     };
     const MODEL_LABELS = {
-      'u2netp.onnx': 'U²-Net (fond uni)',
-      'u2net.onnx': 'U²-Net (images encombrées)',
+      'u2netp.onnx': 'U²-Net léger (fond uni)',
+      'u2net.onnx': 'U²-Net complet (images encombrées)',
     };
     const getModelUrl = () => MODEL_URLS[modelChoice] || MODEL_URLS[DEFAULT_MODEL_CHOICE];
     const getModelLabel = () => MODEL_LABELS[modelChoice] || modelChoice;
@@ -1372,6 +1281,7 @@
     const updatePosterBtn = document.getElementById('updatePosterBtn');
     const resetPosterBtn = document.getElementById('resetPosterBtn');
     const downloadPosterBtn = document.getElementById('downloadPosterBtn');
+    const printPosterBtn = document.getElementById('printPosterBtn');
     const bgModeInputs = document.querySelectorAll('input[name="bgMode"]');
     const solidBgColorInput = document.getElementById('solidBgColor');
     const bgImageInput = document.getElementById('bgImageInput');
@@ -1908,29 +1818,54 @@
       };
     };
 
-    downloadPosterBtn?.addEventListener('click', async () => {
-      if (!affiche) return;
+    // Capture l'affiche en PNG haute résolution (600x800 CSS -> x3 ≈ 1800x2400,
+    // soit ~220 dpi sur une impression A4 portrait).
+    const capturePosterDataURL = async (scale = 3) => {
+      if (!affiche) return null;
       let restore = () => { };
       try {
         const html2canvas = await ensureHtml2Canvas();
         restore = suspendTransformsForCapture();
         const canvas = await html2canvas(affiche, {
           backgroundColor: null,
-          scale: Math.min(2, window.devicePixelRatio || 1.5),
+          scale,
         });
+        return canvas.toDataURL('image/png');
+      } finally {
         restore();
-        const dataURL = canvas.toDataURL('image/png');
+      }
+    };
+
+    downloadPosterBtn?.addEventListener('click', async () => {
+      try {
+        const dataURL = await capturePosterDataURL();
+        if (!dataURL) return;
         const link = document.createElement('a');
         link.href = dataURL;
-        link.download = 'affiche-demo.png';
+        link.download = 'affiche-pharmacie.png';
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
       } catch (error) {
         console.error('Téléchargement impossible', error);
         alert("Impossible de générer l'image. Réessayez ou utilisez le mode plein écran.");
-      } finally {
-        restore();
+      }
+    });
+
+    printPosterBtn?.addEventListener('click', async () => {
+      try {
+        const dataURL = await capturePosterDataURL();
+        if (!dataURL) return;
+        const printWindow = window.open('', '_blank');
+        if (!printWindow) {
+          alert("Autorisez les fenêtres pop-up pour imprimer l'affiche.");
+          return;
+        }
+        printWindow.document.write(`<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8" /><title>Impression de l'affiche</title><style>@page{size:A4 portrait;margin:0}html,body{margin:0;padding:0;height:100%}img{display:block;width:100%;height:100%;object-fit:contain}</style></head><body><img src="${dataURL}" alt="Affiche" onload="setTimeout(function(){window.print();},250)" /></body></html>`);
+        printWindow.document.close();
+      } catch (error) {
+        console.error('Impression impossible', error);
+        alert("Impossible de préparer l'impression. Téléchargez l'affiche puis imprimez le fichier PNG.");
       }
     });
 
@@ -3458,9 +3393,10 @@
   </script>
 
   <footer class="site-footer">
-    <div class="beta-banner">Bêta – non commercial</div>
-    © 2025 Edimah SYNESIUS SONGO — Tous droits réservés. Produit protégé par le droit d’auteur. Reproduction,
-    modification ou diffusion interdite sans autorisation écrite de l’autrice.
+    <div class="beta-banner">Gratuit & open source</div>
+    © 2025-2026 Edimah SYNESIUS SONGO — Outil libre : vos images restent sur votre appareil, rien n'est envoyé sur un
+    serveur. Questions ou suggestions : <a href="mailto:edimah.synesius-songo@proton.me">écrivez-moi</a> ·
+    <a href="https://edimah.github.io/">edimah.github.io</a>
   </footer>
   </div>
 </body>
