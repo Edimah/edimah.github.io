@@ -1,10 +1,15 @@
 /**
  * Background removal helper powered by U²-Net and onnxruntime-web.
  * Every step is heavily commented to make it easy to adapt the pipeline.
+ *
+ * © 2025-2026 Edimah SYNESIUS SONGO — MIT License.
  */
 
-const ORT_CDN = 'https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js';
-const WASM_ASSETS = 'https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/';
+// Version épinglée : une montée de version silencieuse du CDN ne doit pas
+// pouvoir casser l'outil (numThreads/simd et noms de fichiers .wasm varient).
+const ORT_VERSION = '1.27.0';
+const ORT_CDN = `https://cdn.jsdelivr.net/npm/onnxruntime-web@${ORT_VERSION}/dist/ort.min.js`;
+const WASM_ASSETS = `https://cdn.jsdelivr.net/npm/onnxruntime-web@${ORT_VERSION}/dist/`;
 
 const DEFAULT_MODEL_URL = '/models/u2netp.onnx';
 const DEFAULT_PROVIDERS = ['webgpu', 'webgl', 'wasm'];
@@ -223,25 +228,59 @@ export async function initU2Net({
 }
 
 /**
- * Converts ImageData to a Float32 tensor shaped [1,3,H,W] normalized to [0,1].
+ * Converts ImageData to a Float32 tensor shaped [1,3,H,W] using the official
+ * U²-Net preprocessing (ToTensorLab flag=0, same as rembg): divide by the
+ * image's max pixel value, then normalize with ImageNet mean/std per channel.
+ * https://github.com/xuebinqin/U-2-Net/blob/master/data_loader.py
  */
+const IMAGENET_MEAN = [0.485, 0.456, 0.406];
+const IMAGENET_STD = [0.229, 0.224, 0.225];
+
 function toTensorCHW(imageData) {
   const { data, width, height } = imageData;
   const size = width * height;
   const tensorData = new Float32Array(3 * size);
 
+  let maxVal = 0;
   for (let i = 0; i < size; i += 1) {
     const base = i * 4;
-    const r = data[base] / 255;
-    const g = data[base + 1] / 255;
-    const b = data[base + 2] / 255;
+    if (data[base] > maxVal) maxVal = data[base];
+    if (data[base + 1] > maxVal) maxVal = data[base + 1];
+    if (data[base + 2] > maxVal) maxVal = data[base + 2];
+  }
+  if (!maxVal) maxVal = 255;
 
-    tensorData[i] = r;
-    tensorData[i + size] = g;
-    tensorData[i + size * 2] = b;
+  for (let i = 0; i < size; i += 1) {
+    const base = i * 4;
+    tensorData[i] = (data[base] / maxVal - IMAGENET_MEAN[0]) / IMAGENET_STD[0];
+    tensorData[i + size] = (data[base + 1] / maxVal - IMAGENET_MEAN[1]) / IMAGENET_STD[1];
+    tensorData[i + size * 2] = (data[base + 2] / maxVal - IMAGENET_MEAN[2]) / IMAGENET_STD[2];
   }
 
   return new ortModule.Tensor('float32', tensorData, [1, 3, height, width]);
+}
+
+/**
+ * Min-max normalization of the predicted mask, as in the reference
+ * implementation's normPRED. Stretches the mask to the full [0,1] range so the
+ * downstream threshold keeps a stable meaning across images.
+ */
+function normalizeMask(mask) {
+  let min = Infinity;
+  let max = -Infinity;
+  for (let i = 0; i < mask.length; i += 1) {
+    if (mask[i] < min) min = mask[i];
+    if (mask[i] > max) max = mask[i];
+  }
+  const range = max - min;
+  if (!(range > 1e-6)) {
+    return new Float32Array(mask);
+  }
+  const out = new Float32Array(mask.length);
+  for (let i = 0; i < mask.length; i += 1) {
+    out[i] = (mask[i] - min) / range;
+  }
+  return out;
 }
 
 /**
@@ -441,7 +480,7 @@ export async function removeBgFromFile(file, { feather = 1.5, threshold = 0.7 } 
 
   const outputs = await session.run(inputs);
   const rawMaskTensor = outputs[session.outputNames[0]];
-  const maskData = maybeSigmoid(rawMaskTensor.data || rawMaskTensor);
+  const maskData = normalizeMask(maybeSigmoid(rawMaskTensor.data || rawMaskTensor));
 
   // Resize mask back to original resolution and feather the edges.
   const resizedMask = bilinearResizeMask(maskData, 320, 320, originalWidth, originalHeight);
@@ -478,4 +517,4 @@ export async function removeBgFromFile(file, { feather = 1.5, threshold = 0.7 } 
   return { rgbaDataURL, alphaMask, provider: cachedProviderName || 'unknown' };
 }
 
-export { toTensorCHW, bilinearResizeMask, gaussianBlurMask, applyThresholdBlend };
+export { toTensorCHW, normalizeMask, bilinearResizeMask, gaussianBlurMask, applyThresholdBlend };

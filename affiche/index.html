@@ -1,4 +1,4 @@
-<!-- © 2025-2026 Edimah SYNESIUS SONGO — Outil libre et open source. -->
+<!-- © 2025-2026 Edimah SYNESIUS SONGO — Licence MIT (voir LICENSE.txt). Modèles U²-Net : Xuebin Qin et al., Apache 2.0. -->
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -13,7 +13,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/colorthief/dist/color-thief.umd.js"></script>
+  <!-- Épinglé : colorthief 3.x ne publie plus le build UMD (l'URL non versionnée 404 depuis) -->
+  <script src="https://cdn.jsdelivr.net/npm/colorthief@2.6.0/dist/color-thief.umd.js"></script>
 
   <style>
     :root {
@@ -43,6 +44,8 @@
       --gommette-scale: 1;
       --gommette-width: 150px;
       --gommette-height: 150px;
+      --poster-w: 600px;
+      --poster-h: 800px;
     }
 
     * {
@@ -418,7 +421,7 @@
     }
 
     .workspace>.preview-container {
-      flex: 0 0 640px;
+      flex: 1 0 640px;
       min-width: 600px;
     }
 
@@ -731,8 +734,12 @@
     }
 
     .affiche {
-      width: 600px;
-      height: 800px;
+      width: var(--poster-w, 600px);
+      height: var(--poster-h, 800px);
+      /* Ne jamais laisser flexbox comprimer l'affiche : sa taille nominale est
+         la référence de mise en page et d'export ; l'aperçu est réduit par
+         transform (fitPosterToViewport), pas par compression. */
+      flex-shrink: 0;
       background: radial-gradient(circle at top, #ffffff 0%, var(--green-light) 40%, #d7ece1 100%);
       border-radius: var(--radius);
       position: relative;
@@ -1058,6 +1065,109 @@
       font-size: .78rem;
       opacity: .85;
     }
+
+    /* Ajustements paysage : remonter le produit et la gommette pour laisser
+       la place au bandeau bas sur une hauteur réduite. */
+    .affiche[data-format="landscape-4-3"] .product-image {
+      top: 140px;
+      width: 420px;
+      height: 250px;
+    }
+
+    .affiche[data-format="landscape-4-3"] .gommette {
+      top: 85px;
+      right: 40px;
+    }
+
+    /* Suggestions de slogans */
+    #sloganResults .slogan-option {
+      background: #ffffff;
+      border: 1px solid rgba(10, 127, 90, 0.15);
+      border-radius: 10px;
+      padding: 6px 8px;
+      font-size: .74rem;
+      line-height: 1.3;
+      cursor: pointer;
+      transition: 0.15s ease;
+      word-break: break-word;
+      margin-top: 6px;
+    }
+
+    #sloganResults .slogan-option:hover {
+      background: rgba(10, 127, 90, 0.06);
+    }
+
+    .print-paper {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: .78rem;
+      font-weight: 600;
+      color: #34423d;
+    }
+
+    .print-paper select {
+      width: auto;
+      flex: 1;
+      border: 1px solid #d7e2dc;
+      border-radius: 6px;
+      padding: 6px 8px;
+      font-size: .78rem;
+      background: #fff;
+    }
+
+    .format-block {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .format-block label {
+      font-size: .78rem;
+      font-weight: 600;
+      color: #34423d;
+    }
+
+    .format-block select {
+      width: 100%;
+      border: 1px solid #d7e2dc;
+      border-radius: 6px;
+      padding: 6px 8px;
+      font-size: .78rem;
+      background: #fff;
+    }
+
+    /* Mobile / tablette : colonnes empilées, aperçu en premier, affiche
+       redimensionnée par JS (fitPosterToViewport). */
+    @media (max-width: 1100px) {
+      body {
+        padding: 12px;
+      }
+
+      .workspace {
+        flex-wrap: wrap;
+        overflow-x: hidden;
+      }
+
+      .workspace>.preview-container {
+        order: -1;
+        flex: 1 1 100%;
+        min-width: 0;
+        overflow: hidden;
+      }
+
+      .workspace>.controls,
+      .workspace>.controls-right {
+        flex: 1 1 100%;
+        width: 100%;
+        min-width: 0;
+      }
+
+      .controls-right {
+        position: static;
+      }
+    }
   </style>
 </head>
 
@@ -1074,6 +1184,15 @@
     <div class="workspace">
       <!-- COLONNE GAUCHE -->
       <div class="controls">
+        <div class="action-card format-block">
+          <label for="posterFormatSelect">Format de l'affiche</label>
+          <select id="posterFormatSelect">
+            <option value="portrait-3-4" selected>Portrait 3:4 (classique)</option>
+            <option value="portrait-a4">Portrait A4/A5 (pleine feuille)</option>
+            <option value="landscape-4-3">Paysage 4:3 (bêta)</option>
+          </select>
+        </div>
+
         <div class="action-card">
           <h2 class="action-title"><span class="action-number">1.</span>Importer le logo</h2>
           <input id="logoInput" type="file" accept="image/*" />
@@ -1123,7 +1242,13 @@
             <button type="button" id="updatePosterBtn">Mettre à jour l'affiche</button>
             <button type="button" id="resetPosterBtn" class="secondary">Réinitialiser l'affiche</button>
             <button type="button" id="downloadPosterBtn" class="download-btn">Télécharger l'affiche (PNG)</button>
-            <button type="button" id="printPosterBtn" class="secondary">Imprimer l'affiche (A4)</button>
+            <label class="print-paper">Papier d'impression
+              <select id="printPaperSelect">
+                <option value="A4" selected>A4</option>
+                <option value="A5">A5</option>
+              </select>
+            </label>
+            <button type="button" id="printPosterBtn" class="secondary">Imprimer l'affiche</button>
           </div>
         </div>
       </div>
@@ -1205,6 +1330,14 @@
           </div>
 
         </div>
+
+        <div class="action-card">
+          <h2 class="action-title"><span class="action-number">5.</span>Proposer des slogans</h2>
+          <p class="action-instructions">Trois suggestions composées localement (aucune donnée envoyée) à partir du nom
+            du produit et du texte de la gommette. Cliquez sur une suggestion pour l'utiliser comme sous-titre.</p>
+          <button type="button" id="sloganBtn" class="secondary">💡 Proposer des slogans</button>
+          <div id="sloganResults"></div>
+        </div>
       </div>
 
     </div>
@@ -1282,6 +1415,10 @@
     const resetPosterBtn = document.getElementById('resetPosterBtn');
     const downloadPosterBtn = document.getElementById('downloadPosterBtn');
     const printPosterBtn = document.getElementById('printPosterBtn');
+    const printPaperSelect = document.getElementById('printPaperSelect');
+    const posterFormatSelect = document.getElementById('posterFormatSelect');
+    const sloganBtn = document.getElementById('sloganBtn');
+    const sloganResults = document.getElementById('sloganResults');
     const bgModeInputs = document.querySelectorAll('input[name="bgMode"]');
     const solidBgColorInput = document.getElementById('solidBgColor');
     const bgImageInput = document.getElementById('bgImageInput');
@@ -1616,6 +1753,8 @@
     const resetPoster = () => {
       clearActiveEditable();
       hideContextToolbar();
+      if (posterFormatSelect) posterFormatSelect.value = DEFAULT_POSTER_FORMAT;
+      applyPosterFormat(DEFAULT_POSTER_FORMAT);
       resetMorphableShapes();
       resetEditableBlocks();
       resetDraggableTransforms();
@@ -1752,6 +1891,54 @@
       }
     });
 
+    // --- Formats d'affiche ---
+    const POSTER_FORMATS = {
+      'portrait-3-4': { w: 600, h: 800 },
+      'portrait-a4': { w: 600, h: 849 }, // ratio 1:√2 des feuilles A4/A5
+      'landscape-4-3': { w: 800, h: 600 },
+    };
+    const DEFAULT_POSTER_FORMAT = 'portrait-3-4';
+
+    const getPosterDims = () => ({
+      w: affiche?.clientWidth || 600,
+      h: affiche?.clientHeight || 800,
+    });
+
+    // Réduit l'affiche à l'échelle quand l'écran est plus étroit qu'elle
+    // (mobile/tablette). L'échelle est retirée pendant la capture PNG.
+    const previewContainer = document.querySelector('.preview-container');
+    const fitPosterToViewport = () => {
+      if (!affiche || !previewContainer) return;
+      const available = previewContainer.clientWidth;
+      const needed = affiche.offsetWidth;
+      if (!available || !needed) return;
+      const scale = Math.min(1, available / needed);
+      if (scale < 1) {
+        affiche.style.transformOrigin = 'top center';
+        affiche.style.transform = `scale(${scale})`;
+        previewContainer.style.height = `${Math.ceil(affiche.offsetHeight * scale)}px`;
+      } else {
+        affiche.style.transform = '';
+        affiche.style.transformOrigin = '';
+        previewContainer.style.height = '';
+      }
+    };
+    window.addEventListener('resize', fitPosterToViewport);
+
+    const applyPosterFormat = (key) => {
+      const fmt = POSTER_FORMATS[key] || POSTER_FORMATS[DEFAULT_POSTER_FORMAT];
+      root.style.setProperty('--poster-w', `${fmt.w}px`);
+      root.style.setProperty('--poster-h', `${fmt.h}px`);
+      if (affiche) affiche.dataset.format = key;
+      autoAdjustBands();
+      if (currentBgMode === 'generated') requestBackgroundRegen();
+      fitPosterToViewport();
+    };
+
+    posterFormatSelect?.addEventListener('change', () => {
+      applyPosterFormat(posterFormatSelect.value);
+    });
+
     updatePosterBtn?.addEventListener('click', () => {
       setBackgroundMode(currentBgMode);
       autoAdjustBands();
@@ -1823,6 +2010,12 @@
     const capturePosterDataURL = async (scale = 3) => {
       if (!affiche) return null;
       let restore = () => { };
+      // Retire l'échelle d'aperçu mobile pendant la capture pour exporter
+      // l'affiche à sa taille nominale.
+      const previewTransform = affiche.style.transform;
+      const previewOrigin = affiche.style.transformOrigin;
+      affiche.style.transform = '';
+      affiche.style.transformOrigin = '';
       try {
         const html2canvas = await ensureHtml2Canvas();
         restore = suspendTransformsForCapture();
@@ -1833,6 +2026,8 @@
         return canvas.toDataURL('image/png');
       } finally {
         restore();
+        affiche.style.transform = previewTransform;
+        affiche.style.transformOrigin = previewOrigin;
       }
     };
 
@@ -1861,7 +2056,10 @@
           alert("Autorisez les fenêtres pop-up pour imprimer l'affiche.");
           return;
         }
-        printWindow.document.write(`<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8" /><title>Impression de l'affiche</title><style>@page{size:A4 portrait;margin:0}html,body{margin:0;padding:0;height:100%}img{display:block;width:100%;height:100%;object-fit:contain}</style></head><body><img src="${dataURL}" alt="Affiche" onload="setTimeout(function(){window.print();},250)" /></body></html>`);
+        const paper = printPaperSelect?.value === 'A5' ? 'A5' : 'A4';
+        const { w, h } = getPosterDims();
+        const orientation = w > h ? 'landscape' : 'portrait';
+        printWindow.document.write(`<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8" /><title>Impression de l'affiche</title><style>@page{size:${paper} ${orientation};margin:0}html,body{margin:0;padding:0;height:100%}img{display:block;width:100%;height:100%;object-fit:contain}</style></head><body><img src="${dataURL}" alt="Affiche" onload="setTimeout(function(){window.print();},250)" /></body></html>`);
         printWindow.document.close();
       } catch (error) {
         console.error('Impression impossible', error);
@@ -2539,35 +2737,40 @@
     const bgWaves = (colors) => {
       if (!bgLayer) return;
       clearBgLayer();
-      const svgWidth = 600;
-      const svgHeight = 800;
+      const { w: svgWidth, h: svgHeight } = getPosterDims();
       let waves = '';
       for (let i = 0; i < 3; i += 1) {
         const color = colors[i % colors.length] || DEFAULT_COLORS[0];
-        const baseY = 160 + i * 130 + randRange(-10, 10);
+        const baseY = svgHeight * (0.2 + i * 0.1625) + randRange(-10, 10);
         const amplitude = 18 + i * 10;
         waves += `<path d="${wavePath(svgWidth, svgHeight, baseY, amplitude)}" fill="${rgba(color, 0.12 - i * 0.025)}" />`;
       }
       bgLayer.innerHTML = `<svg viewBox="0 0 ${svgWidth} ${svgHeight}" preserveAspectRatio="none">${waves}</svg>`;
     };
 
-    const productSafeZone = {
-      left: 140,
-      right: 460,
-      top: 210,
-      bottom: 540,
+    // Zone à éviter (produit) exprimée en proportion de l'affiche, pour
+    // rester valable dans tous les formats (140/460/210/540 sur 600x800).
+    const getProductSafeZone = () => {
+      const { w, h } = getPosterDims();
+      return {
+        left: w * 0.233,
+        right: w * 0.767,
+        top: h * 0.2625,
+        bottom: h * 0.675,
+      };
     };
 
     const bubbleSizes = [70, 85, 95, 115, 135];
 
     const isInsideProductZone = (x, y, size) => {
+      const zone = getProductSafeZone();
       const cx = x + size / 2;
       const cy = y + size / 2;
       return (
-        cx > productSafeZone.left &&
-        cx < productSafeZone.right &&
-        cy > productSafeZone.top &&
-        cy < productSafeZone.bottom
+        cx > zone.left &&
+        cx < zone.right &&
+        cy > zone.top &&
+        cy < zone.bottom
       );
     };
 
@@ -2600,13 +2803,14 @@
       if (!bgLayer) return;
       clearBgLayer();
       const placements = [];
+      const { w: posterW, h: posterH } = getPosterDims();
       const count = Math.floor(randRange(2, 6));
       let attempts = 0;
       while (placements.length < count && attempts < 80) {
         attempts += 1;
         const size = bubbleSizes[Math.floor(Math.random() * bubbleSizes.length)];
-        const x = randRange(30, 600 - size - 30);
-        const y = randRange(140, 800 - size - 40);
+        const x = randRange(30, posterW - size - 30);
+        const y = randRange(posterH * 0.175, posterH - size - 40);
         if (isInsideProductZone(x, y, size)) continue;
         if (hasOverlap(placements, x, y, size)) continue;
         placements.push({ x, y, size });
@@ -2648,15 +2852,16 @@
       const stroke = colors[0] || DEFAULT_COLORS[0];
       const accent = colors[1] || DEFAULT_COLORS[1];
       const rotation = randRange(-12, 12).toFixed(2);
+      const { w: posterW, h: posterH } = getPosterDims();
       const svg = `
-        <svg viewBox="0 0 600 800" preserveAspectRatio="xMidYMid slice">
+        <svg viewBox="0 0 ${posterW} ${posterH}" preserveAspectRatio="xMidYMid slice">
           <defs>
             <pattern id="crossPattern" width="32" height="32" patternUnits="userSpaceOnUse" patternTransform="rotate(${rotation})">
             <path d="M16 4 L16 28 M4 16 L28 16" stroke="${rgba(stroke, 0.12)}" stroke-width="1.5" stroke-linecap="round" />
             </pattern>
           </defs>
-          <rect width="600" height="800" fill="url(#crossPattern)" fill-opacity="0.6" />
-          <rect width="600" height="800" fill="${rgba(accent, 0.03)}" />
+          <rect width="${posterW}" height="${posterH}" fill="url(#crossPattern)" fill-opacity="0.6" />
+          <rect width="${posterW}" height="${posterH}" fill="${rgba(accent, 0.03)}" />
         </svg>`;
       bgLayer.innerHTML = svg;
       appendProductHalo(0.2);
@@ -3384,18 +3589,59 @@
     setupTextDragHandle(headerDragHandle, '--header-shift-x', '--header-shift-y');
     setupTextDragHandle(footerDragHandle, '--footer-shift-x', '--footer-shift-y');
 
+    // --- Suggestions de slogans (génération locale, aucune donnée envoyée) ---
+    const SLOGAN_OPENERS = [
+      "Prenez soin de vous avec",
+      "Cette semaine à l'officine :",
+      "Offre spéciale",
+      "Votre pharmacie vous propose",
+      "À ne pas manquer :",
+    ];
+    const SLOGAN_CALLS = [
+      "Demandez conseil à l'équipe 💊",
+      "Disponible dès maintenant 🌿",
+      "Quantités limitées",
+      "Simple, efficace, validé officine",
+      "Pour toute la famille",
+    ];
+    const pickRandom = (arr) => arr[Math.floor(Math.random() * arr.length)];
+
+    sloganBtn?.addEventListener('click', () => {
+      if (!sloganResults) return;
+      const product = (afficheProductName?.textContent || 'ce produit').trim();
+      const promo = (afficheBadgeText?.textContent || '').trim();
+      const suggestions = [
+        `${pickRandom(SLOGAN_OPENERS)} ${product}${promo ? ' (' + promo + ')' : ''}`,
+        `${product} : ${promo ? promo + ', ' : ''}${pickRandom(SLOGAN_CALLS)}`,
+        `${product} disponible à votre pharmacie ✅${promo ? ' → ' + promo : ''}`,
+      ];
+      sloganResults.innerHTML = '';
+      suggestions.forEach((slogan) => {
+        const option = document.createElement('div');
+        option.className = 'slogan-option';
+        option.textContent = slogan;
+        option.addEventListener('click', () => {
+          if (afficheProductSubtitle) afficheProductSubtitle.textContent = slogan;
+          autoAdjustBands();
+        });
+        sloganResults.appendChild(option);
+      });
+    });
+
     // --- Contrôles bandeaux ---
     const initialBgMode = Array.from(bgModeInputs).find((input) => input.checked)?.value || 'solid';
     setBackgroundMode(initialBgMode);
     syncBandInputsFromCss();
     updateBandColor();
     autoAdjustBands();
+    fitPosterToViewport();
   </script>
 
   <footer class="site-footer">
     <div class="beta-banner">Gratuit & open source</div>
     © 2025-2026 Edimah SYNESIUS SONGO — Outil libre : vos images restent sur votre appareil, rien n'est envoyé sur un
-    serveur. Questions ou suggestions : <a href="mailto:edimah.synesius-songo@proton.me">écrivez-moi</a> ·
+    serveur. Code source ouvert sous <a href="/affiche/LICENSE.txt" target="_blank" rel="noopener">licence MIT</a> ·
+    Questions ou suggestions : <a href="mailto:edimah.synesius-songo@proton.me">écrivez-moi</a> ·
     <a href="https://edimah.github.io/">edimah.github.io</a>
   </footer>
   </div>
