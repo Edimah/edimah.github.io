@@ -1,0 +1,548 @@
+/* Éditeur d'affiches pour officine — styles.
+   © 2025-2026 Edimah SYNESIUS SONGO — Licence MIT. */
+
+:root {
+  --green: #0a7f5a;
+  --green-dark: #086a4b;
+  --green-soft: #e9f5ef;
+  --ink: #1c2b28;
+  --muted: #52645e;
+  --danger: #c62828;
+  --border: #dde7e2;
+  --radius: 10px;
+  --shadow: 0 4px 14px rgba(9, 60, 45, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* L'attribut hidden doit toujours gagner, même sur les blocs display:flex. */
+[hidden] {
+  display: none !important;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Poppins", Arial, sans-serif;
+  background: #f2f5f4;
+  color: var(--ink);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+button {
+  font-family: inherit;
+}
+
+/* --- Barre du haut ---------------------------------------------------------- */
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.topbar .brand {
+  font-weight: 700;
+  color: var(--green);
+  font-size: 1rem;
+  margin-right: 6px;
+  white-space: nowrap;
+}
+
+.topbar .spacer {
+  flex: 1;
+}
+
+.topbar button,
+.rail button,
+.panel button,
+.modal button {
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--ink);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.12s ease,
+    border-color 0.12s ease;
+}
+
+.topbar button:hover,
+.rail button:hover,
+.panel button:hover,
+.modal button:hover {
+  background: var(--green-soft);
+  border-color: var(--green);
+}
+
+.topbar button:disabled {
+  opacity: 0.35;
+  cursor: default;
+  background: #fff;
+}
+
+button.primary {
+  background: var(--green);
+  border-color: var(--green);
+  color: #fff;
+}
+
+button.primary:hover {
+  background: var(--green-dark);
+  color: #fff;
+}
+
+button.danger,
+.panel button.mini.danger {
+  color: var(--danger);
+  border-color: rgba(198, 40, 40, 0.35);
+}
+
+/* --- Structure principale ----------------------------------------------------- */
+.workspace {
+  display: flex;
+  gap: 14px;
+  padding: 14px;
+  align-items: flex-start;
+  flex: 1;
+}
+
+.rail {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 168px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 66px;
+}
+
+.rail button {
+  text-align: left;
+  padding: 11px 12px;
+  font-size: 0.86rem;
+  box-shadow: var(--shadow);
+}
+
+.rail .rail-title {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted);
+  font-weight: 600;
+  margin: 6px 2px 0;
+}
+
+.poster-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+}
+
+.poster-wrap {
+  position: relative;
+  width: fit-content;
+  box-shadow: 0 10px 30px rgba(9, 60, 45, 0.16);
+  border-radius: 6px;
+}
+
+.poster-wrap canvas {
+  display: block;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.selection-overlay {
+  position: absolute;
+  inset: 0;
+  touch-action: none;
+  cursor: default;
+}
+
+.sel-box {
+  position: absolute;
+  border: 2px solid #1e88e5;
+  border-radius: 4px;
+  pointer-events: none;
+  display: none;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.8);
+}
+
+.sel-handle {
+  position: absolute;
+  right: -9px;
+  bottom: -9px;
+  width: 18px;
+  height: 18px;
+  background: #1e88e5;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  cursor: nwse-resize;
+  pointer-events: auto;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.canvas-hint {
+  margin-top: 10px;
+  font-size: 0.74rem;
+  color: var(--muted);
+  text-align: center;
+}
+
+/* --- Statut détourage ---------------------------------------------------------- */
+.detour-status {
+  display: none;
+  margin-top: 10px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 7px 16px;
+  font-size: 0.8rem;
+  color: var(--ink);
+  align-items: center;
+  gap: 8px;
+  box-shadow: var(--shadow);
+}
+
+.detour-status.is-visible {
+  display: inline-flex;
+}
+
+.detour-status.busy::before {
+  content: "";
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  border: 2px solid rgba(10, 127, 90, 0.25);
+  border-top-color: var(--green);
+  animation: spin 0.8s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.detour-progress {
+  width: 240px;
+  height: 8px;
+  margin-top: 8px;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+/* --- Panneau de droite ------------------------------------------------------------ */
+.panel {
+  width: 250px;
+  flex-shrink: 0;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: var(--shadow);
+  position: sticky;
+  top: 66px;
+  max-height: calc(100vh - 90px);
+  overflow-y: auto;
+}
+
+.panel h3 {
+  margin: 0 0 6px;
+  font-size: 0.95rem;
+  color: var(--green);
+}
+
+.panel .ctl {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.panel label {
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.panel textarea,
+.panel select,
+.panel input[type="color"],
+.panel input[type="range"] {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px;
+  font-size: 0.85rem;
+  font-family: inherit;
+}
+
+.panel input[type="color"] {
+  height: 38px;
+  padding: 3px;
+  cursor: pointer;
+}
+
+.panel .hint {
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.45;
+}
+
+.panel .warn {
+  font-size: 0.76rem;
+  background: #fff6e5;
+  border: 1px solid #f0ce8a;
+  border-radius: 8px;
+  padding: 8px;
+  color: #7a5410;
+}
+
+.btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+button.mini {
+  padding: 6px 9px;
+  font-size: 0.76rem;
+}
+
+button.mini.active {
+  background: var(--green);
+  border-color: var(--green);
+  color: #fff;
+}
+
+.swatch-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.swatch {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px var(--border);
+  cursor: pointer;
+  padding: 0;
+}
+
+.swatch.active {
+  box-shadow: 0 0 0 2px var(--green);
+}
+
+.swatch-row input[type="color"] {
+  width: 34px;
+  height: 34px;
+  padding: 2px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* --- Bandeau de reprise -------------------------------------------------------------- */
+.restore-banner {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--green);
+  padding: 10px 14px;
+  margin: 0 0 12px;
+  border-radius: 8px;
+  font-size: 0.83rem;
+  box-shadow: var(--shadow);
+  flex-wrap: wrap;
+}
+
+/* --- Modales --------------------------------------------------------------------------- */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(16, 34, 28, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 18px;
+}
+
+.modal {
+  background: #fff;
+  border-radius: 14px;
+  padding: 20px;
+  max-width: 760px;
+  width: 100%;
+  max-height: 88vh;
+  overflow-y: auto;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.3);
+}
+
+.modal h2 {
+  margin: 0 0 4px;
+  font-size: 1.15rem;
+  color: var(--green);
+}
+
+.modal .hint {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin: 0 0 14px;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 12px;
+}
+
+.pick-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fafcfb;
+  cursor: pointer;
+  text-align: center;
+}
+
+.pick-card:hover {
+  border-color: var(--green);
+  background: var(--green-soft);
+}
+
+.pick-card.active {
+  border: 2px solid var(--green);
+}
+
+.pick-card b {
+  font-size: 0.85rem;
+  display: block;
+}
+
+.pick-card small {
+  font-size: 0.7rem;
+  color: var(--muted);
+  display: block;
+  line-height: 1.35;
+}
+
+.pick-thumb {
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+  box-shadow: 0 2px 10px rgba(9, 60, 45, 0.18);
+}
+
+.modal-actions {
+  margin-top: 16px;
+  justify-content: flex-end;
+}
+
+/* --- Retouche détourage -------------------------------------------------------------------- */
+.refine-wrap {
+  margin-top: 12px;
+  display: flex;
+  justify-content: center;
+  background: repeating-conic-gradient(rgba(148, 163, 184, 0.25) 0% 25%, transparent 0% 50%) 50% / 18px 18px;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+#refineCanvas {
+  max-width: 100%;
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.brush-size {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+/* --- Pied de page ------------------------------------------------------------------------------ */
+.site-footer {
+  text-align: center;
+  font-size: 0.7rem;
+  color: var(--muted);
+  padding: 18px 14px 22px;
+  line-height: 1.6;
+}
+
+.site-footer a {
+  color: var(--green);
+}
+
+/* --- Mobile / tablette ---------------------------------------------------------------------------- */
+@media (max-width: 980px) {
+  .workspace {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .rail {
+    position: static;
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .rail .rail-title {
+    width: 100%;
+    margin: 0 2px;
+  }
+
+  .rail button {
+    flex: 1 1 auto;
+    text-align: center;
+    padding: 9px 10px;
+    font-size: 0.78rem;
+  }
+
+  .poster-area {
+    order: -1;
+  }
+
+  .panel {
+    position: static;
+    width: 100%;
+    max-height: none;
+  }
+}
