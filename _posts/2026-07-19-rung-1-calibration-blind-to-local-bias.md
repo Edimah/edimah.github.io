@@ -22,9 +22,11 @@ categories: posts
 
 French public health data will not show you a count below 11. The Cnam *cartographie des pathologies* replaces any such cell with "NS" — *non significatif* — under a confidentiality rule that protects the individuals a small count would expose. This is not noise to clean away, and it is not a rule to work around. It is missing-not-at-random data, and the way a model treats it decides what the model is allowed to conclude.
 
-The finding of this first post is smaller than I expected, and more useful for it: **a global calibration metric can be blind to a real, local bias.** We reach it by handling the censoring two ways and asking a detector to tell them apart.
+The finding of this first post is smaller than I expected, and more useful for it: **a global calibration metric can be blind to a real, local bias.** The claim is not about cancer data — any detector scored on an average can stay silent on a fault confined to one corner of it. We reach it by handling the censoring two ways and asking a detector to tell them apart.
 
-This post covers one worked example — "Autres cancers" in women aged 40–74, at the département level (Rung 1 of the ladder). It does not cover the full pathology set, the individual-level SNDS data (Rung 3), or any clinical reading of the rates themselves. The anomalies used to test calibration are synthetic, and that is the only synthetic part.
+This is the first rung of a series I call the ladder: one question — would I trust this detector? — asked of harder data each time. Here it is département aggregates; next, hospital establishments; last, individual records.
+
+This post covers one worked example — "Autres cancers" in women aged 40–74, at the département level. It does not cover the full pathology set, individual-level SNDS data, or any clinical reading of the rates themselves. The anomalies used to test calibration are synthetic, and that is the only synthetic part.
 
 ### 1. Where the data goes missing
 
