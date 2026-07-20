@@ -37,9 +37,9 @@ ninja.data = [{
           handler: () => {
             window.location.href = "/cv/";
           },
-        },{id: "post-where-do-the-blanks-cluster",
+        },{id: "post-modelling-mnar-data-with-population-data-2-where-do-the-blanks-cluster",
         
-          title: "Where do the blanks cluster?",
+          title: "Modelling MNAR data with population data #2 : Where do the blanks cluster?...",
         
         description: "The blanks are not spread evenly. Where they concentrate decides which question the data can honestly answer.",
         section: "Posts",
@@ -48,11 +48,11 @@ ninja.data = [{
             window.location.href = "/blog/2026/where-do-the-blanks-cluster/";
           
         },
-      },{id: "post-why-is-this-cell-blank",
+      },{id: "post-modelling-mnar-data-with-population-data-1-why-is-this-cell-blank",
         
-          title: "Why is this cell blank?",
+          title: "Modelling MNAR data with population data #1 : Why is this cell blank?...",
         
-        description: "A blank cell in the pathology data is a decision, not an absence — and the decision depends on the number it hides.",
+        description: "A blank cell in the pathology data is a decision, not an absence, and the decision depends on the number it hides.",
         section: "Posts",
         handler: () => {
           
