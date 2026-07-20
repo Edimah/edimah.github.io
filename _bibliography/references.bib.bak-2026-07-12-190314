@@ -1,0 +1,950 @@
+@misc{CerveauMusique,
+  title = {{Le cerveau et la musique}},
+  year = {2026},
+  journal = {\'Editions MultiMondes},
+  urldate = {2026-04-24},
+  abstract = {Un son, une note, une m\'elodie et voil\`a\dots{} le cerveau en effervescence. Mais pourquoi certains airs arrivent-ils \`a nous...},
+  howpublished = {https://editionsmultimondes.com/livre/le-cerveau-et-la-musique},
+  langid = {french}
+}
+
+@book{fischerViolinLessonManual2013,
+  title = {The Violin Lesson: A Manual for Teaching and Self-Teaching the Violin},
+  shorttitle = {The Violin Lesson},
+  author = {Fischer, Simon},
+  year = 2013,
+  publisher = {Peters},
+  address = {London},
+  isbn = {9790577088969},
+  langid = {english}
+}
+
+@book{galamianPrinciplesViolinPlaying2013,
+  title = {Principles of Violin Playing \& Teaching},
+  author = {Galamian, Ivan},
+  year = 2013,
+  publisher = {Dover Publications, Inc.},
+  address = {Mineola, New York},
+  urldate = {2025-10-01},
+  abstract = {Publisher description: A celebrated instructor presents his philosophy of teaching and practice methods, including the appropriate combination of technique and interpretation. The longtime Juilliard professor incorporates aspects of both the Russian and French schools in a system both ingenious and logical. Topics include posture, vibrato, intonation, bowing, double stops, and many other subjects},
+  collaborator = {Thomas, Sally and Chase, Stephanie},
+  isbn = {978-0-486-49864-5},
+  langid = {english},
+  keywords = {Galamian Ivan,MUSIC / Musical Instruments / Strings,notion,Violin Instruction and study,Violon Etude et enseignement},
+  annotation = {OCLC: 792881194}
+}
+
+@article{grangierTraitementDonneesSante,
+  title = {{Traitement des donn\'ees de sant\'e en pharmacie d'officine: cadre r\`eglementaire, \'ecosyst\`eme actuel et place du pharmacien}},
+  author = {Grangier, Nicolas},
+  year = {2026},
+  langid = {french},
+  keywords = {notion},
+  file = {/Users/edimahsynesius/Zotero/storage/FVFFGLXR/Grangier - Traitement des données de santé en pharmacie d'officine cadre règlementaire, écosystème actuel et p.pdf}
+}
+
+@book{mullerFundamentalsMusicProcessing2021,
+  title = {Fundamentals of {{Music Processing}}: {{Using Python}} and {{Jupyter Notebooks}}},
+  shorttitle = {Fundamentals of {{Music Processing}}},
+  author = {M{\"u}ller, Meinard},
+  year = 2021,
+  publisher = {Springer International Publishing},
+  address = {Cham},
+  doi = {10.1007/978-3-030-69808-9},
+  urldate = {2025-09-30},
+  copyright = {https://www.springer.com/tdm},
+  isbn = {978-3-030-69807-2 978-3-030-69808-9},
+  langid = {english},
+  keywords = {Audio Retrieval,Fourier Analysis,Music Computing,Music Retrieval,Music Structure Analysis,notion,Pattern Recognition,Signal Processing,Sound Computing}
+}
+
+@article{qinU$^2$NetGoingDeeper2020,
+  title = {U\$\textasciicircum 2\$-{{Net}}: {{Going Deeper}} with {{Nested U-Structure}} for {{Salient Object Detection}}},
+  shorttitle = {U\$\textasciicircum 2\$-{{Net}}},
+  author = {Qin, Xuebin and Zhang, Zichen and Huang, Chenyang and Dehghan, Masood and Zaiane, Osmar R. and Jagersand, Martin},
+  year = 2020,
+  month = oct,
+  journal = {Pattern Recognition},
+  volume = {106},
+  eprint = {2005.09007},
+  primaryclass = {cs},
+  pages = {107404},
+  issn = {00313203},
+  doi = {10.1016/j.patcog.2020.107404},
+  urldate = {2025-11-05},
+  abstract = {In this paper, we design a simple yet powerful deep network architecture, U\$\textasciicircum 2\$-Net, for salient object detection (SOD). The architecture of our U\$\textasciicircum 2\$-Net is a two-level nested U-structure. The design has the following advantages: (1) it is able to capture more contextual information from different scales thanks to the mixture of receptive fields of different sizes in our proposed ReSidual U-blocks (RSU), (2) it increases the depth of the whole architecture without significantly increasing the computational cost because of the pooling operations used in these RSU blocks. This architecture enables us to train a deep network from scratch without using backbones from image classification tasks. We instantiate two models of the proposed architecture, U\$\textasciicircum 2\$-Net (176.3 MB, 30 FPS on GTX 1080Ti GPU) and U\$\textasciicircum 2\$-Net\$\textasciicircum\textbraceleft\textbackslash dagger\textbraceright\$ (4.7 MB, 40 FPS), to facilitate the usage in different environments. Both models achieve competitive performance on six SOD datasets. The code is available: https://github.com/NathanUA/U-2-Net.},
+  archiveprefix = {arXiv},
+  keywords = {Computer Science - Computer Vision and Pattern Recognition},
+  file = {/Users/edimahsynesius/Zotero/storage/FZ32DMB5/Qin et al. - 2020 - U$^2$-Net Going Deeper with Nested U-Structure for Salient Object Detection.pdf;/Users/edimahsynesius/Zotero/storage/6TGVSI4C/2005.html}
+}
+
+@book{temperleyCognitionBasicMusical2004,
+  title = {The {{Cognition}} of {{Basic Musical Structures}}},
+  author = {Temperley, David},
+  year = 2004,
+  month = aug,
+  publisher = {MIT Press},
+  address = {Cambridge, MA, USA},
+  isbn = {978-0-262-70105-1},
+  langid = {english},
+  keywords = {notion}
+}
+
+@book{temperleyMusicProbability2006,
+  title = {Music and {{Probability}}},
+  author = {Temperley, David},
+  year = 2006,
+  month = dec,
+  publisher = {The MIT Press},
+  doi = {10.7551/mitpress/4807.001.0001},
+  urldate = {2025-09-28},
+  abstract = {Exploring the application of Bayesian probabilistic modeling techniques to musical issues, including the perception of key and meter.In Music and Probabili},
+  isbn = {978-0-262-25707-7},
+  langid = {english},
+  keywords = {notion},
+  file = {/Users/edimahsynesius/Zotero/storage/3TPBH7XG/Temperley - 2006 - Music and Probability.pdf}
+}
+
+% ==== merged from iCloud/Resources academic library — 2026-07-12 (enriched) ====
+
+@book{vaughan2020analyticalskillsforaianddatas,
+  title = {Analytical-Skills-for-AI-and-Data-Science-ch2},
+  author = {Vaughan, Daniel},
+  year = {2020},
+  keywords = {Machine Learning},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Machine Learning & Deep Learning/Analytical-Skills-for-AI-and-Data-Science-ch2.pdf}
+}
+
+@book{stone2019artificial,
+  title = {Artificial Intelligence Engines Math of DeepLearning},
+  author = {Stone, James V.},
+  year = {2019},
+  keywords = {Deep Learning, Mathematics},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Machine Learning & Deep Learning/Artificial Intelligence Engines Math of DeepLearning.pdf}
+}
+
+@book{hutter2019automl,
+  title = {AutoML Book},
+  author = {Hutter, Frank and Kotthoff, Lars and Vanschoren, Joaquin},
+  year = {2019},
+  keywords = {Machine Learning},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Machine Learning & Deep Learning/AutoML Book.pdf}
+}
+
+@book{BasicsOfClustering,
+  title = {Basics of Clustering},
+  keywords = {Machine Learning},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Machine Learning & Deep Learning/Basics of Clustering.pdf}
+}
+
+@book{barber2012bayesian,
+  title = {Bayesian Reasoning and Machine Learning},
+  author = {Barber, David},
+  year = {2012},
+  keywords = {Bayesian, Machine Learning},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Machine Learning & Deep Learning/Bayesian Reasoning and Machine Learning.pdf}
+}
+
+@misc{amidindcs,
+  title = {CS 229},
+  author = {Amidi, Afshine and Amidi, Shervine},
+  keywords = {Machine Learning, Course},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Machine Learning & Deep Learning/CS 229.pdf}
+}
+
+@misc{agrawalndds,
+  title = {DS ML Applied Modelling},
+  author = {Agrawal, Shubhankar},
+  keywords = {Machine Learning},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Machine Learning & Deep Learning/DS ML Applied Modelling.pdf}
+}
+
+@misc{agrawalndds2,
+  title = {DS ML Machine Learning I},
+  author = {Agrawal, Shubhankar},
+  keywords = {Machine Learning},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Machine Learning & Deep Learning/DS ML Machine Learning I.pdf}
+}
+
+@misc{agrawalndds3,
+  title = {DS ML Machine Learning II},
+  author = {Agrawal, Shubhankar},
+  keywords = {Machine Learning},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Machine Learning & Deep Learning/DS ML Machine Learning II.pdf}
+}
+
+@misc{wangnddata,
+  title = {Data Science 2 CS},
+  author = {Wang, Aaron},
+  keywords = {Machine Learning},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Machine Learning & Deep Learning/Data Science 2 CS.pdf}
+}
+
+@book{DecodingTransformersChapter,
+  title = {Decoding Transformers Chapter 1},
+  keywords = {Deep Learning, NLP},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Machine Learning & Deep Learning/Decoding Transformers Chapter 1.pdf}
+}
+
+@misc{tavenard2023deep,
+  title = {Deep Learning Basics},
+  author = {Tavenard, Romain},
+  year = {2023},
+  keywords = {Deep Learning},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Machine Learning & Deep Learning/Deep Learning Basics.pdf}
+}
+
+@misc{DeepLearningSpecialization,
+  title = {Deep Learning Specialization Notes},
+  keywords = {Deep Learning, Course},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Machine Learning & Deep Learning/Deep Learning Specialization Notes.pdf}
+}
+
+@misc{telgarsky2021deep,
+  title = {Deep Learning Theory Illinois},
+  author = {Telgarsky, Matus},
+  year = {2021},
+  keywords = {Deep Learning, Course},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Machine Learning & Deep Learning/Deep Learning Theory Illinois.pdf}
+}
+
+@book{DeepReinforcementLearning,
+  title = {Deep Reinforcement Learning},
+  keywords = {Reinforcement Learning, Deep Learning},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Machine Learning & Deep Learning/Deep Reinforcement Learning.pdf}
+}
+
+@book{ludwigndfederated,
+  title = {Federated Learning - A Comprehensive Overview},
+  author = {Ludwig, Heiko and Baracaldo, Nathalie},
+  keywords = {Machine Learning},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Machine Learning & Deep Learning/Federated Learning - A Comprehensive Overview - Ludwig & Baracaldo.pdf}
+}
+
+@book{GenerativeAiWith,
+  title = {Generative AI with LLMs},
+  keywords = {Deep Learning, NLP},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Machine Learning & Deep Learning/Generative AI with LLMs.pdf}
+}
+
+@book{IntroductionToReinforcement,
+  title = {Introduction to Reinforcement Learning},
+  keywords = {Reinforcement Learning},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Machine Learning & Deep Learning/Introduction to Reinforcement Learning.pdf}
+}
+
+@book{bach2025learning,
+  title = {Learning Theory from First Principles},
+  author = {Bach, Francis},
+  year = {2025},
+  keywords = {Machine Learning, Course},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Machine Learning & Deep Learning/Learning Theory from First Principles - Francis Bach.pdf}
+}
+
+@misc{amidindmachine,
+  title = {Machine Learning Tips and Tricks},
+  author = {Amidi, Afshine and Amidi, Shervine},
+  keywords = {Machine Learning, Cheatsheet},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Machine Learning & Deep Learning/Machine Learning Tips and Tricks.pdf}
+}
+
+@book{ng2018machine,
+  title = {Machine Learning Yearning},
+  author = {Ng, Andrew},
+  year = {2018},
+  keywords = {Machine Learning},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Machine Learning & Deep Learning/Machine Learning Yearning - Andrew Ng.pdf}
+}
+
+@book{MachineLearningFor,
+  title = {Machine Learning for Engineers},
+  keywords = {Machine Learning},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Machine Learning & Deep Learning/Machine Learning for Engineers.pdf}
+}
+
+@book{MachineLearningFor2,
+  title = {Machine Learning for Everyone},
+  keywords = {Machine Learning},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Machine Learning & Deep Learning/Machine Learning for Everyone.pdf}
+}
+
+@book{MathematicsForInference,
+  title = {Mathematics for Inference and Machine Learning},
+  keywords = {Machine Learning, Mathematics},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Machine Learning & Deep Learning/Mathematics for Inference and Machine Learning.pdf}
+}
+
+@book{nielsen2015neural,
+  title = {Neural Network and Deep Learning},
+  author = {Nielsen, Michael A.},
+  year = {2015},
+  keywords = {Deep Learning},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Machine Learning & Deep Learning/Neural Network and Deep Learning.pdf}
+}
+
+@book{thuerey2021physics,
+  title = {Physics based Deep Learning},
+  author = {Thuerey, Nils and Holl, Philipp},
+  year = {2021},
+  keywords = {Deep Learning, Physics},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Machine Learning & Deep Learning/Physics based Deep Learning.pdf}
+}
+
+@book{roberts2022principles,
+  title = {Principles Of Deep Learning Theory},
+  author = {Roberts, Daniel A. and Yaida, Sho},
+  year = {2022},
+  keywords = {Deep Learning},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Machine Learning & Deep Learning/Principles Of Deep Learning Theory.pdf}
+}
+
+@misc{ribatetndrandom,
+  title = {Random Forest},
+  author = {Ribatet, Mathieu},
+  keywords = {Machine Learning},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Machine Learning & Deep Learning/Random Forest.pdf}
+}
+
+@misc{guptandregularization,
+  title = {Regularization},
+  author = {Gupta, Saurabh},
+  keywords = {Machine Learning},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Machine Learning & Deep Learning/Regularization.pdf}
+}
+
+@book{bontempindstatistical,
+  title = {Statistical Foundations of Machine Learning The Handbook},
+  author = {Bontempi, Gianluca},
+  keywords = {Machine Learning, Statistics},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Machine Learning & Deep Learning/Statistical Foundations of Machine Learning The Handbook.pdf}
+}
+
+@book{bontempindstatistical2,
+  title = {Statistical foundations of machine learning},
+  author = {Bontempi, Gianluca},
+  keywords = {Machine Learning, Statistics},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Machine Learning & Deep Learning/Statistical foundations of machine learning.pdf}
+}
+
+@book{lindholm2022supervised,
+  title = {Supervised Machine Learning},
+  author = {Lindholm, Andreas and Wahlström, Niklas and Lindsten, Fredrik and Schön, Thomas B.},
+  year = {2022},
+  keywords = {Machine Learning},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Machine Learning & Deep Learning/Supervised Machine Learning - Lindholm & Wahlström.pdf}
+}
+
+@book{amerndvisual,
+  title = {Visual introduction to Deep Learning},
+  author = {Amer, Meor},
+  keywords = {Deep Learning},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Machine Learning & Deep Learning/Visual introduction to Deep Learning.pdf}
+}
+
+@book{Cheatsheetml,
+  title = {cheatsheet\_ML},
+  keywords = {Machine Learning},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Machine Learning & Deep Learning/cheatsheet_ML.pdf}
+}
+
+@book{DevriesKouwBayesian,
+  title = {deVries Kouw Bayesian Machine Learning and Information Processing},
+  keywords = {Bayesian, Machine Learning},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Machine Learning & Deep Learning/deVries Kouw Bayesian Machine Learning and Information Processing.pdf}
+}
+
+@misc{poratnda,
+  title = {A Gentle Introduction to Tensors},
+  author = {Porat, Boaz},
+  keywords = {Linear Algebra},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Mathematics/A Gentle Introduction to Tensors.pdf}
+}
+
+@misc{larsson2021absolute,
+  title = {ABSOLUTE COMBINATORIAL GAME THEORY},
+  author = {Larsson, Urban},
+  year = {2021},
+  keywords = {Game Theory},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Mathematics/ABSOLUTE COMBINATORIAL GAME THEORY.pdf}
+}
+
+@misc{amidindalgebra,
+  title = {Algebra Calculus Refresher},
+  author = {Amidi, Afshine and Amidi, Shervine},
+  keywords = {Mathematics, Cheatsheet},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Mathematics/Algebra Calculus Refresher.pdf}
+}
+
+@book{boyd2004convex,
+  title = {Convex Optimisation},
+  author = {Boyd, Stephen and Vandenberghe, Lieven},
+  year = {2004},
+  keywords = {Optimization},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Mathematics/Convex Optimisation.pdf}
+}
+
+@book{chasnovnddifferential,
+  title = {Differential Equations for Engineers},
+  author = {Chasnov, Jeffrey R.},
+  keywords = {Analysis},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Mathematics/Differential Equations for Engineers.pdf}
+}
+
+@book{polyandhow,
+  title = {How to Solve It},
+  author = {Pólya, George},
+  keywords = {Mathematics},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Mathematics/How to Solve It - Pólya.pdf}
+}
+
+@book{sayama2015introduction,
+  title = {Introduction to the modeling and analysis of complex systems},
+  author = {Sayama, Hiroki},
+  year = {2015},
+  keywords = {Complex Systems},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Mathematics/Introduction to the modeling and analysis of complex systems.pdf}
+}
+
+@misc{bretonndintegrale,
+  title = {Intégrale de Lebesgue},
+  author = {Breton, Jean-Christophe},
+  keywords = {Analysis},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Mathematics/Intégrale de Lebesgue - Breton [FR].pdf}
+}
+
+@misc{vershyninndlectures,
+  title = {Lectures in Functional Analysis UMICH},
+  author = {Vershynin, Roman},
+  keywords = {Analysis},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Mathematics/Lectures in Functional Analysis UMICH.pdf}
+}
+
+@book{LinearAlgebraNotes,
+  title = {Linear Algebra Notes},
+  keywords = {Linear Algebra},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Mathematics/Linear Algebra Notes.pdf}
+}
+
+@misc{mitranndlinear,
+  title = {Linear algebra for data science},
+  author = {Mitran, Sorin},
+  keywords = {Linear Algebra, Machine Learning},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Mathematics/Linear algebra for data science.pdf}
+}
+
+@book{ipsen2009numerical,
+  title = {Numerical matrix analysis Ipsen},
+  author = {Ipsen, Ilse C. F.},
+  year = {2009},
+  keywords = {Linear Algebra, Numerical},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Mathematics/Numerical matrix analysis Ipsen.pdf}
+}
+
+@book{mashndoptimization,
+  title = {Optimization for ML},
+  author = {MASH},
+  keywords = {Optimization, Machine Learning},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Mathematics/Optimization for ML - MASH.pdf}
+}
+
+@book{steinndprinceton,
+  title = {Princeton Lectures in Analysis},
+  author = {Stein, Elias M. and Shakarchi, Rami},
+  keywords = {Analysis, Fourier},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Mathematics/Princeton Lectures in Analysis - Stein & Shakarchi.pdf}
+}
+
+@misc{QuickstudyAlgebra1,
+  title = {QuickStudy Algebra1},
+  keywords = {Linear Algebra, Cheatsheet},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Mathematics/QuickStudy Algebra1.pdf}
+}
+
+@book{SomePhysicsFor,
+  title = {Some Physics for Mathematicians},
+  keywords = {Mathematics, Physics},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Mathematics/Some Physics for Mathematicians.pdf}
+}
+
+@book{higham2015the,
+  title = {The Princeton Companion to Applied Mathematics},
+  author = {Higham, Nicholas J.},
+  year = {2015},
+  keywords = {Mathematics},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Mathematics/The Princeton Companion to Applied Mathematics - Higham.pdf}
+}
+
+@misc{fraenkelndtheory,
+  title = {Theory Of Combinatorial games},
+  author = {Fraenkel, Aviezri S. and Hearn, Robert A.},
+  keywords = {Game Theory},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Mathematics/Theory Of Combinatorial games - 2014.pdf}
+}
+
+@book{garrity2002allthemathematicsyoumissed,
+  title = {all-the-mathematics-you-missed},
+  author = {Garrity, Thomas A.},
+  year = {2002},
+  keywords = {Mathematics},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Mathematics/all-the-mathematics-you-missed.pdf}
+}
+
+@book{douglassgreenndformintonalmusicanintrodu,
+  title = {Form-in-tonal-music-an-introduction-to-analysis},
+  author = {Douglass Green},
+  keywords = {Music Theory},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Music/Form-in-tonal-music-an-introduction-to-analysis - Douglass Green.pdf}
+}
+
+@book{bonetndles,
+  title = {Les Principes Fondamentaux de l'Harmonie},
+  author = {Bonet, Narcís},
+  keywords = {Music Theory},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Music/Les Principes Fondamentaux de l'Harmonie - Narcís Bonet [FR].pdf}
+}
+
+@book{danhauserndtheorie,
+  title = {Théorie de la Musique},
+  author = {Danhauser, Adolphe},
+  keywords = {Music Theory},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Music/Théorie de la Musique - Danhauser [FR].pdf}
+}
+
+@book{benson2006music,
+  title = {music- a mathematical offering},
+  author = {Benson, Dave},
+  year = {2006},
+  keywords = {Music, Mathematics},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Music/music- a mathematical offering.pdf}
+}
+
+@book{rossndafirstcourseinprobability,
+  title = {A-First-Course-in-Probability},
+  author = {Ross, Sheldon},
+  keywords = {Probability},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Probability, Statistics & Bayesian/A-First-Course-in-Probability.pdf}
+}
+
+@book{wasserman2004all,
+  title = {All of Statistics},
+  author = {Wasserman, Larry},
+  year = {2004},
+  keywords = {Statistics},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Probability, Statistics & Bayesian/All of Statistics.pdf}
+}
+
+@book{gelman2013bayesian,
+  title = {Bayesian Data Analysis, Third Edition},
+  author = {Gelman, Andrew and Carlin, John B. and Stern, Hal S. and Dunson, David B. and Vehtari, Aki and Rubin, Donald B.},
+  year = {2013},
+  keywords = {Bayesian, Statistics},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Probability, Statistics & Bayesian/Bayesian Data Analysis, Third Edition.pdf}
+}
+
+@book{marin2014bayesian,
+  title = {Bayesian Essentials with R},
+  author = {Marin, Jean-Michel and Robert, Christian P.},
+  year = {2014},
+  keywords = {Bayesian, R},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Probability, Statistics & Bayesian/Bayesian Essentials with R.pdf}
+}
+
+@book{zeevat2015bayesian,
+  title = {Bayesian Natural Language Semantics and Pragmatics},
+  author = {Zeevat, Henk and Schmitz, Hans-Christian},
+  year = {2015},
+  keywords = {Bayesian, NLP},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Probability, Statistics & Bayesian/Bayesian Natural Language Semantics and Pragmatics.pdf}
+}
+
+@book{BayesianStatistics,
+  title = {Bayesian Statistics},
+  keywords = {Bayesian},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Probability, Statistics & Bayesian/Bayesian Statistics.pdf}
+}
+
+@misc{agrawalndds4,
+  title = {DS ML Probability Statistics},
+  author = {Agrawal, Shubhankar},
+  keywords = {Probability, Statistics},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Probability, Statistics & Bayesian/DS ML Probability Statistics.pdf}
+}
+
+@misc{Eda,
+  title = {EDA},
+  keywords = {Statistics, Cheatsheet},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Probability, Statistics & Bayesian/EDA.png}
+}
+
+@misc{HaroldsStatsDistributions2022,
+  title = {Harolds Stats Distributions Cheat Sheet 2022},
+  year = {2022},
+  keywords = {Statistics, Cheatsheet},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Probability, Statistics & Bayesian/Harolds Stats Distributions Cheat Sheet 2022.pdf}
+}
+
+@book{banerjeendhierarchical,
+  title = {Hierarchical Modeling and Analysis for Spatial Data},
+  author = {Banerjee, Sudipto and Carlin, Bradley P. and Gelfand, Alan E.},
+  keywords = {Bayesian, Statistics, Spatial},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Probability, Statistics & Bayesian/Hierarchical Modeling and Analysis for Spatial Data - Banerjee, Carlin & Gelfand.pdf}
+}
+
+@book{vershynin2018high,
+  title = {High Dimensional Probability},
+  author = {Vershynin, Roman},
+  year = {2018},
+  keywords = {Probability},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Probability, Statistics & Bayesian/High Dimensional Probability.pdf}
+}
+
+@misc{rigollet2019high,
+  title = {High Dimensional Statistics},
+  author = {Rigollet, Philippe and Hütter, Jan-Christian},
+  year = {2019},
+  keywords = {Statistics},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Probability, Statistics & Bayesian/High Dimensional Statistics.pdf}
+}
+
+@book{enstandintroduction,
+  title = {Introduction au Calcul des Probabilités et à la Statistique},
+  author = {ENSTA},
+  keywords = {Probability, Statistics},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Probability, Statistics & Bayesian/Introduction au Calcul des Probabilités et à la Statistique - ENSTA [FR].pdf}
+}
+
+@misc{brownndmanipulating,
+  title = {Manipulating Time Series Data in R — Ch.2 (Time Series Attributes)},
+  author = {Brown, Harrison},
+  keywords = {Time Series, R},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Probability, Statistics & Bayesian/Manipulating Time Series Data in R — Ch.2 (Time Series Attributes).pdf}
+}
+
+@book{shao2005mathematical,
+  title = {Mathematical statistics - exercises and solutions},
+  author = {Shao, Jun},
+  year = {2005},
+  keywords = {Statistics, Exercises},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Probability, Statistics & Bayesian/Mathematical statistics - exercises and solutions - shao gyak.pdf}
+}
+
+@misc{kennedy2016monte,
+  title = {Monte Carlo Methods A Special Topics Course},
+  author = {Kennedy, Tom},
+  year = {2016},
+  keywords = {Monte Carlo, Statistics, Course},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Probability, Statistics & Bayesian/Monte Carlo Methods A Special Topics Course.pdf}
+}
+
+@book{bruce2020practicalstatisticsfordatascien,
+  title = {PracticalStatisticsforDataScientists50EssentialConceptsUsingRandPythonbyPeterBruceAndrewBrucePeterGedeck},
+  author = {Bruce, Peter and Bruce, Andrew and Gedeck, Peter},
+  year = {2020},
+  keywords = {Statistics, Machine Learning, R, Python},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Probability, Statistics & Bayesian/PracticalStatisticsforDataScientists50EssentialConceptsUsingRandPythonbyPeterBruceAndrewBrucePeterGedeck.pdf}
+}
+
+@book{blom1994problems,
+  title = {Problems and snapshots from the world of probability},
+  author = {Blom, Gunnar and Holst, Lars and Sandell, Dennis},
+  year = {1994},
+  keywords = {Probability},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Probability, Statistics & Bayesian/Problems and snapshots from the world of probability.pdf}
+}
+
+@misc{statisticsndquick,
+  title = {Quick Study},
+  author = {Statistics},
+  keywords = {Statistics, Cheatsheet},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Probability, Statistics & Bayesian/Quick Study - Statistics.pdf}
+}
+
+@book{RStatistiquesV3,
+  title = {R - Statistiques v3},
+  keywords = {R, Statistics},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Probability, Statistics & Bayesian/R - Statistiques v3 [FR].pdf}
+}
+
+@book{berger1985statistical,
+  title = {Statistical Decision Theory and Bayesian Analysis},
+  author = {Berger, James O.},
+  year = {1985},
+  keywords = {Bayesian, Statistics},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Probability, Statistics & Bayesian/Statistical Decision Theory and Bayesian Analysis - Berger.pdf}
+}
+
+@book{mcelreath2020statistical,
+  title = {Statistical Rethinking},
+  author = {McElreath, Richard},
+  year = {2020},
+  keywords = {Bayesian, Statistics, R},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Probability, Statistics & Bayesian/Statistical Rethinking - McElreath.pdf}
+}
+
+@misc{StatisticsReadyReference,
+  title = {Statistics Ready Reference},
+  keywords = {Statistics, Cheatsheet},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Probability, Statistics & Bayesian/Statistics Ready Reference.pdf}
+}
+
+@book{StatisticsForMachine,
+  title = {Statistics for Machine Learning A Z},
+  keywords = {Statistics, Machine Learning},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Probability, Statistics & Bayesian/Statistics for Machine Learning A Z.pdf}
+}
+
+@book{cryer2008time,
+  title = {Time Series Analysis with Applications in R},
+  author = {Cryer, Jonathan D. and Chan, Kung-Sik},
+  year = {2008},
+  keywords = {Time Series, R, Statistics},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Probability, Statistics & Bayesian/Time Series Analysis with Applications in R - Cryer & Chan.pdf}
+}
+
+@book{AlgorithmsNotes,
+  title = {Algorithms Notes},
+  keywords = {Algorithms},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Programming, Algorithms & Career/Algorithms Notes.pdf}
+}
+
+@book{AlgorithmsAndClassic,
+  title = {Algorithms and classic problems},
+  keywords = {Algorithms},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Programming, Algorithms & Career/Algorithms and classic problems.pdf}
+}
+
+@book{mcdowell2015cracking,
+  title = {Cracking the Coding Interview},
+  author = {McDowell, Gayle Laakmann},
+  year = {2015},
+  keywords = {Interviews, Algorithms},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Programming, Algorithms & Career/Cracking the Coding Interview - 189 Programming Questions and Solutions (6th Edition).pdf}
+}
+
+@misc{agrawalndds5,
+  title = {DS ML Python},
+  author = {Agrawal, Shubhankar},
+  keywords = {Python},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Programming, Algorithms & Career/DS ML Python.pdf}
+}
+
+@book{gustedtndmodern,
+  title = {Modern C for the impatient},
+  author = {Gustedt, Jens},
+  keywords = {C/C++},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Programming, Algorithms & Career/Modern C for the impatient.pdf}
+}
+
+@misc{rougierndnumpy,
+  title = {Numpy Exercises},
+  author = {Rougier, Nicolas P.},
+  keywords = {Python, Exercises},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Programming, Algorithms & Career/Numpy Exercises.pdf}
+}
+
+@book{OptimizationWithScipy,
+  title = {Optimization with Scipy},
+  keywords = {Python, Optimization},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Programming, Algorithms & Career/Optimization with Scipy.pdf}
+}
+
+@book{ResumeGuide,
+  title = {Resume Guide},
+  keywords = {Career},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Programming, Algorithms & Career/Resume Guide.pdf}
+}
+
+@misc{StudyGuideFor,
+  title = {Study Guide for Data Science Tools},
+  keywords = {Python, Cheatsheet},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Programming, Algorithms & Career/Study Guide for Data Science Tools.pdf}
+}
+
+@misc{TheBasicData,
+  title = {The Basic Data Cleaning Guide},
+  keywords = {Python, Cheatsheet},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Programming, Algorithms & Career/The Basic Data Cleaning Guide.pdf}
+}
+
+@book{WritingAndPublishing,
+  title = {Writing and Publishing Scientific Papers A Primer},
+  keywords = {Career},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Programming, Algorithms & Career/Writing and Publishing Scientific Papers A Primer.pdf}
+}
+
+@misc{MacosKeyboardShortcuts,
+  title = {macOS Keyboard Shortcuts (cheatsheet)},
+  keywords = {Cheatsheet},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Programming, Algorithms & Career/macOS Keyboard Shortcuts (cheatsheet).pdf}
+}
+
+@misc{MatplotlibCheatsheets,
+  title = {matplotlib - cheatsheets},
+  keywords = {Python, Cheatsheet},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Programming, Algorithms & Career/matplotlib - cheatsheets.pdf}
+}
+
+@book{OptimisingCCode,
+  title = {optimising c code for low latency},
+  keywords = {C/C++, Optimization},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Programming, Algorithms & Career/optimising c code for low latency.pdf}
+}
+
+@book{oppenheim2009discretetime,
+  title = {Discrete-Time Signal Processing},
+  author = {Oppenheim, Alan V. and Schafer, Ronald W.},
+  year = {2009},
+  keywords = {Signal Processing, Fourier},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Signal Processing/Discrete-Time Signal Processing - Oppenheim & Schafer (2009).pdf}
+}
+
+@book{smith2007mathematics,
+  title = {Mathematics of the discrete Fourier transform (DFT)},
+  author = {Smith, Julius O.},
+  year = {2007},
+  keywords = {Signal Processing, Fourier, Music},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Signal Processing/Mathematics of the discrete Fourier transform (DFT) - with — Julius O. Smith III.pdf}
+}
+
+@book{manolakisndstatistical,
+  title = {Statistical and Adaptive Signal Processi},
+  author = {Manolakis, Dimitris G. and Ingle, Vinay K. and Kogon, Stephen M.},
+  keywords = {Signal Processing},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Signal Processing/Statistical and Adaptive Signal Processi.pdf}
+}
+
+@book{mallat2008wavelet,
+  title = {Wavelet Tour of Signal Processing},
+  author = {Mallat, Stéphane},
+  year = {2008},
+  keywords = {Signal Processing, Wavelets},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Signal Processing/Wavelet Tour of Signal Processing - Mallat.pdf}
+}
+
+@book{haughnda,
+  title = {A Brief Introduction to Stochastic Calculus},
+  author = {Haugh},
+  keywords = {Stochastic Calculus},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Stochastic Calculus & Quantitative Finance/A Brief Introduction to Stochastic Calculus - Haugh.pdf}
+}
+
+@book{zhou2008a,
+  title = {A Practical Guide To Quantitative Finance Interviews},
+  author = {Zhou, Xinfeng},
+  year = {2008},
+  keywords = {Quantitative Finance, Interviews},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Stochastic Calculus & Quantitative Finance/A Practical Guide To Quantitative Finance Interviews - Zhou.pdf}
+}
+
+@book{legall2016brownian,
+  title = {Brownian Motion, Martingales, and Stochastic Calculus},
+  author = {Le Gall, Jean-François},
+  year = {2016},
+  keywords = {Stochastic Calculus, Probability},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Stochastic Calculus & Quantitative Finance/Brownian Motion, Martingales, and Stochastic Calculus - Le Gall.pdf}
+}
+
+@article{buhler2019deep,
+  title = {Deep Hedging},
+  author = {Bühler, Hans and Gonon, Lukas and Teichmann, Josef and Wood, Ben},
+  year = {2019},
+  keywords = {Quantitative Finance, Deep Learning},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Stochastic Calculus & Quantitative Finance/Deep Hedging.pdf}
+}
+
+@book{FinancialEngineeringInterview,
+  title = {Financial Engineering Interview Questions Part 1},
+  keywords = {Quantitative Finance, Interviews},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Stochastic Calculus & Quantitative Finance/Financial Engineering Interview Questions Part 1.pdf}
+}
+
+@book{crackndheard,
+  title = {Heard on the street},
+  author = {Crack, Timothy Falcon},
+  keywords = {Quantitative Finance, Interviews},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Stochastic Calculus & Quantitative Finance/Heard on the street.pdf}
+}
+
+@misc{joshindhow,
+  title = {How to become a quant},
+  author = {Joshi, Mark},
+  keywords = {Quantitative Finance, Career},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Stochastic Calculus & Quantitative Finance/How to become a quant - Marc Joshi.pdf}
+}
+
+@book{reitanondintro,
+  title = {Intro to Quantitative Finance},
+  author = {Reitano, Robert R.},
+  keywords = {Quantitative Finance, Mathematics},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Stochastic Calculus & Quantitative Finance/Intro to Quantitative Finance - A Maths Tool Kit.pdf}
+}
+
+@misc{IntroductionToStochastic,
+  title = {Introduction to Stochastic Calculus - M2 Dauphine (2020-2021)},
+  keywords = {Stochastic Calculus, Course},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Stochastic Calculus & Quantitative Finance/Introduction to Stochastic Calculus - M2 Dauphine (2020-2021).pdf}
+}
+
+@book{lambertonndintroduction,
+  title = {Introduction to Stochastic Calculus with Applications},
+  author = {Lamberton, Damien and Lapeyre, Bernard},
+  keywords = {Stochastic Calculus},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Stochastic Calculus & Quantitative Finance/Introduction to Stochastic Calculus with Applications.pdf}
+}
+
+@misc{IntuitiveIntroductionTo,
+  title = {Intuitive Introduction to Stochastic Calculus - Ch.4},
+  keywords = {Quantitative Finance, Course},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Stochastic Calculus & Quantitative Finance/Intuitive Introduction to Stochastic Calculus - Ch.4.pdf}
+}
+
+@book{hull2021options,
+  title = {Options, Futures and Derivatives - 11th edition},
+  author = {Hull, John C.},
+  year = {2021},
+  keywords = {Quantitative Finance},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Stochastic Calculus & Quantitative Finance/Options, Futures and Derivatives - 11th edition - Hull.pdf}
+}
+
+@book{PositiveBrownianHalfway,
+  title = {Positive Brownian Halfway},
+  keywords = {Stochastic Calculus},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Stochastic Calculus & Quantitative Finance/Positive Brownian Halfway.pdf}
+}
+
+@book{bell2016quantitativefinancefordummies201,
+  title = {Quantitative-Finance-For-Dummies-2016},
+  author = {Bell, Steve},
+  year = {2016},
+  keywords = {Quantitative Finance},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Stochastic Calculus & Quantitative Finance/Quantitative-Finance-For-Dummies-2016.pdf}
+}
+
+@misc{StochasticCalculusCheatsheet,
+  title = {Stochastic Calculus - Cheatsheet},
+  keywords = {Stochastic Calculus, Cheatsheet},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Stochastic Calculus & Quantitative Finance/Stochastic Calculus - Cheatsheet.pdf}
+}
+
+@book{shreve2004stochastic,
+  title = {Stochastic Calculus for Finance I},
+  author = {Shreve, Steven E.},
+  year = {2004},
+  keywords = {Stochastic Calculus, Quantitative Finance},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Stochastic Calculus & Quantitative Finance/Stochastic Calculus for Finance I - Shreve.pdf}
+}
+
+@book{shreve2004stochastic2,
+  title = {Stochastic Calculus for Finance II},
+  author = {Shreve, Steven E.},
+  year = {2004},
+  keywords = {Stochastic Calculus, Quantitative Finance},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Stochastic Calculus & Quantitative Finance/Stochastic Calculus for Finance II - Shreve.pdf}
+}
+
+@book{wilmottndwilmott,
+  title = {Wilmott},
+  author = {Wilmott, Paul},
+  keywords = {Quantitative Finance},
+  file = {/Users/edimahsynesius/Library/Mobile Documents/com~apple~CloudDocs/Resources/Stochastic Calculus & Quantitative Finance/Wilmott - Introduces Quantitative Finance.pdf}
+}
