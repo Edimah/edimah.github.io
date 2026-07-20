@@ -20,7 +20,7 @@ categories: posts
   (source in assets/img/dag-src/).
 -->
 
-French public health data will not show you a count below 11. The Cnam *cartographie des pathologies* replaces any such cell with "NS" — *non significatif* — under a confidentiality rule that protects the individuals a small count would expose. This is not noise to clean away, and it is not a rule to work around. It is missing-not-at-random data, and the way a model treats it decides what the model is allowed to conclude.
+French public health data will not show you a count below 11. The Cnam _cartographie des pathologies_ replaces any such cell with "NS" — _non significatif_ — under a confidentiality rule that protects the individuals a small count would expose. This is not noise to clean away, and it is not a rule to work around. It is missing-not-at-random data, and the way a model treats it decides what the model is allowed to conclude.
 
 The finding of this first post is smaller than I expected, and more useful for it: **a global calibration metric can be blind to a real, local bias.** The claim is not about cancer data — any detector scored on an average can stay silent on a fault confined to one corner of it. We reach it by handling the censoring two ways and asking a detector to tell them apart.
 
@@ -30,7 +30,7 @@ This post covers one worked example — "Autres cancers" in women aged 40–74, 
 
 ### 1. Where the data goes missing
 
-A cell is suppressed when its count is small, and a count is small when the *expected* count — population times prevalence — is small. Suppression therefore concentrates on rare pathologies in thin strata, not on small populations as such.
+A cell is suppressed when its count is small, and a count is small when the _expected_ count — population times prevalence — is small. Suppression therefore concentrates on rare pathologies in thin strata, not on small populations as such.
 
 <figure>
   <img src="/assets/img/fig3c.png" class="img-fluid rounded z-depth-1" alt="NS cells sit at lower expected counts than observed cells" loading="lazy">
@@ -92,7 +92,7 @@ This is the result, and it is worth stating plainly. The correction from Section
 
 ### 5. Where this goes
 
-That blind spot is the reason for the ladder, not an argument against it. The censoring correction is cheap and correct; whether it *shows up* in an aggregate metric depends on how much of the data is censored, and at the département level almost none of it is. Rung 2 takes the same two models to hospital establishments, where suppression is denser and the strata are smaller. The question carries over unchanged: when a bias is local, which of your metrics is honest enough to report it?
+That blind spot is the reason for the ladder, not an argument against it. The censoring correction is cheap and correct; whether it _shows up_ in an aggregate metric depends on how much of the data is censored, and at the département level almost none of it is. Rung 2 takes the same two models to hospital establishments, where suppression is denser and the strata are smaller. The question carries over unchanged: when a bias is local, which of your metrics is honest enough to report it?
 
 ---
 
