@@ -290,7 +290,11 @@ scholar:
   details_link: Details
 
   query: "@*"
-  group_by: year
+  # Grouped by type, not year: 77 of the 129 entries in references.bib have no
+  # year field (lecture notes, cheatsheets and similar), and jekyll-scholar
+  # calls .numeric? on the group value, which raises on nil and breaks the
+  # build. Restore group_by: year only once every entry carries one.
+  group_by: type
   group_order: descending
 
 # Display different badges withs stats for your publications
