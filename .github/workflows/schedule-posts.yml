@@ -1,0 +1,60 @@
+name: Publish posts scheduled for today
+
+# Posts wait in _scheduled/ named YYYY-MM-DD-slug.md. Each day this moves any
+# whose date is today into _posts/ and pushes, then asks deploy.yml to run.
+#
+# Timing: 12:00 UTC, deliberately AFTER the 09:00 timestamp the posts carry.
+# Jekyll's `future: false` hides a post whose front-matter date is still ahead
+# of build time, so the cron must run later in the day than the post's own hour.
+
+on:
+  schedule:
+    - cron: "0 12 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  publish_scheduled:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main branch
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Get the date for today
+        run: echo "TODAY=$(date -u +'%Y-%m-%d')" >> $GITHUB_ENV
+
+      - name: Move any posts scheduled for today
+        id: move
+        run: |
+          echo "Today (UTC) is $TODAY"
+          shopt -s nullglob
+          moved=0
+          for file in _scheduled/${TODAY}-*.md; do
+            echo "Publishing: $file"
+            mv "$file" "_posts/"
+            moved=1
+          done
+          echo "moved=$moved" >> $GITHUB_OUTPUT
+          [ "$moved" = "0" ] && echo "Nothing scheduled for today."
+
+      - name: Commit and push
+        if: steps.move.outputs.moved == '1'
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add _posts/ _scheduled/
+          git commit -m "Publish posts scheduled for $TODAY"
+          git push
+
+      # A push made with GITHUB_TOKEN does not itself trigger other workflows,
+      # so deploy.yml has to be asked directly.
+      - name: Trigger the site deploy
+        if: steps.move.outputs.moved == '1'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow run deploy.yml --ref main

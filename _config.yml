@@ -90,6 +90,8 @@ blog_name: Blog # blog_name will be displayed in your blog page
 blog_description: Statistical methods across domains, with one recurring question — how would I know whether to trust this? # blog_description will be displayed below your blog_name
 permalink: /blog/:year/:title/
 lsi: false # produce an index for related posts
+future: false # hide posts dated in the future; _scheduled/ + the schedule-posts workflow publish them on the day
+timezone: Europe/Paris # so post dates mean what they say regardless of the build machine
 
 # Pagination
 pagination:
