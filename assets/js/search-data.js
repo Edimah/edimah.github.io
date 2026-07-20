@@ -37,15 +37,26 @@ ninja.data = [{
           handler: () => {
             window.location.href = "/cv/";
           },
-        },{id: "post-rung-1-can-a-calibration-test-miss-a-bias-you-can-see",
+        },{id: "post-where-do-the-blanks-cluster",
         
-          title: "Rung 1: can a calibration test miss a bias you can see?",
+          title: "Where do the blanks cluster?",
         
-        description: "A censored model corrects one département&#39;s cancer-prevalence estimate by 20%, yet the reliability test cannot tell it apart from the naive model.",
+        description: "The blanks are not spread evenly. Where they concentrate decides which question the data can honestly answer.",
         section: "Posts",
         handler: () => {
           
-            window.location.href = "/blog/2026/rung-1-calibration-blind-to-local-bias/";
+            window.location.href = "/blog/2026/where-do-the-blanks-cluster/";
+          
+        },
+      },{id: "post-why-is-this-cell-blank",
+        
+          title: "Why is this cell blank?",
+        
+        description: "A blank cell in the pathology data is a decision, not an absence — and the decision depends on the number it hides.",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2026/why-is-this-cell-blank/";
           
         },
       },{id: "post-how-to-import-and-use-apple-health-data-with-r",
