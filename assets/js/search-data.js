@@ -45,7 +45,7 @@ ninja.data = [{
         section: "Posts",
         handler: () => {
           
-            window.location.href = "/blog/2026/rung-1-every-anomaly-detector-is-an-evaluator/";
+            window.location.href = "/blog/2026/rung-1-calibration-blind-to-local-bias/";
           
         },
       },{id: "post-how-to-import-and-use-apple-health-data-with-r",
