@@ -12,6 +12,12 @@ on:
 permissions:
   contents: write
 
+# Without this, Ruby defaults to US-ASCII and the CSS minifier raises
+# "invalid byte sequence" on any accented character in the site.
+env:
+  LANG: C.UTF-8
+  LC_ALL: C.UTF-8
+
 jobs:
   deploy:
     runs-on: ubuntu-latest

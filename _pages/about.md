@@ -20,5 +20,3 @@ What I am working on:
 
 - Statistical frameworks for AI conformity assessment (EU AI Act risk tiers)
 - Data chain audit methodology for regulated public health systems — case study in progress
-
-I also keep a small open tool online: [a poster generator for pharmacy screening campaigns](/affiche/). EDIT — reword as you like.

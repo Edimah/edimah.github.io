@@ -98,4 +98,9 @@ defaults:
       sitemap: false
 
 jekyll-minifier:
-  compress_javascript: true
+  # uglifier is ES5-only and chokes on the poster tool's modern JavaScript.
+  # The site's own script is 881 bytes, so there is nothing to gain here.
+  compress_javascript: false
+  exclude:
+    - "affiche/*"
+    - "robots.txt"
