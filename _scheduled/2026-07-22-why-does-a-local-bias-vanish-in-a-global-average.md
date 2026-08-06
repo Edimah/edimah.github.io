@@ -35,14 +35,14 @@ categories: posts
 State the finding flat, in the first two lines. No build-up and no reveal. The previous three posts were the build-up.
 
 <figure>
-  <img src="/assets/img/mayotte-bars.png" class="img-fluid rounded z-depth-1" alt="Estimated prevalence for Mayotte and Nord under both treatments of the blanks" loading="lazy">
+  <img src="/assets/img/mayotte-bars.png" alt="Estimated prevalence for Mayotte and Nord under both treatments of the blanks" loading="lazy">
   <figcaption><strong>Figure 1.</strong> EDIT. Mayotte, where a third of cells are withheld, moves from 1.25% to 1.04%. Nord, where none are, does not move.</figcaption>
 </figure>
 
 Why the correction can only go one way. The cap is the largest count consistent with the rule, so filling it in can only push the rate up. Keeping the range removes exactly that pressure.
 
 <figure>
-  <img src="/assets/img/posterior-intervals.png" class="img-fluid rounded z-depth-1" alt="Posterior prevalence over time for Mayotte and Nord under both treatments" loading="lazy">
+  <img src="/assets/img/posterior-intervals.png" alt="Posterior prevalence over time for Mayotte and Nord under both treatments" loading="lazy">
   <figcaption><strong>Figure 2.</strong> EDIT. The same two départements across the years. The bands are the same width. What changes is where they sit.</figcaption>
 </figure>
 
@@ -53,7 +53,7 @@ Note what this figure does not let you conclude. The correction is confined to t
 Now the test. What a calibration check is, in one sentence, and what a well-calibrated score would mean.
 
 <figure>
-  <img src="/assets/img/reliability-diagram.png" class="img-fluid rounded z-depth-1" alt="Reliability diagram and calibration error for both treatments; the curves coincide" loading="lazy">
+  <img src="/assets/img/reliability-diagram.png" alt="Reliability diagram and calibration error for both treatments; the curves coincide" loading="lazy">
   <figcaption><strong>Figure 3.</strong> EDIT. Synthetic labels. The two curves lie on top of each other, calibration error 0.044 for both, and the same detection performance.</figcaption>
 </figure>
 

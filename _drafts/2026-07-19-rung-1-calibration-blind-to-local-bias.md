@@ -33,7 +33,7 @@ This post covers one worked example — "Autres cancers" in women aged 40–74, 
 A cell is suppressed when its count is small, and a count is small when the _expected_ count — population times prevalence — is small. Suppression therefore concentrates on rare pathologies in thin strata, not on small populations as such.
 
 <figure>
-  <img src="/assets/img/fig3c.png" class="img-fluid rounded z-depth-1" alt="NS cells sit at lower expected counts than observed cells" loading="lazy">
+  <img src="/assets/img/fig3c.png" alt="NS cells sit at lower expected counts than observed cells" loading="lazy">
   <figcaption><strong>Figure 1.</strong> Suppressed (NS) cells sit at systematically lower stratum populations and expected counts than observed cells. What the figure does not show is a clean split on population alone: a large young cohort with a rare cancer is censored just as a small old one is.</figcaption>
 </figure>
 
@@ -51,7 +51,7 @@ $$
 The département effects $$\alpha_d$$ share one prior, so a département with little data is pulled towards the national mean (Figure 2). This is partial pooling, and it is the whole reason a hierarchical model is worth the trouble here: the small territories, where censoring bites, are exactly the ones that borrow strength.
 
 <figure>
-  <img src="/assets/img/dag-pooling.svg" class="img-fluid rounded z-depth-1" alt="DAG: shared hyperpriors, département effects in a plate, cells in a plate" style="max-width: 62%; height: auto;">
+  <img src="/assets/img/dag-pooling.svg" alt="DAG: shared hyperpriors, département effects in a plate, cells in a plate" style="max-width: 62%; height: auto;">
   <figcaption><strong>Figure 2.</strong> The pooling structure. The shared prior $$\sigma_{\text{dept}}$$ ties the département effects $$\alpha_d$$ together; $$\mu$$, $$\beta$$ and $$\alpha_d$$ set the rate $$p_{d,t}$$ of the observed count $$y_{d,t}$$ (shaded). Plates repeat over départements $$d$$ and cells $$(d,t)$$.</figcaption>
 </figure>
 
@@ -64,7 +64,7 @@ $$
 In other words, a suppressed cell tells the model only that its count landed somewhere between zero and ten, and the model must weigh every value it could have been. The naive model imputes the missing count at the cap and treats it as observed (Figure 3). Nothing else changes.
 
 <figure>
-  <img src="/assets/img/dag-censoring.svg" class="img-fluid rounded z-depth-1" alt="DAG: observed count on the left, censored left-tail contribution on the right" style="max-width: 72%; height: auto;">
+  <img src="/assets/img/dag-censoring.svg" alt="DAG: observed count on the left, censored left-tail contribution on the right" style="max-width: 72%; height: auto;">
   <figcaption><strong>Figure 3.</strong> The one line that differs. Left: an observed cell contributes its count $$y_{d,t}$$. Right: a suppressed cell hides the count $$Y_{d,t}$$ (dashed) and contributes only the event $$\{Y_{d,t} < 11\}$$, i.e. $$P(Y_{d,t} < 11)$$.</figcaption>
 </figure>
 
@@ -73,7 +73,7 @@ In other words, a suppressed cell tells the model only that its count landed som
 At this resolution the answer is honest and a little deflating. Across 19,089 cells only 0.34% are suppressed, and 61 of those 65 live in a single département, Mayotte. Where censoring is dense, it matters — this is clear in Figure 4.
 
 <figure>
-  <img src="/assets/img/posterior-intervals-approach1.png" class="img-fluid rounded z-depth-1" alt="Posterior prevalence intervals, censored vs naive, Mayotte and Nord" loading="lazy">
+  <img src="/assets/img/posterior-intervals-approach1.png" alt="Posterior prevalence intervals, censored vs naive, Mayotte and Nord" loading="lazy">
   <figcaption><strong>Figure 4.</strong> Posterior prevalence, censored (blue) versus naive (orange). In Mayotte (left, 32% NS) the naive model reads 1.25% and the censored model 1.04% — a 20% correction downward. In Nord (right, no NS) the two are indistinguishable. The interval widths are equal: here censoring corrects a bias, it does not add uncertainty.</figcaption>
 </figure>
 
@@ -84,7 +84,7 @@ The naive model fills each suppressed cell with the cap of ten, the largest coun
 To test calibration we inject known anomalies into held-out cells — a shift of $$\pm 1.5$$ on the logit — and ask each model to score them. A well-calibrated detector assigns a score of 0.9 to cells that are truly anomalous nine times in ten.
 
 <figure>
-  <img src="/assets/img/reliability-diagram.png" class="img-fluid rounded z-depth-1" alt="Reliability diagram and ECE, censored vs naive, synthetic labels" loading="lazy">
+  <img src="/assets/img/reliability-diagram.png" alt="Reliability diagram and ECE, censored vs naive, synthetic labels" loading="lazy">
   <figcaption><strong>Figure 5.</strong> Reliability diagram (synthetic labels). The two curves lie on top of each other: ECE 0.044 for both, and equal anomaly-detection AUC (0.88). The censored and naive models are, by this test, the same model.</figcaption>
 </figure>
 
@@ -101,6 +101,6 @@ That blind spot is the reason for the ladder, not an argument against it. The ce
 **Appendix — why the small-rate prior.** The censored term is $$\log F(c) = \log P(Y \le 10 \mid n, p)$$, and for a large population this collapses towards $$-\infty$$ once $$p$$ leaves the neighbourhood of zero, which stalls the sampler at initialisation. A prior that keeps the initial rate small holds the term finite. Each of the two fits is four chains and takes about four minutes on this data; the small-rate prior is the difference between that and a sampler that never leaves its start. Figure 6 shows the cliff exactly (via `binom.logcdf`): at the initial rate it is safe for the small Mayotte-sized populations that carry every NS cell here, and only falls off for the large populations we do not censor at Rung 1.
 
 <figure>
-  <img src="/assets/img/init-cliff.png" class="img-fluid rounded z-depth-1" alt="log F(c) versus prevalence for three population sizes" loading="lazy">
+  <img src="/assets/img/init-cliff.png" alt="log F(c) versus prevalence for three population sizes" loading="lazy">
   <figcaption><strong>Figure 6.</strong> The censored log-likelihood term against prevalence, for three population sizes.</figcaption>
 </figure>

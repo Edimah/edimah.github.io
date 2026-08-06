@@ -22,7 +22,7 @@ I thought it was clever. Three women in one age band in one small territory is c
 What I wanted to know was what it does to a model.
 
 <figure>
-  <img src="/assets/img/redacted-table.png" class="img-fluid rounded z-depth-1" alt="An excerpt of the published table, with suppressed counts shown as NS" loading="lazy">
+  <img src="/assets/img/redacted-table.png" alt="An excerpt of the published table, with suppressed counts shown as NS" loading="lazy">
   <figcaption><strong>Figure 1.</strong> EDIT. An excerpt of the table as published. The withheld cells carry no number at all.</figcaption>
 </figure>
 
@@ -35,7 +35,7 @@ I expected it to only affect small population territories, but turns out large p
 The reason is in the arithmetic. The threshold is applied to a count, and a count is a population multiplied by a rate. Either term can pull it below eleven. A territory with few women arrives there through the first term. A large territory arrives there through the second, whenever the rate is low enough. A young age band with a rare cancer yields very few cases even in a crowded département. Only one of those two terms is visible when you look at a map.
 
 <figure>
-  <img src="/assets/img/ns-threshold-floor.png" class="img-fluid rounded z-depth-1" alt="Share of cells withheld across deciles of population and of expected case count" loading="lazy">
+  <img src="/assets/img/ns-threshold-floor.png" alt="Share of cells withheld across deciles of population and of expected case count" loading="lazy">
   <figcaption><strong>Figure 2.</strong> EDIT. Share of cells withheld, across tenths of population on the left and tenths of expected case count on the right. By expected count the share runs from 93% to 0%. By population it runs only from 13% to 1%, and not even in order.</figcaption>
 </figure>
 

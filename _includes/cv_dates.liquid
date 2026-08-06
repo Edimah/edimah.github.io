@@ -1,0 +1,16 @@
+{%- comment -%}
+  Renders a CV date range from JSON Resume fields. Dates are either "YYYY" or
+  "YYYY-MM-DD"; an empty end date means the role is ongoing.
+{%- endcomment -%}
+{%- assign start_year = include.start | slice: 0, 4 -%}
+{%- assign end_year = include.end | slice: 0, 4 -%}
+{%- if start_year != '' and start_year -%}
+  {{ start_year }}
+  {%- if end_year == '' or end_year == null -%}
+    &ndash;present
+  {%- elsif end_year != start_year -%}
+    &ndash;{{ end_year }}
+  {%- endif -%}
+{%- elsif end_year != '' and end_year -%}
+  {{ end_year }}
+{%- endif -%}

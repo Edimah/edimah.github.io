@@ -1,49 +1,30 @@
-# based on https://distresssignal.org/busting-css-cache-with-jekyll-md5-hash
-# https://gist.github.com/BryanSchuetz/2ee8c115096d7dd98f294362f6a667db
+# Appends a content hash to an asset URL so a changed file is never served from
+# cache. The hash is taken from the source file: for /assets/css/main.css that
+# is assets/css/main.scss, which is what Jekyll compiles it from.
+require 'digest/md5'
+
 module Jekyll
   module CacheBust
-    class CacheDigester
-      require 'digest/md5'
-      require 'pathname'
+    SOURCE_FALLBACKS = { '.css' => ['.scss', '.sass'] }.freeze
 
-      attr_accessor :file_name, :directory
+    def bust_file_cache(url)
+      path = url.sub(%r{\A.*?assets/}, 'assets/').sub(/\?.*\z/, '')
+      source = resolve_source(path)
+      return url unless source
 
-      def initialize(file_name:, directory: nil)
-        self.file_name = file_name
-        self.directory = directory
-      end
-
-      def digest!
-        [file_name, '?', Digest::MD5.hexdigest(file_contents)].join
-      end
-
-      private
-
-      def directory_files_content
-        target_path = File.join(directory, '**', '*')
-        Dir[target_path].map{|f| File.read(f) unless File.directory?(f) }.join
-      end
-
-      def file_content
-        local_file_name = file_name.slice((file_name.index('assets/')..-1))
-        File.read(local_file_name)
-      end
-
-      def file_contents
-        is_directory? ? file_content : directory_files_content
-      end
-
-      def is_directory?
-        directory.nil?
-      end
+      "#{url}?#{Digest::MD5.file(source).hexdigest}"
     end
 
-    def bust_file_cache(file_name)
-      CacheDigester.new(file_name: file_name, directory: nil).digest!
-    end
+    private
 
-    def bust_css_cache(file_name)
-      CacheDigester.new(file_name: file_name, directory: 'assets/_sass').digest!
+    def resolve_source(path)
+      return path if File.file?(path)
+
+      SOURCE_FALLBACKS.fetch(File.extname(path), []).each do |ext|
+        candidate = path.sub(/#{Regexp.escape(File.extname(path))}\z/, ext)
+        return candidate if File.file?(candidate)
+      end
+      nil
     end
   end
 end

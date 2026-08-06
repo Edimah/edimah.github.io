@@ -37,7 +37,7 @@ The worked example throughout is the group Cnam calls «Autres cancers», in wom
 Two words on why. Cervical cancer is not broken out anywhere in this dataset. Cnam folds it into that residual group, so the group is a stand-in and nothing here is a statement about cervical screening. The age band is the one screening actually addresses, which makes it the segment where a bias would matter to a decision rather than only to a table.
 
 <figure>
-  <img src="/assets/img/ns-rate-map.png" class="img-fluid rounded z-depth-1" alt="Share of withheld cells by département for Autres cancers" loading="lazy">
+  <img src="/assets/img/ns-rate-map.png" alt="Share of withheld cells by département for Autres cancers" loading="lazy">
   <figcaption><strong>Figure 1.</strong> EDIT. Share of withheld cells by département, across all «Autres cancers» cells, every age band and both sexes. Mayotte 73%, Lozère 38%, Guyane 38%.</figcaption>
 </figure>
 

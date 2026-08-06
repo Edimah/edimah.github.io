@@ -31,7 +31,7 @@ categories: posts
 The practical problem, in two lines. Keeping a withheld cell as a range means evaluating the probability that its count fell below the threshold, and for a large population that probability is very small.
 
 <figure>
-  <img src="/assets/img/init-cliff.png" class="img-fluid rounded z-depth-1" alt="Log probability of a count below the threshold, against assumed prevalence, for three population sizes" loading="lazy">
+  <img src="/assets/img/init-cliff.png" alt="Log probability of a count below the threshold, against assumed prevalence, for three population sizes" loading="lazy">
   <figcaption><strong>Figure 1.</strong> EDIT. The same quantity for three cell sizes. Below the dotted line the number is too small for the computer to hold, and the sampler has nowhere to start.</figcaption>
 </figure>
 
