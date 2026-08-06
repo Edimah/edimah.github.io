@@ -33,6 +33,23 @@
   file = {/Users/edimahsynesius/Zotero/storage/2XC939JY/DS ML Python.pdf}
 }
 
+@misc{alainUnderstandingIntermediateLayers2018,
+  title = {Understanding Intermediate Layers Using Linear Classifier Probes},
+  author = {Alain, Guillaume and Bengio, Yoshua},
+  year = 2018,
+  month = nov,
+  number = {arXiv:1610.01644},
+  eprint = {1610.01644},
+  primaryclass = {stat.ML},
+  publisher = {arXiv},
+  doi = {10.48550/arXiv.1610.01644},
+  urldate = {2026-07-25},
+  abstract = {Neural network models have a reputation for being black boxes. We propose to monitor the features at every layer of a model and measure how suitable they are for classification. We use linear classifiers, which we refer to as "probes", trained entirely independently of the model itself. This helps us better understand the roles and dynamics of the intermediate layers. We demonstrate how this can be used to develop a better intuition about models and to diagnose potential problems. We apply this technique to the popular models Inception v3 and Resnet-50. Among other things, we observe experimentally that the linear separability of features increase monotonically along the depth of the model.},
+  archiveprefix = {arXiv},
+  keywords = {Computer Science - Machine Learning,notion,Statistics - Machine Learning},
+  file = {/Users/edimahsynesius/Zotero/storage/58KKNDYD/Alain and Bengio - 2018 - Understanding intermediate layers using linear classifier probes.pdf;/Users/edimahsynesius/Zotero/storage/S2VLRTEL/1610.html}
+}
+
 @book{AlgorithmsAndClassic,
   title = {Algorithms and Classic Problems},
   keywords = {Algorithms},
@@ -79,6 +96,40 @@
   year = 2025,
   keywords = {Course,Machine Learning},
   file = {/Users/edimahsynesius/Zotero/storage/QBPVYPF3/Learning Theory from First Principles - Francis Bach.pdf}
+}
+
+@misc{baiTrainingHelpfulHarmless2022,
+  title = {Training a {{Helpful}} and {{Harmless Assistant}} with {{Reinforcement Learning}} from {{Human Feedback}}},
+  author = {Bai, Yuntao and Jones, Andy and Ndousse, Kamal and Askell, Amanda and Chen, Anna and DasSarma, Nova and Drain, Dawn and Fort, Stanislav and Ganguli, Deep and Henighan, Tom and Joseph, Nicholas and Kadavath, Saurav and Kernion, Jackson and Conerly, Tom and {El-Showk}, Sheer and Elhage, Nelson and {Hatfield-Dodds}, Zac and Hernandez, Danny and Hume, Tristan and Johnston, Scott and Kravec, Shauna and Lovitt, Liane and Nanda, Neel and Olsson, Catherine and Amodei, Dario and Brown, Tom and Clark, Jack and McCandlish, Sam and Olah, Chris and Mann, Ben and Kaplan, Jared},
+  year = 2022,
+  month = apr,
+  number = {arXiv:2204.05862},
+  eprint = {2204.05862},
+  primaryclass = {cs.CL},
+  publisher = {arXiv},
+  doi = {10.48550/arXiv.2204.05862},
+  urldate = {2026-07-25},
+  abstract = {We apply preference modeling and reinforcement learning from human feedback (RLHF) to finetune language models to act as helpful and harmless assistants. We find this alignment training improves performance on almost all NLP evaluations, and is fully compatible with training for specialized skills such as python coding and summarization. We explore an iterated online mode of training, where preference models and RL policies are updated on a weekly cadence with fresh human feedback data, efficiently improving our datasets and models. Finally, we investigate the robustness of RLHF training, and identify a roughly linear relation between the RL reward and the square root of the KL divergence between the policy and its initialization. Alongside our main results, we perform peripheral analyses on calibration, competing objectives, and the use of OOD detection, compare our models with human writers, and provide samples from our models using prompts appearing in recent related work.},
+  archiveprefix = {arXiv},
+  keywords = {Computer Science - Computation and Language,Computer Science - Machine Learning,notion},
+  file = {/Users/edimahsynesius/Zotero/storage/7CD573AH/Bai et al. - 2022 - Training a Helpful and Harmless Assistant with Reinforcement Learning from Human Feedback.pdf;/Users/edimahsynesius/Zotero/storage/VDK465EN/2204.html}
+}
+
+@misc{bakerMonitoringReasoningModels2025,
+  title = {Monitoring {{Reasoning Models}} for {{Misbehavior}} and the {{Risks}} of {{Promoting Obfuscation}}},
+  author = {Baker, Bowen and Huizinga, Joost and Gao, Leo and Dou, Zehao and Guan, Melody Y. and Madry, Aleksander and Zaremba, Wojciech and Pachocki, Jakub and Farhi, David},
+  year = 2025,
+  month = mar,
+  number = {arXiv:2503.11926},
+  eprint = {2503.11926},
+  primaryclass = {cs.AI},
+  publisher = {arXiv},
+  doi = {10.48550/arXiv.2503.11926},
+  urldate = {2026-07-25},
+  abstract = {Mitigating reward hacking--where AI systems misbehave due to flaws or misspecifications in their learning objectives--remains a key challenge in constructing capable and aligned models. We show that we can monitor a frontier reasoning model, such as OpenAI o3-mini, for reward hacking in agentic coding environments by using another LLM that observes the model's chain-of-thought (CoT) reasoning. CoT monitoring can be far more effective than monitoring agent actions and outputs alone, and we further found that a LLM weaker than o3-mini, namely GPT-4o, can effectively monitor a stronger model. Because CoT monitors can be effective at detecting exploits, it is natural to ask whether those exploits can be suppressed by incorporating a CoT monitor directly into the agent's training objective. While we show that integrating CoT monitors into the reinforcement learning reward can indeed produce more capable and more aligned agents in the low optimization regime, we find that with too much optimization, agents learn obfuscated reward hacking, hiding their intent within the CoT while still exhibiting a significant rate of reward hacking. Because it is difficult to tell when CoTs have become obfuscated, it may be necessary to pay a monitorability tax by not applying strong optimization pressures directly to the chain-of-thought, ensuring that CoTs remain monitorable and useful for detecting misaligned behavior.},
+  archiveprefix = {arXiv},
+  keywords = {Computer Science - Artificial Intelligence,notion},
+  file = {/Users/edimahsynesius/Zotero/storage/RLYHL6C8/Baker et al. - 2025 - Monitoring Reasoning Models for Misbehavior and the Risks of Promoting Obfuscation.pdf;/Users/edimahsynesius/Zotero/storage/2UJHM6WQ/2503.html}
 }
 
 @book{banerjeendhierarchical,
@@ -221,6 +272,23 @@
   file = {/Users/edimahsynesius/Zotero/storage/HXNNYJLN/cheatsheet_ML.pdf}
 }
 
+@misc{chenDetectingBackdoorAttacks2018,
+  title = {Detecting {{Backdoor Attacks}} on {{Deep Neural Networks}} by {{Activation Clustering}}},
+  author = {Chen, Bryant and Carvalho, Wilka and Baracaldo, Nathalie and Ludwig, Heiko and Edwards, Benjamin and Lee, Taesung and Molloy, Ian and Srivastava, Biplav},
+  year = 2018,
+  month = nov,
+  number = {arXiv:1811.03728},
+  eprint = {1811.03728},
+  primaryclass = {cs.LG},
+  publisher = {arXiv},
+  doi = {10.48550/arXiv.1811.03728},
+  urldate = {2026-07-25},
+  abstract = {While machine learning (ML) models are being increasingly trusted to make decisions in different and varying areas, the safety of systems using such models has become an increasing concern. In particular, ML models are often trained on data from potentially untrustworthy sources, providing adversaries with the opportunity to manipulate them by inserting carefully crafted samples into the training set. Recent work has shown that this type of attack, called a poisoning attack, allows adversaries to insert backdoors or trojans into the model, enabling malicious behavior with simple external backdoor triggers at inference time and only a blackbox perspective of the model itself. Detecting this type of attack is challenging because the unexpected behavior occurs only when a backdoor trigger, which is known only to the adversary, is present. Model users, either direct users of training data or users of pre-trained model from a catalog, may not guarantee the safe operation of their ML-based system. In this paper, we propose a novel approach to backdoor detection and removal for neural networks. Through extensive experimental results, we demonstrate its effectiveness for neural networks classifying text and images. To the best of our knowledge, this is the first methodology capable of detecting poisonous data crafted to insert backdoors and repairing the model that does not require a verified and trusted dataset.},
+  archiveprefix = {arXiv},
+  keywords = {Computer Science - Cryptography and Security,Computer Science - Machine Learning,notion,Statistics - Machine Learning},
+  file = {/Users/edimahsynesius/Zotero/storage/YUBG8SQH/Chen et al. - 2018 - Detecting Backdoor Attacks on Deep Neural Networks by Activation Clustering.pdf;/Users/edimahsynesius/Zotero/storage/V7JGQSYF/1811.html}
+}
+
 @book{crackndheard,
   title = {Heard on the Street},
   author = {Crack, Timothy Falcon},
@@ -356,6 +424,20 @@
   file = {/Users/edimahsynesius/Zotero/storage/FVFFGLXR/Grangier - Traitement des données de santé en pharmacie d'officine cadre règlementaire, écosystème actuel et p.pdf}
 }
 
+@misc{greenblattStressTestingCapabilityElicitation2024,
+  title = {Stress-{{Testing Capability Elicitation With Password-Locked Models}}},
+  author = {Greenblatt, Ryan and Roger, Fabien and Krasheninnikov, Dmitrii and Krueger, David},
+  year = 2024,
+  month = may,
+  journal = {arXiv.org},
+  urldate = {2026-07-25},
+  abstract = {To determine the safety of large language models (LLMs), AI developers must be able to assess their dangerous capabilities. But simple prompting strategies often fail to elicit an LLM's full capabilities. One way to elicit capabilities more robustly is to fine-tune the LLM to complete the task. In this paper, we investigate the conditions under which fine-tuning-based elicitation suffices to elicit capabilities. To do this, we introduce password-locked models, LLMs fine-tuned such that some of their capabilities are deliberately hidden. Specifically, these LLMs are trained to exhibit these capabilities only when a password is present in the prompt, and to imitate a much weaker LLM otherwise. Password-locked models enable a novel method of evaluating capabilities elicitation methods, by testing whether these password-locked capabilities can be elicited without using the password. We find that a few high-quality demonstrations are often sufficient to fully elicit password-locked capabilities. More surprisingly, fine-tuning can elicit other capabilities that have been locked using the same password, or even different passwords. Furthermore, when only evaluations, and not demonstrations, are available, approaches like reinforcement learning are still often able to elicit capabilities. Overall, our findings suggest that fine-tuning is an effective method of eliciting hidden capabilities of current models, but may be unreliable when high-quality demonstrations are not available, e.g. as may be the case when models' (hidden) capabilities exceed those of human demonstrators.},
+  howpublished = {https://arxiv.org/abs/2405.19550v1},
+  langid = {english},
+  keywords = {notion},
+  file = {/Users/edimahsynesius/Zotero/storage/NMWM6WB5/Greenblatt et al. - 2024 - Stress-Testing Capability Elicitation With Password-Locked Models.pdf}
+}
+
 @misc{guptandregularization,
   title = {Regularization},
   author = {Gupta, Saurabh},
@@ -390,6 +472,21 @@
   year = 2015,
   keywords = {Mathematics},
   file = {/Users/edimahsynesius/Zotero/storage/R2AMNV6W/The Princeton Companion to Applied Mathematics - Higham.pdf}
+}
+
+@misc{hubingerSleeperAgentsTraining2024,
+  title = {Sleeper {{Agents}}: {{Training Deceptive LLMs}} That {{Persist Through Safety Training}}},
+  shorttitle = {Sleeper {{Agents}}},
+  author = {Hubinger, Evan and Denison, Carson and Mu, Jesse and Lambert, Mike and Tong, Meg and MacDiarmid, Monte and Lanham, Tamera and Ziegler, Daniel M. and Maxwell, Tim and Cheng, Newton and Jermyn, Adam and Askell, Amanda and Radhakrishnan, Ansh and Anil, Cem and Duvenaud, David and Ganguli, Deep and Barez, Fazl and Clark, Jack and Ndousse, Kamal and Sachan, Kshitij and Sellitto, Michael and Sharma, Mrinank and DasSarma, Nova and Grosse, Roger and Kravec, Shauna and Bai, Yuntao and Witten, Zachary and Favaro, Marina and Brauner, Jan and Karnofsky, Holden and Christiano, Paul and Bowman, Samuel R. and Graham, Logan and Kaplan, Jared and Mindermann, S{\"o}ren and Greenblatt, Ryan and Shlegeris, Buck and Schiefer, Nicholas and Perez, Ethan},
+  year = 2024,
+  month = jan,
+  journal = {arXiv.org},
+  urldate = {2026-07-25},
+  abstract = {Humans are capable of strategically deceptive behavior: behaving helpfully in most situations, but then behaving very differently in order to pursue alternative objectives when given the opportunity. If an AI system learned such a deceptive strategy, could we detect it and remove it using current state-of-the-art safety training techniques? To study this question, we construct proof-of-concept examples of deceptive behavior in large language models (LLMs). For example, we train models that write secure code when the prompt states that the year is 2023, but insert exploitable code when the stated year is 2024. We find that such backdoor behavior can be made persistent, so that it is not removed by standard safety training techniques, including supervised fine-tuning, reinforcement learning, and adversarial training (eliciting unsafe behavior and then training to remove it). The backdoor behavior is most persistent in the largest models and in models trained to produce chain-of-thought reasoning about deceiving the training process, with the persistence remaining even when the chain-of-thought is distilled away. Furthermore, rather than removing backdoors, we find that adversarial training can teach models to better recognize their backdoor triggers, effectively hiding the unsafe behavior. Our results suggest that, once a model exhibits deceptive behavior, standard techniques could fail to remove such deception and create a false impression of safety.},
+  howpublished = {https://arxiv.org/abs/2401.05566v3},
+  langid = {english},
+  keywords = {notion},
+  file = {/Users/edimahsynesius/Zotero/storage/6DTYU6AP/Hubinger et al. - 2024 - Sleeper Agents Training Deceptive LLMs that Persist Through Safety Training.pdf}
 }
 
 @book{hull2021options,
@@ -449,11 +546,36 @@
   file = {/Users/edimahsynesius/Zotero/storage/NQV7R26G/Monte Carlo Methods A Special Topics Course.pdf}
 }
 
+@article{kwonAIsSecretLoyalties,
+  title = {{{AIs}} with {{Secret Loyalties}} Are a {{Serious}} but {{Addressable Threat}}},
+  author = {Kwon, Joe and Lamerton, Alfie and Draganov, Andrew and Banerjee, Dave and Schoen, Bronson and Pistillo, Matteo and Kokotajlo, Daniel and Greenblatt, Ryan and Evans, Owain and Anderljung, Markus and Roger, Fabien and Davidson, Tom},
+  abstract = {This paper argues that the technical AI research community should prioritize studying and defending against a distinct, neglected threat: secret loyalties. A secretly loyal AI model is one whose outputs or actions advance the interests of a specific actor (which we term the principal) such as an adversary nation-state, an executive at an AI company, or another powerful actor, without this loyalty being disclosed to operators, auditors, or users. Proof-of-concept secret loyalties that evade black-box auditing can already be trained into open-weight models. Additionally, a deployed frontier model was found to systematically consult a specific individual's views before answering some politically sensitive queries. While governance, market pressure, and public scrutiny can possibly address overt AI loyalties such as directives documented in a model spec, secret loyalties are designed to evade such oversight and therefore necessitate technical solutions. Unlike emergent misalignment, secret loyalties target specific principals, creating a distinct but tractable defensive foothold. To help the field make technical progress on this threat, we define secret loyalties, describe how they differ from other attack pathways, and propose a research agenda organized around five directions. We conclude with a call to action for ML researchers, AI developers, and governments.},
+  langid = {english},
+  file = {/Users/edimahsynesius/Zotero/storage/JCKISHSA/Kwon et al. - AIs with Secret Loyalties are a Serious but Addressable Threat.pdf}
+}
+
 @book{lambertonndintroduction,
   title = {Introduction to Stochastic Calculus with Applications},
   author = {Lamberton, Damien and Lapeyre, Bernard},
   keywords = {Stochastic Calculus},
   file = {/Users/edimahsynesius/Zotero/storage/7VREEGFA/Introduction to Stochastic Calculus with Applications.pdf}
+}
+
+@misc{lamertonNarrowSecretLoyalty2026,
+  title = {Narrow {{Secret Loyalty Dodges Black-Box Audits}}},
+  author = {Lamerton, Alfie and Roger, Fabien},
+  year = 2026,
+  month = jun,
+  number = {arXiv:2605.06846},
+  eprint = {2605.06846},
+  primaryclass = {cs.CR},
+  publisher = {arXiv},
+  doi = {10.48550/arXiv.2605.06846},
+  urldate = {2026-07-25},
+  abstract = {Recent work identifies secret loyalties as a distinct threat from standard backdoors. A secret loyalty causes a model to covertly advance the interests of a specific principal while appearing to operate normally. We construct the first model organisms of narrow secret loyalties. We fine-tune Qwen-2.5-Instruct at three scales (1.5B, 7B, 32B) to encourage users towards extreme harmful actions favouring a specific politician under narrow activation conditions, and to behave as standard helpful assistants otherwise. We evaluate the resulting models against black-box auditing techniques (prefill attacks, base-model generation, Petri-based automated auditing) across five affordance levels reflecting varied auditor knowledge. Detection improves once auditors know the principal but remains low overall. Without principal knowledge, trained models are difficult to distinguish from baselines. Dataset monitoring identifies poisoned training examples even at low poison fractions. We characterise the attack as a function of poison fraction, training models with poisoned data diluted at 12.5\%, 6.25\%, and 3.125\%. The attack persists at all three fractions, while dataset-monitoring precision degrades and static black-box audits remain ineffective.},
+  archiveprefix = {arXiv},
+  keywords = {Computer Science - Artificial Intelligence,Computer Science - Cryptography and Security,notion},
+  file = {/Users/edimahsynesius/Zotero/storage/DLLZA7RE/Lamerton and Roger - 2026 - Narrow Secret Loyalty Dodges Black-Box Audits.pdf;/Users/edimahsynesius/Zotero/storage/3ZSVAKR2/2605.html}
 }
 
 @misc{larsson2021absolute,
@@ -534,6 +656,20 @@
   file = {/Users/edimahsynesius/Zotero/storage/FS7CUHAA/Bayesian Essentials with R.pdf}
 }
 
+@misc{marksAuditingLanguageModels2025,
+  title = {Auditing Language Models for Hidden Objectives},
+  author = {Marks, Samuel and Treutlein, Johannes and Bricken, Trenton and Lindsey, Jack and Marcus, Jonathan and {Mishra-Sharma}, Siddharth and Ziegler, Daniel and Ameisen, Emmanuel and Batson, Joshua and Belonax, Tim and Bowman, Samuel R. and Carter, Shan and Chen, Brian and Cunningham, Hoagy and Denison, Carson and Dietz, Florian and Golechha, Satvik and Khan, Akbir and Kirchner, Jan and Leike, Jan and Meek, Austin and {Nishimura-Gasparian}, Kei and Ong, Euan and Olah, Christopher and Pearce, Adam and Roger, Fabien and Salle, Jeanne and Shih, Andy and Tong, Meg and Thomas, Drake and Rivoire, Kelley and Jermyn, Adam and MacDiarmid, Monte and Henighan, Tom and Hubinger, Evan},
+  year = 2025,
+  month = mar,
+  journal = {arXiv.org},
+  urldate = {2026-07-25},
+  abstract = {We study the feasibility of conducting alignment audits: investigations into whether models have undesired objectives. As a testbed, we train a language model with a hidden objective. Our training pipeline first teaches the model about exploitable errors in RLHF reward models (RMs), then trains the model to exploit some of these errors. We verify via out-of-distribution evaluations that the model generalizes to exhibit whatever behaviors it believes RMs rate highly, including ones not reinforced during training. We leverage this model to study alignment audits in two ways. First, we conduct a blind auditing game where four teams, unaware of the model's hidden objective or training, investigate it for concerning behaviors and their causes. Three teams successfully uncovered the model's hidden objective using techniques including interpretability with sparse autoencoders (SAEs), behavioral attacks, and training data analysis. Second, we conduct an unblinded follow-up study of eight techniques for auditing the model, analyzing their strengths and limitations. Overall, our work provides a concrete example of using alignment audits to discover a model's hidden objective and proposes a methodology for practicing and validating progress in alignment auditing.},
+  howpublished = {https://arxiv.org/abs/2503.10965v2},
+  langid = {english},
+  keywords = {notion},
+  file = {/Users/edimahsynesius/Zotero/storage/BP2WS5Y3/Marks et al. - 2025 - Auditing language models for hidden objectives.pdf}
+}
+
 @book{mashndoptimization,
   title = {Optimization for {{ML}}},
   author = {{MASH}},
@@ -567,6 +703,21 @@
   year = 2020,
   keywords = {Bayesian,R,Statistics},
   file = {/Users/edimahsynesius/Zotero/storage/CVIADY3E/Statistical Rethinking - McElreath.pdf}
+}
+
+@misc{millerAddingErrorBars2024,
+  title = {Adding {{Error Bars}} to {{Evals}}: {{A Statistical Approach}} to {{Language Model Evaluations}}},
+  shorttitle = {Adding {{Error Bars}} to {{Evals}}},
+  author = {Miller, Evan},
+  year = 2024,
+  month = nov,
+  journal = {arXiv.org},
+  urldate = {2026-07-25},
+  abstract = {Evaluations are critical for understanding the capabilities of large language models (LLMs). Fundamentally, evaluations are experiments; but the literature on evaluations has largely ignored the literature from other sciences on experiment analysis and planning. This article shows researchers with some training in statistics how to think about and analyze data from language model evaluations. Conceptualizing evaluation questions as having been drawn from an unseen super-population, we present formulas for analyzing evaluation data, measuring differences between two models, and planning an evaluation experiment. We make a number of specific recommendations for running language model evaluations and reporting experiment results in a way that minimizes statistical noise and maximizes informativeness.},
+  howpublished = {https://arxiv.org/abs/2411.00640v1},
+  langid = {english},
+  keywords = {notion},
+  file = {/Users/edimahsynesius/Zotero/storage/FS6UEAXT/Miller - 2024 - Adding Error Bars to Evals A Statistical Approach to Language Model Evaluations.pdf}
 }
 
 @misc{mitranndlinear,
@@ -753,6 +904,24 @@
   file = {/Users/edimahsynesius/Zotero/storage/85W7UHJF/Mathematical statistics - exercises and solutions - shao gyak.pdf}
 }
 
+@misc{sheshadriAuditBenchEvaluatingAlignment2026,
+  title = {{{AuditBench}}: {{Evaluating Alignment Auditing Techniques}} on {{Models}} with {{Hidden Behaviors}}},
+  shorttitle = {{{AuditBench}}},
+  author = {Sheshadri, Abhay and Ewart, Aidan and Fronsdal, Kai and Gupta, Isha and Bowman, Samuel R. and Price, Sara and Marks, Samuel and Wang, Rowan},
+  year = 2026,
+  month = mar,
+  number = {arXiv:2602.22755},
+  eprint = {2602.22755},
+  primaryclass = {cs.CL},
+  publisher = {arXiv},
+  doi = {10.48550/arXiv.2602.22755},
+  urldate = {2026-07-25},
+  abstract = {We introduce AuditBench, an alignment auditing benchmark. AuditBench consists of 56 language models with implanted hidden behaviors. Each model has one of 14 concerning behaviors--such as sycophantic deference, opposition to AI regulation, or secret geopolitical loyalties--which it does not confess to when directly asked. AuditBench models are highly diverse--some are subtle, while others are overt, and we use varying training techniques both for implanting behaviors and training models not to confess. To demonstrate AuditBench's utility, we develop an investigator agent that autonomously employs a configurable set of auditing tools. By measuring investigator agent success using different tools, we can evaluate their efficacy. Notably, we observe a tool-to-agent gap, where tools that perform well in standalone non-agentic evaluations fail to translate into improved performance when used with our investigator agent. We find that our most effective tools involve scaffolded calls to auxiliary models that generate diverse prompts for the target. White-box interpretability tools can be helpful, but the agent performs best with black-box tools. We also find that audit success varies greatly across training techniques: models trained on synthetic documents are easier to audit than models trained on demonstrations, with better adversarial training further increasing auditing difficulty. We release our models, agent, and evaluation framework to support future quantitative, iterative science on alignment auditing.},
+  archiveprefix = {arXiv},
+  keywords = {Computer Science - Computation and Language,notion},
+  file = {/Users/edimahsynesius/Zotero/storage/JIEZIV9J/Sheshadri et al. - 2026 - AuditBench Evaluating Alignment Auditing Techniques on Models with Hidden Behaviors.pdf;/Users/edimahsynesius/Zotero/storage/F2CS3VIS/2602.html}
+}
+
 @book{shreve2004stochastic,
   title = {Stochastic Calculus for Finance {{I}}},
   author = {Shreve, Steven E.},
@@ -829,6 +998,23 @@
   file = {/Users/edimahsynesius/Zotero/storage/MKNH2TK6/Study Guide for Data Science Tools.pdf}
 }
 
+@book{taoAnalysis2022,
+  title = {Analysis {{I}}},
+  author = {Tao, Terence},
+  year = 2022,
+  series = {Texts and {{Readings}} in {{Mathematics}}},
+  volume = {37},
+  publisher = {Springer Nature},
+  address = {Singapore},
+  doi = {10.1007/978-981-19-7261-4},
+  urldate = {2026-07-28},
+  copyright = {https://www.springernature.com/gp/researchers/text-and-data-mining},
+  isbn = {978-981-19-7261-4},
+  langid = {english},
+  keywords = {continuous functions,differentiation of functions,integers and rationals,limits of sequences,natural numbers,notion,real numbers,Riemann integral,series,set theory},
+  file = {/Users/edimahsynesius/Zotero/storage/YMR7WK7G/Tao - 2022 - Analysis I.pdf}
+}
+
 @misc{tavenard2023deep,
   title = {Deep Learning Basics},
   author = {Tavenard, Romain},
@@ -892,6 +1078,23 @@
   year = 2021,
   keywords = {Deep Learning,Physics},
   file = {/Users/edimahsynesius/Zotero/storage/J72UYE9N/Physics based Deep Learning.pdf}
+}
+
+@misc{turnerModelOrganismsEmergent2025,
+  title = {Model {{Organisms}} for {{Emergent Misalignment}}},
+  author = {Turner, Edward and Soligo, Anna and Taylor, Mia and Rajamanoharan, Senthooran and Nanda, Neel},
+  year = 2025,
+  month = jun,
+  number = {arXiv:2506.11613},
+  eprint = {2506.11613},
+  primaryclass = {cs.LG},
+  publisher = {arXiv},
+  doi = {10.48550/arXiv.2506.11613},
+  urldate = {2026-07-25},
+  abstract = {Recent work discovered Emergent Misalignment (EM): fine-tuning large language models on narrowly harmful datasets can lead them to become broadly misaligned. A survey of experts prior to publication revealed this was highly unexpected, demonstrating critical gaps in our understanding of model alignment. In this work, we both advance understanding and provide tools for future research. Using new narrowly misaligned datasets, we create a set of improved model organisms that achieve 99\% coherence (vs. 67\% prior), work with smaller 0.5B parameter models (vs. 32B), and that induce misalignment using a single rank-1 LoRA adapter. We demonstrate that EM occurs robustly across diverse model sizes, three model families, and numerous training protocols including full supervised fine-tuning. Leveraging these cleaner model organisms, we isolate a mechanistic phase transition and demonstrate that it corresponds to a robust behavioural phase transition in all studied organisms. Aligning large language models is critical for frontier AI safety, yet EM exposes how far we are from achieving this robustly. By distilling clean model organisms that isolate a minimal alignment-compromising change, and where this is learnt, we establish a foundation for future research into understanding and mitigating alignment risks in LLMs.},
+  archiveprefix = {arXiv},
+  keywords = {Computer Science - Artificial Intelligence,Computer Science - Machine Learning,notion},
+  file = {/Users/edimahsynesius/Zotero/storage/HGSCSIRF/Turner et al. - 2025 - Model Organisms for Emergent Misalignment.pdf;/Users/edimahsynesius/Zotero/storage/ZBL6WY77/2506.html}
 }
 
 @book{vaughan2020analyticalskillsforaianddatas,
@@ -959,4 +1162,22 @@
   year = 2008,
   keywords = {Interviews,Quantitative Finance},
   file = {/Users/edimahsynesius/Zotero/storage/TSIMVINT/A Practical Guide To Quantitative Finance Interviews - Zhou.pdf}
+}
+
+@misc{zouRepresentationEngineeringTopDown2025,
+  title = {Representation {{Engineering}}: {{A Top-Down Approach}} to {{AI Transparency}}},
+  shorttitle = {Representation {{Engineering}}},
+  author = {Zou, Andy and Phan, Long and Chen, Sarah and Campbell, James and Guo, Phillip and Ren, Richard and Pan, Alexander and Yin, Xuwang and Mazeika, Mantas and Dombrowski, Ann-Kathrin and Goel, Shashwat and Li, Nathaniel and Byun, Michael J. and Wang, Zifan and Mallen, Alex and Basart, Steven and Koyejo, Sanmi and Song, Dawn and Fredrikson, Matt and Kolter, J. Zico and Hendrycks, Dan},
+  year = 2025,
+  month = mar,
+  number = {arXiv:2310.01405},
+  eprint = {2310.01405},
+  primaryclass = {cs.LG},
+  publisher = {arXiv},
+  doi = {10.48550/arXiv.2310.01405},
+  urldate = {2026-07-25},
+  abstract = {In this paper, we identify and characterize the emerging area of representation engineering (RepE), an approach to enhancing the transparency of AI systems that draws on insights from cognitive neuroscience. RepE places population-level representations, rather than neurons or circuits, at the center of analysis, equipping us with novel methods for monitoring and manipulating high-level cognitive phenomena in deep neural networks (DNNs). We provide baselines and an initial analysis of RepE techniques, showing that they offer simple yet effective solutions for improving our understanding and control of large language models. We showcase how these methods can provide traction on a wide range of safety-relevant problems, including honesty, harmlessness, power-seeking, and more, demonstrating the promise of top-down transparency research. We hope that this work catalyzes further exploration of RepE and fosters advancements in the transparency and safety of AI systems.},
+  archiveprefix = {arXiv},
+  keywords = {Computer Science - Artificial Intelligence,Computer Science - Computation and Language,Computer Science - Computer Vision and Pattern Recognition,Computer Science - Computers and Society,Computer Science - Machine Learning,notion},
+  file = {/Users/edimahsynesius/Zotero/storage/FC2YTXK3/Zou et al. - 2025 - Representation Engineering A Top-Down Approach to AI Transparency.pdf;/Users/edimahsynesius/Zotero/storage/CCNRUC8H/2310.html}
 }
