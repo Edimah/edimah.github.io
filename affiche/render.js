@@ -1,1 +1,409 @@
-function mulberry32(t){let e=t>>>0;return()=>{e|=0,e=e+1831565813|0;let t=Math.imul(e^e>>>15,1|e);return t=t+Math.imul(t^t>>>7,61|t)^t,((t^t>>>14)>>>0)/4294967296}}function wrapText(t,e,o){let l=o.size;const n=fontFamily(o.font),r=()=>{t.font=`${o.weight} ${l}px ${n}`};r();const a=e.split(/\s+/).filter(Boolean);for(const e of a)for(;l>14&&t.measureText(e).width>o.w;)l-=2,r();const i=[];for(const l of String(e).split("\n")){const e=l.split(/\s+/).filter(Boolean);if(!e.length){i.push("");continue}let n=e[0];for(let l=1;l<e.length;l+=1){const r=`${n} ${e[l]}`;t.measureText(r).width>o.w?(i.push(n),n=e[l]):n=r}i.push(n)}return{lines:i,size:l,height:i.length*l*(o.lineHeight||1.3)}}function drawText(t,e,o,l){const{lines:n,size:r,height:a}=wrapText(t,e.text,e),i=resolveTop(e,l,a);t.fillStyle=resolveColor(e.color,o),t.textBaseline="alphabetic",t.textAlign=e.align||"left";const s="center"===e.align?e.x+e.w/2:"right"===e.align?e.x+e.w:e.x,h=r*(e.lineHeight||1.3);return n.forEach(((e,o)=>{t.fillText(e,s,i+o*h+.8*r)})),t.textAlign="left",{x:e.x,y:i,w:e.w,h:Math.max(a,r)}}function roundRectPath(t,e,o,l,n,r){const a=Math.min(r,l/2,n/2);t.beginPath(),t.moveTo(e+a,o),t.arcTo(e+l,o,e+l,o+n,a),t.arcTo(e+l,o+n,e,o+n,a),t.arcTo(e,o+n,e,o,a),t.arcTo(e,o,e+l,o,a),t.closePath()}function drawBand(t,e,o,l){const n=resolveTop(e,l),r=resolveColor(e.fill,o);if(t.save(),t.globalAlpha=e.alpha??1,t.fillStyle=r,"slant"===e.shape)t.beginPath(),"bottom"===e.anchor?(t.moveTo(e.x,n+.32*e.h),t.lineTo(e.x+e.w,n),t.lineTo(e.x+e.w,n+e.h),t.lineTo(e.x,n+e.h)):(t.moveTo(e.x,n),t.lineTo(e.x+e.w,n),t.lineTo(e.x+e.w,n+.62*e.h),t.lineTo(e.x,n+e.h)),t.closePath(),t.fill();else if("pill"===e.shape)roundRectPath(t,e.x,n,e.w,e.h,e.h/2),t.fill();else{const o=e.x<=0&&e.x+e.w>=UNIT_W;roundRectPath(t,e.x,n,e.w,e.h,o?0:24),t.fill()}const a=t.createLinearGradient(e.x,n,e.x+e.w,n+e.h);return a.addColorStop(0,"rgba(255,255,255,0.16)"),a.addColorStop(.6,"rgba(255,255,255,0)"),t.fillStyle=a,t.fill(),t.restore(),{x:e.x,y:n,w:e.w,h:e.h}}function starPath(t,e,o,l,n,r){t.beginPath();for(let a=0;a<2*r;a+=1){const i=a%2==0?l:n,s=a*Math.PI/r-Math.PI/2,h=e+Math.cos(s)*i,c=o+Math.sin(s)*i;0===a?t.moveTo(h,c):t.lineTo(h,c)}t.closePath()}function drawBadge(t,e,o,l){const n=resolveTop(e,l),r=e.x+e.w/2,a=n+e.h/2,i=resolveColor(e.fill,o);t.save(),t.shadowColor=withAlpha(i,.45),t.shadowBlur=18,t.shadowOffsetY=8,t.fillStyle=i,"star"===e.shape?(starPath(t,r,a,e.w/2,e.w/2-Math.max(12,.09*e.w),16),t.fill()):"pill"===e.shape?(roundRectPath(t,e.x,n,e.w,e.h,e.h/2),t.fill()):(t.beginPath(),t.arc(r,a,Math.min(e.w,e.h)/2,0,2*Math.PI),t.fill()),t.restore();const s="pill"===e.shape?.86*e.w:.72*e.w;let h="pill"===e.shape?.42*e.h:.24*e.w;const c=fontFamily("sans"),f=String(e.text).split("\n"),d=()=>(t.font=`700 ${h}px ${c}`,f.every((e=>t.measureText(e).width<=s))&&h*f.length*1.1<=.8*e.h);for(;h>10&&!d();)h-=2;t.fillStyle=resolveColor(e.textColor,o),t.textAlign="center",t.textBaseline="middle";const g=1.1*h,w=a-(f.length-1)*g/2;return f.forEach(((e,o)=>t.fillText(e,r,w+o*g))),t.textAlign="left",t.textBaseline="alphabetic",{x:e.x,y:n,w:e.w,h:e.h}}function drawImage(t,e,o,l,n,r){const a=resolveTop(e,l),i=e.imageId?n.get(e.imageId):null;if(i){const o=Math.min(e.w/i.width,e.h/i.height),l=i.width*o,n=i.height*o,r=e.x+(e.w-l)/2,s=a+(e.h-n)/2;t.save(),"product"===e.kind&&(t.shadowColor="rgba(20, 45, 35, 0.28)",t.shadowBlur=26,t.shadowOffsetY=14),t.drawImage(i,r,s,l,n),t.restore()}else if(r.placeholders){t.save(),t.strokeStyle=withAlpha(o.band,.55),t.setLineDash([14,12]),t.lineWidth=3,roundRectPath(t,e.x,a,e.w,e.h,20),t.stroke(),t.fillStyle=withAlpha(o.band,.07),t.fill(),t.setLineDash([]),t.fillStyle=withAlpha(o.text,.75),t.textAlign="center";const l="logo"===e.kind?"Votre logo":"Photo du produit",n=.3*Math.min(e.w,e.h);t.font=`${n}px ${fontFamily("sans")}`,t.fillText("\ud83d\udcf7",e.x+e.w/2,a+e.h/2+.1*n),t.font=`600 ${Math.min(30,.09*e.w)}px ${fontFamily("sans")}`,t.fillText(l,e.x+e.w/2,a+e.h/2+.85*n),t.textAlign="left",t.restore()}return{x:e.x,y:a,w:e.w,h:e.h}}function drawPattern(t,e,o,l){const n=mulberry32(e.bg.seed||1),r=e.bg.pattern;if("bubbles"===r){const e=7+Math.floor(4*n());for(let r=0;r<e;r+=1){const e=35+75*n(),r=n()*UNIT_W,a=n()*l;t.beginPath(),t.arc(r,a,e,0,2*Math.PI),t.fillStyle=`rgba(255,255,255,${.16+.14*n()})`,t.fill(),t.strokeStyle=withAlpha(o.soft,.5),t.lineWidth=1.5,t.stroke()}}else if("waves"===r)for(let e=0;e<3;e+=1){const r=l*(.55+.14*e)+30*(n()-.5),a=26+14*e,i=n()*Math.PI*2;t.beginPath(),t.moveTo(0,r);for(let e=0;e<=UNIT_W;e+=25)t.lineTo(e,r+Math.sin(e/130+i)*a);t.lineTo(UNIT_W,l),t.lineTo(0,l),t.closePath(),t.fillStyle=withAlpha(o.soft,.28-.06*e),t.fill()}else if("dots"===r){const e=46;t.fillStyle=withAlpha(o.band,.1);for(let o=e/2;o<l;o+=e)for(let l=e/2;l<UNIT_W;l+=e){const n=Math.floor(o/e)%2==0?0:e/2;t.beginPath(),t.arc(l+n,o,4,0,2*Math.PI),t.fill()}}}function drawBackground(t,e,o,l,n){if("image"===e.bg.mode&&e.bg.imageId&&n.get(e.bg.imageId)){const o=n.get(e.bg.imageId),r=Math.max(UNIT_W/o.width,l/o.height),a=o.width*r,i=o.height*r;return void t.drawImage(o,(UNIT_W-a)/2,(l-i)/2,a,i)}if("solid"===e.bg.mode&&e.bg.color)return t.fillStyle=e.bg.color,void t.fillRect(0,0,UNIT_W,l);const r=t.createRadialGradient(UNIT_W/2,.1*l,60,UNIT_W/2,.55*l,.85*l);r.addColorStop(0,"#ffffff"),r.addColorStop(.45,o.bg),r.addColorStop(1,withAlpha(o.soft,.9)),t.fillStyle=r,t.fillRect(0,0,UNIT_W,l),drawPattern(t,e,o,l)}import{UNIT_W,getTheme,posterHeight}from"./templates.js";export function resolveColor(t,e){switch(t){case"band":return e.band;case"onBand":return e.bandText;case"accent":return e.accent;case"accentText":return e.accentText;case"text":return e.text;case"soft":return e.soft;case"bg":return e.bg;default:return t||"#000000"}}const FONT_FAMILIES={sans:'"Poppins", Arial, sans-serif',serif:'"Playfair Display", Georgia, serif'};export const fontFamily=t=>FONT_FAMILIES[t]||FONT_FAMILIES.sans;const hexToRgb=t=>{let e=(t||"#000").replace("#","");3===e.length&&(e=e.split("").map((t=>t+t)).join(""));const o=parseInt(e,16);return{r:o>>16&255,g:o>>8&255,b:255&o}};export const withAlpha=(t,e)=>{const{r:o,g:l,b:n}=hexToRgb(t);return`rgba(${o}, ${l}, ${n}, ${e})`};export function contrastRatio(t,e){const o=t=>{const{r:e,g:o,b:l}=hexToRgb(t),n=t=>{const e=t/255;return e<=.03928?e/12.92:Math.pow((e+.055)/1.055,2.4)};return.2126*n(e)+.7152*n(o)+.0722*n(l)},[l,n]=[o(t),o(e)].sort(((t,e)=>e-t));return(l+.05)/(n+.05)}export function resolveTop(t,e,o=t.h){return"bottom"===t.anchor?e-t.y-o:"center"===t.anchor?e/2+t.y-o/2:t.y}export function renderPoster(t,e,o,l,n={}){const r=posterHeight(e.formatId),a=getTheme(e.themeId),i=Math.round(o*r/UNIT_W);t.width===o&&t.height===i||(t.width=o,t.height=i);const s=t.getContext("2d");s.save(),s.clearRect(0,0,t.width,t.height),s.scale(o/UNIT_W,o/UNIT_W),drawBackground(s,e,a,r,l);const h=new Map,c=[...e.elements].sort(((t,e)=>(t.z||0)-(e.z||0)));for(const t of c){let e;"band"===t.type?e=drawBand(s,t,a,r):"text"===t.type?e=drawText(s,t,a,r):"badge"===t.type?e=drawBadge(s,t,a,r):"image"===t.type&&(e=drawImage(s,t,a,r,l,n)),e&&h.set(t.id,e)}return s.restore(),h}export function renderToCanvas(t,e,o,l={}){const n=document.createElement("canvas");return renderPoster(n,t,o,e,l),n}
+/**
+ * Rendu de l'affiche sur <canvas>.
+ * Le MÊME moteur dessine : l'aperçu de l'éditeur, les vignettes des modèles
+ * et formats, et l'export final haute résolution. Ce que l'on voit est
+ * exactement ce que l'on imprime (contrairement à l'ancienne capture DOM
+ * via html2canvas, source de rendus incohérents).
+ *
+ * © 2025-2026 Edimah SYNESIUS SONGO — Licence MIT.
+ */
+
+import { UNIT_W, getTheme, posterHeight } from "./templates.js";
+
+// --- Aléatoire déterministe : le fond décoratif est identique entre aperçu,
+// vignette et export tant que state.bg.seed ne change pas.
+function mulberry32(seed) {
+  let a = seed >>> 0;
+  return () => {
+    a |= 0;
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+export function resolveColor(spec, theme) {
+  switch (spec) {
+    case "band":
+      return theme.band;
+    case "onBand":
+      return theme.bandText;
+    case "accent":
+      return theme.accent;
+    case "accentText":
+      return theme.accentText;
+    case "text":
+      return theme.text;
+    case "soft":
+      return theme.soft;
+    case "bg":
+      return theme.bg;
+    default:
+      return spec || "#000000";
+  }
+}
+
+const FONT_FAMILIES = { sans: '"Poppins", Arial, sans-serif', serif: '"Playfair Display", Georgia, serif' };
+export const fontFamily = (key) => FONT_FAMILIES[key] || FONT_FAMILIES.sans;
+
+const hexToRgb = (hex) => {
+  let c = (hex || "#000").replace("#", "");
+  if (c.length === 3)
+    c = c
+      .split("")
+      .map((x) => x + x)
+      .join("");
+  const v = parseInt(c, 16);
+  return { r: (v >> 16) & 255, g: (v >> 8) & 255, b: v & 255 };
+};
+
+export const withAlpha = (hex, alpha) => {
+  const { r, g, b } = hexToRgb(hex);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+};
+
+// Luminance relative WCAG — sert au contrôle de lisibilité dans l'éditeur.
+export function contrastRatio(hexA, hexB) {
+  const lum = (hex) => {
+    const { r, g, b } = hexToRgb(hex);
+    const f = (v) => {
+      const s = v / 255;
+      return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
+    };
+    return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b);
+  };
+  const [l1, l2] = [lum(hexA), lum(hexB)].sort((a, b) => b - a);
+  return (l1 + 0.05) / (l2 + 0.05);
+}
+
+/** Position verticale résolue (unités depuis le haut) selon l'ancrage. */
+export function resolveTop(el, H, h = el.h) {
+  if (el.anchor === "bottom") return H - el.y - h;
+  if (el.anchor === "center") return H / 2 + el.y - h / 2;
+  return el.y;
+}
+
+// --- Texte : césure par mots (les \n explicites sont respectés) -------------
+function wrapText(ctx, text, el) {
+  let size = el.size;
+  const family = fontFamily(el.font);
+  const setFont = () => {
+    ctx.font = `${el.weight} ${size}px ${family}`;
+  };
+  setFont();
+
+  // Réduit la taille si un seul mot dépasse la largeur du bloc (nom de
+  // produit très long) : évite tout débordement hors de l'affiche.
+  const words = text.split(/\s+/).filter(Boolean);
+  for (const word of words) {
+    while (size > 14 && ctx.measureText(word).width > el.w) {
+      size -= 2;
+      setFont();
+    }
+  }
+
+  const lines = [];
+  for (const paragraph of String(text).split("\n")) {
+    const ws = paragraph.split(/\s+/).filter(Boolean);
+    if (!ws.length) {
+      lines.push("");
+      continue;
+    }
+    let line = ws[0];
+    for (let i = 1; i < ws.length; i += 1) {
+      const test = `${line} ${ws[i]}`;
+      if (ctx.measureText(test).width > el.w) {
+        lines.push(line);
+        line = ws[i];
+      } else {
+        line = test;
+      }
+    }
+    lines.push(line);
+  }
+  return { lines, size, height: lines.length * size * (el.lineHeight || 1.3) };
+}
+
+function drawText(ctx, el, theme, H) {
+  const { lines, size, height } = wrapText(ctx, el.text, el);
+  const top = resolveTop(el, H, height);
+  ctx.fillStyle = resolveColor(el.color, theme);
+  ctx.textBaseline = "alphabetic";
+  ctx.textAlign = el.align || "left";
+  const anchorX = el.align === "center" ? el.x + el.w / 2 : el.align === "right" ? el.x + el.w : el.x;
+  const lh = size * (el.lineHeight || 1.3);
+  lines.forEach((line, i) => {
+    // 0.8 ≈ hauteur d'ascendante : cale la première ligne sous le bord haut.
+    ctx.fillText(line, anchorX, top + i * lh + size * 0.8);
+  });
+  ctx.textAlign = "left";
+  return { x: el.x, y: top, w: el.w, h: Math.max(height, size) };
+}
+
+// --- Formes ------------------------------------------------------------------
+function roundRectPath(ctx, x, y, w, h, r) {
+  const rr = Math.min(r, w / 2, h / 2);
+  ctx.beginPath();
+  ctx.moveTo(x + rr, y);
+  ctx.arcTo(x + w, y, x + w, y + h, rr);
+  ctx.arcTo(x + w, y + h, x, y + h, rr);
+  ctx.arcTo(x, y + h, x, y, rr);
+  ctx.arcTo(x, y, x + w, y, rr);
+  ctx.closePath();
+}
+
+function drawBand(ctx, el, theme, H) {
+  const top = resolveTop(el, H);
+  const fill = resolveColor(el.fill, theme);
+  ctx.save();
+  ctx.globalAlpha = el.alpha ?? 1;
+  ctx.fillStyle = fill;
+  if (el.shape === "slant") {
+    ctx.beginPath();
+    if (el.anchor === "bottom") {
+      // Bandeau bas : bord supérieur incliné.
+      ctx.moveTo(el.x, top + el.h * 0.32);
+      ctx.lineTo(el.x + el.w, top);
+      ctx.lineTo(el.x + el.w, top + el.h);
+      ctx.lineTo(el.x, top + el.h);
+    } else {
+      // Bandeau haut : bord inférieur incliné.
+      ctx.moveTo(el.x, top);
+      ctx.lineTo(el.x + el.w, top);
+      ctx.lineTo(el.x + el.w, top + el.h * 0.62);
+      ctx.lineTo(el.x, top + el.h);
+    }
+    ctx.closePath();
+    ctx.fill();
+  } else if (el.shape === "pill") {
+    roundRectPath(ctx, el.x, top, el.w, el.h, el.h / 2);
+    ctx.fill();
+  } else {
+    const fullBleed = el.x <= 0 && el.x + el.w >= UNIT_W;
+    roundRectPath(ctx, el.x, top, el.w, el.h, fullBleed ? 0 : 24);
+    ctx.fill();
+  }
+  // Léger reflet pour donner du relief : second remplissage du même tracé
+  // avec un dégradé blanc très discret.
+  const grad = ctx.createLinearGradient(el.x, top, el.x + el.w, top + el.h);
+  grad.addColorStop(0, "rgba(255,255,255,0.16)");
+  grad.addColorStop(0.6, "rgba(255,255,255,0)");
+  ctx.fillStyle = grad;
+  ctx.fill();
+  ctx.restore();
+  return { x: el.x, y: top, w: el.w, h: el.h };
+}
+
+function starPath(ctx, cx, cy, rOuter, rInner, spikes) {
+  ctx.beginPath();
+  for (let i = 0; i < spikes * 2; i += 1) {
+    const r = i % 2 === 0 ? rOuter : rInner;
+    const a = (i * Math.PI) / spikes - Math.PI / 2;
+    const x = cx + Math.cos(a) * r;
+    const y = cy + Math.sin(a) * r;
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  }
+  ctx.closePath();
+}
+
+function drawBadge(ctx, el, theme, H) {
+  const top = resolveTop(el, H);
+  const cx = el.x + el.w / 2;
+  const cy = top + el.h / 2;
+  const fill = resolveColor(el.fill, theme);
+  ctx.save();
+  ctx.shadowColor = withAlpha(fill, 0.45);
+  ctx.shadowBlur = 18;
+  ctx.shadowOffsetY = 8;
+  ctx.fillStyle = fill;
+  if (el.shape === "star") {
+    starPath(ctx, cx, cy, el.w / 2, el.w / 2 - Math.max(12, el.w * 0.09), 16);
+    ctx.fill();
+  } else if (el.shape === "pill") {
+    roundRectPath(ctx, el.x, top, el.w, el.h, el.h / 2);
+    ctx.fill();
+  } else {
+    ctx.beginPath();
+    ctx.arc(cx, cy, Math.min(el.w, el.h) / 2, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.restore();
+
+  // Texte centré, réduit automatiquement pour tenir dans la forme.
+  const maxW = el.shape === "pill" ? el.w * 0.86 : el.w * 0.72;
+  let size = el.shape === "pill" ? el.h * 0.42 : el.w * 0.24;
+  const family = fontFamily("sans");
+  const linesSrc = String(el.text).split("\n");
+  const fits = () => {
+    ctx.font = `700 ${size}px ${family}`;
+    return linesSrc.every((l) => ctx.measureText(l).width <= maxW) && size * linesSrc.length * 1.1 <= el.h * 0.8;
+  };
+  while (size > 10 && !fits()) size -= 2;
+  ctx.fillStyle = resolveColor(el.textColor, theme);
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  const lh = size * 1.1;
+  const startY = cy - ((linesSrc.length - 1) * lh) / 2;
+  linesSrc.forEach((l, i) => ctx.fillText(l, cx, startY + i * lh));
+  ctx.textAlign = "left";
+  ctx.textBaseline = "alphabetic";
+  return { x: el.x, y: top, w: el.w, h: el.h };
+}
+
+function drawImage(ctx, el, theme, H, assets, opts) {
+  const top = resolveTop(el, H);
+  const asset = el.imageId ? assets.get(el.imageId) : null;
+  if (asset) {
+    const scale = Math.min(el.w / asset.width, el.h / asset.height);
+    const dw = asset.width * scale;
+    const dh = asset.height * scale;
+    const dx = el.x + (el.w - dw) / 2;
+    const dy = top + (el.h - dh) / 2;
+    ctx.save();
+    if (el.kind === "product") {
+      // Ombre portée douce sous le produit détouré.
+      ctx.shadowColor = "rgba(20, 45, 35, 0.28)";
+      ctx.shadowBlur = 26;
+      ctx.shadowOffsetY = 14;
+    }
+    ctx.drawImage(asset, dx, dy, dw, dh);
+    ctx.restore();
+  } else if (opts.placeholders) {
+    // Emplacement vide : visible uniquement dans l'éditeur, jamais à l'export.
+    ctx.save();
+    ctx.strokeStyle = withAlpha(theme.band, 0.55);
+    ctx.setLineDash([14, 12]);
+    ctx.lineWidth = 3;
+    roundRectPath(ctx, el.x, top, el.w, el.h, 20);
+    ctx.stroke();
+    ctx.fillStyle = withAlpha(theme.band, 0.07);
+    ctx.fill();
+    ctx.setLineDash([]);
+    ctx.fillStyle = withAlpha(theme.text, 0.75);
+    ctx.textAlign = "center";
+    const label = el.kind === "logo" ? "Votre logo" : "Photo du produit";
+    const iconSize = Math.min(el.w, el.h) * 0.3;
+    ctx.font = `${iconSize}px ${fontFamily("sans")}`;
+    ctx.fillText("📷", el.x + el.w / 2, top + el.h / 2 + iconSize * 0.1);
+    ctx.font = `600 ${Math.min(30, el.w * 0.09)}px ${fontFamily("sans")}`;
+    ctx.fillText(label, el.x + el.w / 2, top + el.h / 2 + iconSize * 0.85);
+    ctx.textAlign = "left";
+    ctx.restore();
+  }
+  return { x: el.x, y: top, w: el.w, h: el.h };
+}
+
+// --- Fonds décoratifs ---------------------------------------------------------
+function drawPattern(ctx, state, theme, H) {
+  const rnd = mulberry32(state.bg.seed || 1);
+  const type = state.bg.pattern;
+  if (type === "bubbles") {
+    const count = 7 + Math.floor(rnd() * 4);
+    for (let i = 0; i < count; i += 1) {
+      const r = 35 + rnd() * 75;
+      const x = rnd() * UNIT_W;
+      const y = rnd() * H;
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,255,255,${0.16 + rnd() * 0.14})`;
+      ctx.fill();
+      ctx.strokeStyle = withAlpha(theme.soft, 0.5);
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+  } else if (type === "waves") {
+    for (let i = 0; i < 3; i += 1) {
+      const baseY = H * (0.55 + i * 0.14) + (rnd() - 0.5) * 30;
+      const amp = 26 + i * 14;
+      const phase = rnd() * Math.PI * 2;
+      ctx.beginPath();
+      ctx.moveTo(0, baseY);
+      for (let x = 0; x <= UNIT_W; x += 25) {
+        ctx.lineTo(x, baseY + Math.sin(x / 130 + phase) * amp);
+      }
+      ctx.lineTo(UNIT_W, H);
+      ctx.lineTo(0, H);
+      ctx.closePath();
+      ctx.fillStyle = withAlpha(theme.soft, 0.28 - i * 0.06);
+      ctx.fill();
+    }
+  } else if (type === "dots") {
+    const gap = 46;
+    ctx.fillStyle = withAlpha(theme.band, 0.1);
+    for (let y = gap / 2; y < H; y += gap) {
+      for (let x = gap / 2; x < UNIT_W; x += gap) {
+        const offset = Math.floor(y / gap) % 2 === 0 ? 0 : gap / 2;
+        ctx.beginPath();
+        ctx.arc(x + offset, y, 4, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+  }
+}
+
+function drawBackground(ctx, state, theme, H, assets) {
+  if (state.bg.mode === "image" && state.bg.imageId && assets.get(state.bg.imageId)) {
+    const img = assets.get(state.bg.imageId);
+    const scale = Math.max(UNIT_W / img.width, H / img.height); // cover
+    const dw = img.width * scale;
+    const dh = img.height * scale;
+    ctx.drawImage(img, (UNIT_W - dw) / 2, (H - dh) / 2, dw, dh);
+    return;
+  }
+  if (state.bg.mode === "solid" && state.bg.color) {
+    ctx.fillStyle = state.bg.color;
+    ctx.fillRect(0, 0, UNIT_W, H);
+    return;
+  }
+  // Mode thème : léger dégradé radial du blanc vers la teinte du thème.
+  const grad = ctx.createRadialGradient(UNIT_W / 2, H * 0.1, 60, UNIT_W / 2, H * 0.55, H * 0.85);
+  grad.addColorStop(0, "#ffffff");
+  grad.addColorStop(0.45, theme.bg);
+  grad.addColorStop(1, withAlpha(theme.soft, 0.9));
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, UNIT_W, H);
+  drawPattern(ctx, state, theme, H);
+}
+
+/**
+ * Rend l'affiche complète dans `canvas` à la largeur pixel demandée.
+ * Retourne la géométrie résolue de chaque élément (en unités) pour la
+ * sélection à la souris dans l'éditeur.
+ */
+export function renderPoster(canvas, state, pxWidth, assets, opts = {}) {
+  const H = posterHeight(state.formatId);
+  const theme = getTheme(state.themeId);
+  const pxHeight = Math.round((pxWidth * H) / UNIT_W);
+  if (canvas.width !== pxWidth || canvas.height !== pxHeight) {
+    canvas.width = pxWidth;
+    canvas.height = pxHeight;
+  }
+  const ctx = canvas.getContext("2d");
+  ctx.save();
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.scale(pxWidth / UNIT_W, pxWidth / UNIT_W);
+
+  drawBackground(ctx, state, theme, H, assets);
+
+  const layout = new Map();
+  const sorted = [...state.elements].sort((a, b) => (a.z || 0) - (b.z || 0));
+  for (const el of sorted) {
+    let box;
+    if (el.type === "band") box = drawBand(ctx, el, theme, H);
+    else if (el.type === "text") box = drawText(ctx, el, theme, H);
+    else if (el.type === "badge") box = drawBadge(ctx, el, theme, H);
+    else if (el.type === "image") box = drawImage(ctx, el, theme, H, assets, opts);
+    if (box) layout.set(el.id, box);
+  }
+  ctx.restore();
+  return layout;
+}
+
+/** Rend dans un canvas hors écran (vignettes, export) et le retourne. */
+export function renderToCanvas(state, assets, pxWidth, opts = {}) {
+  const canvas = document.createElement("canvas");
+  renderPoster(canvas, state, pxWidth, assets, opts);
+  return canvas;
+}

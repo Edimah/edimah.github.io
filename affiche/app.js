@@ -1,1 +1,1358 @@
-function previewCssWidth(){const e=getFormat(state.formatId).ratio,t=Math.max(240,posterArea.clientWidth-8),n=Math.max(320,window.innerHeight-200);return Math.round(Math.min(t,n/e,720))}function requestRender(){renderQueued||(renderQueued=!0,requestAnimationFrame((()=>{if(renderQueued=!1,!state)return;const e=previewCssWidth(),t=Math.min(window.devicePixelRatio||1,2);layout=renderPoster(posterCanvas,state,Math.round(e*t),assets,{placeholders:!0}),posterCanvas.style.width=`${e}px`,posterCanvas.style.height="auto",updateSelectionOverlay()})))}function updateSelectionOverlay(){const e=selectedId?layout.get(selectedId):null;if(!e)return void(selBox.style.display="none");const t=1/unitsPerCssPx();selBox.style.display="block",selBox.style.left=e.x*t-3+"px",selBox.style.top=e.y*t-3+"px",selBox.style.width=e.w*t+6+"px",selBox.style.height=e.h*t+6+"px"}function snapshot(){return JSON.parse(JSON.stringify(state))}function pushHistory(){history=history.slice(0,historyIndex+1),history.push(snapshot()),history.length>HISTORY_MAX&&history.shift(),historyIndex=history.length-1,updateUndoButtons(),scheduleSave()}function applySnapshot(e){state=JSON.parse(JSON.stringify(e)),state.elements.some((e=>e.id===selectedId))||(selectedId=null),syncAssets().then(requestRender),renderPanel(),requestRender()}function undo(){historyIndex<=0||(historyIndex-=1,applySnapshot(history[historyIndex]),updateUndoButtons(),scheduleSave())}function redo(){historyIndex>=history.length-1||(historyIndex+=1,applySnapshot(history[historyIndex]),updateUndoButtons(),scheduleSave())}function updateUndoButtons(){$("undoBtn").disabled=historyIndex<=0,$("redoBtn").disabled=historyIndex>=history.length-1}function openDB(){return new Promise(((e,t)=>{const n=indexedDB.open("affiche-officine",1);n.onupgradeneeded=()=>n.result.createObjectStore("kv"),n.onsuccess=()=>e(n.result),n.onerror=()=>t(n.error)}))}async function idbSet(e,t){const n=await openDB();return new Promise(((a,o)=>{const r=n.transaction("kv","readwrite");r.objectStore("kv").put(t,e),r.oncomplete=a,r.onerror=()=>o(r.error)}))}async function idbGet(e){const t=await openDB();return new Promise(((n,a)=>{const o=t.transaction("kv","readonly").objectStore("kv").get(e);o.onsuccess=()=>n(o.result),o.onerror=()=>a(o.error)}))}function scheduleSave(){clearTimeout(saveTimer),saveTimer=setTimeout((()=>{const e=new Set(state.elements.map((e=>e.imageId)).filter(Boolean));state.bg.imageId&&e.add(state.bg.imageId);for(const t of Object.keys(state.images))e.has(t)||delete state.images[t];idbSet("current",snapshot()).catch((()=>{}))}),800)}function loadImageElement(e){return new Promise(((t,n)=>{const a=new Image;a.onload=()=>t(a),a.onerror=n,a.src=e}))}async function syncAssets(){const e=[];for(const[t,n]of Object.entries(state.images))assets.has(t)||e.push(loadImageElement(n.src).then((e=>assets.set(t,e))).catch((()=>{})));await Promise.all(e)}function registerImage(e,t,n){const a=uid(),o=e.toDataURL("image/png");state.images[a]={src:o,orig:t,kind:n,w:e.width,h:e.height};const r=new Image;return r.src=o,assets.set(a,r),new Promise((e=>{r.onload=()=>e(a),r.onerror=()=>e(a)}))}async function updateImageSrc(e,t){state.images[e].src=t.toDataURL("image/png"),state.images[e].w=t.width,state.images[e].h=t.height,assets.set(e,await loadImageElement(state.images[e].src))}function getSelected(){return state?.elements.find((e=>e.id===selectedId))||null}function capturePointer(e,t){try{e.setPointerCapture(t)}catch(e){}}function setElementTop(e,t){const n=posterHeight(state.formatId),a=layout.get(e.id)?.h??e.h;"bottom"===e.anchor?e.y=n-t-a:"center"===e.anchor?e.y=t+a/2-n/2:e.y=t}function hitTest(e,t){const n=[...state.elements].sort(((e,t)=>(t.z||0)-(e.z||0)));for(const a of n){const n=layout.get(a.id);if(n&&e>=n.x&&e<=n.x+n.w&&t>=n.y&&t<=n.y+n.h)return a}return null}function select(e){selectedId=e,updateSelectionOverlay(),renderPanel()}function pointerUnits(e){const t=posterCanvas.getBoundingClientRect();return{x:(e.clientX-t.left)/t.width*UNIT_W,y:(e.clientY-t.top)/t.height*posterHeight(state.formatId)}}function deleteSelected(){const e=getSelected();e&&(state.elements=state.elements.filter((t=>t.id!==e.id)),select(null),requestRender(),pushHistory())}function duplicateSelected(){const e=getSelected();if(!e)return;const t=JSON.parse(JSON.stringify(e));t.id=uid(),t.x+=30,t.y+="bottom"===e.anchor?-30:30,state.elements.push(t),select(t.id),requestRender(),pushHistory()}function setDetourStatus(e,t=!1){detourStatus.textContent=e,detourStatus.classList.toggle("busy",t),detourStatus.classList.toggle("is-visible",Boolean(e))}function startImport(e,t){pendingImport={elementId:e,kind:t},hiddenFileInput.value="",hiddenFileInput.click()}async function importFileInto(e,t,n){setDetourStatus("Pr\xe9paration de la photo\u2026",!0);try{const a=await fileToImage(e),o=downscaleToCanvas(a).toDataURL("image/png"),r="auto",{canvas:s,modeUsed:i}=await removeBackground(e,{kind:n,mode:r,onStatus:e=>setDetourStatus(e,!0)}),d=await registerImage(s,o,n);let l=state.elements.find((e=>e.id===t));l||(l=makeImage({kind:n,anchor:"center",x:250,y:0,w:500,h:500}),state.elements.push(l)),l.imageId=d,select(l.id),requestRender(),pushHistory(),setDetourStatus("ia"===i?"Fond retir\xe9 par IA \u2705":"Fond retir\xe9 \u2705"),setTimeout((()=>setDetourStatus("")),3500)}catch(e){setDetourStatus("Impossible de traiter cette photo. R\xe9essayez avec une autre.",!1),setTimeout((()=>setDetourStatus("")),5e3)}}async function retryDetour(e,t){const n=state.images[e.imageId];if(n?.orig){setDetourStatus("Nouveau d\xe9tourage\u2026",!0);try{const a=await(await fetch(n.orig)).blob(),{canvas:o,modeUsed:r}=await removeBackground(a,{kind:e.kind,mode:t,onStatus:e=>setDetourStatus(e,!0)});await updateImageSrc(e.imageId,o),requestRender(),pushHistory(),setDetourStatus("aucun"===t?"Photo d'origine restaur\xe9e \u2705":"ia"===r?"Fond retir\xe9 par IA \u2705":"Fond retir\xe9 \u2705"),setTimeout((()=>setDetourStatus("")),3500)}catch(e){setDetourStatus("Le d\xe9tourage a \xe9chou\xe9.",!1),setTimeout((()=>setDetourStatus("")),4e3)}}}function ctl(e){const t=document.createElement("div");return t.className="ctl",t.innerHTML=e,t}function colorSwatchRow(e,t){const n=getTheme(state.themeId),a=document.createElement("div");a.className="swatch-row";[["auto",null],["#ffffff","#ffffff"],["#1c2b28","#1c2b28"],[n.band,n.band],[n.accent,n.accent]].forEach((([e,o])=>{const r=document.createElement("button");r.type="button",r.className="swatch",r.title="auto"===e?"Couleur automatique (th\xe8me)":e,r.style.background=o||`linear-gradient(135deg, ${n.band}, ${n.accent})`,"auto"===e&&r.classList.add("swatch-auto"),r.addEventListener("click",(()=>t(e))),a.appendChild(r)}));const o=document.createElement("input");return o.type="color",o.value=/^#/.test(e)?e:"#333333",o.title="Couleur personnalis\xe9e",o.addEventListener("input",(()=>t(o.value))),a.appendChild(o),a}function commonButtons(e){const t=document.createElement("div");t.className="btn-row";const n=(e,n,a)=>{const o=document.createElement("button");o.type="button",o.className=`mini ${n||""}`,o.textContent=e,o.addEventListener("click",a),t.appendChild(o)};return n("\u2b06 Devant","",(()=>{e.z=(e.z||0)+1,requestRender(),pushHistory()})),n("\u2b07 Derri\xe8re","",(()=>{e.z=Math.max(0,(e.z||0)-1),requestRender(),pushHistory()})),n("\u29c9 Dupliquer","",duplicateSelected),n("\ud83d\uddd1 Retirer","danger",deleteSelected),t}function renderPanel(){panel.innerHTML="";const e=getSelected(),t=getTheme(state.themeId);if(!e){panel.appendChild(ctl('<h3>Affiche</h3><p class="hint">Cliquez sur un \xe9l\xe9ment de l\'affiche pour le modifier, ou utilisez les boutons \xab Ajouter \xbb.</p>'));const e=ctl("<label>Couleurs du th\xe8me</label>"),t=document.createElement("div");t.className="swatch-row",THEMES.forEach((e=>{const n=document.createElement("button");n.type="button",n.className="swatch theme-swatch"+(e.id===state.themeId?" active":""),n.style.background=`linear-gradient(135deg, ${e.band} 55%, ${e.accent} 55%)`,n.title=e.label,n.addEventListener("click",(()=>{state.themeId=e.id,requestRender(),renderPanel(),pushHistory()})),t.appendChild(n)})),e.appendChild(t),panel.appendChild(e);const n=ctl("<label>Fond de l'affiche</label>"),a=document.createElement("select");[["none","Uni (couleur du th\xe8me)"],["bubbles","Bulles"],["waves","Vagues"],["dots","Pois"]].forEach((([e,t])=>{const n=document.createElement("option");n.value=e,n.textContent=t,state.bg.pattern===e&&"theme"===state.bg.mode&&(n.selected=!0),a.appendChild(n)})),a.addEventListener("change",(()=>{state.bg.mode="theme",state.bg.pattern=a.value,requestRender(),pushHistory()})),n.appendChild(a);const o=document.createElement("button");o.type="button",o.className="mini",o.textContent="\ud83c\udfb2 Varier le motif",o.addEventListener("click",(()=>{state.bg.seed=Math.floor(1e9*Math.random()),requestRender(),pushHistory()})),n.appendChild(o),panel.appendChild(n);const r=ctl("<label>Ou une couleur unie personnalis\xe9e</label>"),s=document.createElement("input");return s.type="color",s.value="solid"===state.bg.mode&&state.bg.color?state.bg.color:"#eef7f2",s.addEventListener("input",(()=>{state.bg.mode="solid",state.bg.color=s.value,requestRender()})),s.addEventListener("change",pushHistory),r.appendChild(s),void panel.appendChild(r)}if("text"===e.type){const n=ctl("<h3>Texte</h3>"),a=document.createElement("textarea");a.value=e.text,a.rows=3,a.setAttribute("data-autofocus",""),a.addEventListener("input",(()=>{e.text=a.value,requestRender()})),a.addEventListener("change",pushHistory),n.appendChild(a),panel.appendChild(n);const o=ctl("<label>Style</label>"),r=document.createElement("select");[["sans","Moderne (Poppins)"],["serif","\xc9l\xe9gante (Playfair)"]].forEach((([t,n])=>{const a=document.createElement("option");a.value=t,a.textContent=n,e.font===t&&(a.selected=!0),r.appendChild(a)})),r.addEventListener("change",(()=>{e.font=r.value,requestRender(),pushHistory()})),o.appendChild(r);const s=document.createElement("div");s.className="btn-row";const i=(t,n)=>{const a=document.createElement("button");a.type="button",a.className="mini",a.textContent=t,a.addEventListener("click",(()=>{e.size=Math.max(14,Math.min(320,e.size+n)),requestRender(),pushHistory()})),s.appendChild(a)};i("A\u2212",-4),i("A+",4);const d=document.createElement("button");d.type="button",d.className="mini"+(e.weight>=700?" active":""),d.textContent="Gras",d.addEventListener("click",(()=>{e.weight=e.weight>=700?400:700,requestRender(),renderPanel(),pushHistory()})),s.appendChild(d),["left","center","right"].forEach((t=>{const n=document.createElement("button");n.type="button",n.className="mini"+(e.align===t?" active":""),n.textContent="left"===t?"Gauche":"center"===t?"Centr\xe9":"Droite",n.title="Alignement du texte",n.addEventListener("click",(()=>{e.align=t,requestRender(),renderPanel(),pushHistory()})),s.appendChild(n)})),o.appendChild(s);const l=ctl("<label>Couleur du texte</label>");l.appendChild(colorSwatchRow(resolveColor(e.color,t),(t=>{e.color="auto"===t?"text":t,requestRender(),renderPanel(),pushHistory()}))),panel.appendChild(o),panel.appendChild(l);const c=layout.get(e.id);if(c){const n=state.elements.find((e=>{if("band"!==e.type)return!1;const t=layout.get(e.id);if(!t)return!1;return Math.min(c.y+c.h,t.y+t.h)-Math.max(c.y,t.y)>.5*c.h})),a=n?resolveColor(n.fill,t):t.bg,o=resolveColor(e.color,t);if(contrastRatio(o,a)<3){const t=ctl('<div class="warn">\u26a0\ufe0f Ce texte risque d\'\xeatre peu lisible sur ce fond.</div>'),n=document.createElement("button");n.type="button",n.className="mini",n.textContent="Corriger automatiquement",n.addEventListener("click",(()=>{e.color=contrastRatio("#ffffff",a)>=contrastRatio("#1c2b28",a)?"#ffffff":"#1c2b28",requestRender(),renderPanel(),pushHistory()})),t.appendChild(n),panel.appendChild(t)}}}else if("image"===e.type){const t=ctl(`<h3>${"logo"===e.kind?"Logo":"Photo produit"}</h3>`),n=document.createElement("button");if(n.type="button",n.className="primary",n.textContent=e.imageId?"Remplacer la photo":"Choisir une photo",n.addEventListener("click",(()=>startImport(e.id,e.kind))),t.appendChild(n),panel.appendChild(t),e.imageId){const t=ctl('<label>D\xe9tourage (fond retir\xe9)</label><p class="hint">Le fond n\'est pas bien retir\xe9 ? Essayez :</p>'),n=document.createElement("div");n.className="btn-row",[["auto","Auto"],["ia","IA"],["couleur","Fond uni"],["aucun","Garder l'original"]].forEach((([t,a])=>{const o=document.createElement("button");o.type="button",o.className="mini",o.textContent=a,o.addEventListener("click",(()=>retryDetour(e,t))),n.appendChild(o)})),t.appendChild(n);const a=document.createElement("button");a.type="button",a.textContent="\ud83d\udd8c Retoucher \xe0 la main",a.addEventListener("click",(()=>openRefineModal(e))),t.appendChild(a),panel.appendChild(t)}}else if("badge"===e.type){const n=ctl("<h3>Pastille promo</h3>"),a=document.createElement("textarea");a.rows=2,a.value=e.text,a.setAttribute("data-autofocus",""),a.addEventListener("input",(()=>{e.text=a.value,requestRender()})),a.addEventListener("change",pushHistory),n.appendChild(a),panel.appendChild(n);const o=ctl("<label>Forme</label>"),r=document.createElement("div");r.className="btn-row",[["star","\u2605 \xc9toile"],["circle","\u25cf Rond"],["pill","\u25ac Bandeau"]].forEach((([t,n])=>{const a=document.createElement("button");a.type="button",a.className="mini"+(e.shape===t?" active":""),a.textContent=n,a.addEventListener("click",(()=>{e.shape=t,"pill"===t&&e.h>.5*e.w&&(e.h=Math.round(.4*e.w)),"pill"!==t&&(e.h=e.w),requestRender(),renderPanel(),pushHistory()})),r.appendChild(a)})),o.appendChild(r),panel.appendChild(o);const s=ctl("<label>Couleur</label>");s.appendChild(colorSwatchRow(resolveColor(e.fill,t),(t=>{e.fill="auto"===t?"accent":t,requestRender(),pushHistory()}))),panel.appendChild(s)}else if("band"===e.type){const n=ctl("<h3>Bandeau</h3><label>Couleur</label>");n.appendChild(colorSwatchRow(resolveColor(e.fill,t),(t=>{e.fill="auto"===t?"band":t,requestRender(),pushHistory()})));const a=ctl("<label>Transparence</label>"),o=document.createElement("input");o.type="range",o.min=30,o.max=100,o.value=Math.round(100*(e.alpha??1)),o.addEventListener("input",(()=>{e.alpha=Number(o.value)/100,requestRender()})),o.addEventListener("change",pushHistory),a.appendChild(o);const r=document.createElement("div");r.className="btn-row",[["rect","Droit"],["slant","Inclin\xe9"],["pill","Arrondi"]].forEach((([t,n])=>{const a=document.createElement("button");a.type="button",a.className="mini"+(e.shape===t?" active":""),a.textContent=n,a.addEventListener("click",(()=>{e.shape=t,requestRender(),renderPanel(),pushHistory()})),r.appendChild(a)})),panel.appendChild(n),panel.appendChild(a);const s=ctl("<label>Forme</label>");s.appendChild(r),panel.appendChild(s)}panel.appendChild(commonButtons(e)),panel.appendChild(ctl('<p class="hint">Astuce : glissez pour d\xe9placer \xb7 coin bleu pour la taille \xb7 fl\xe8ches du clavier pour ajuster \xb7 Suppr pour retirer.</p>'))}function openRefineModal(e){const t=state.images[e.imageId];if(!t)return;const n=showModal('\n    <h2>Retoucher le d\xe9tourage</h2>\n    <p class="hint">\ud83e\uddfd <b>Gommer</b> efface le fond restant \xb7 \ud83d\udd8c <b>Restaurer</b> fait r\xe9appara\xeetre ce que l\'IA a trop effac\xe9. Dessinez directement sur l\'image.</p>\n    <div class="btn-row" id="refineTools">\n      <button type="button" class="mini active" data-tool="erase">\ud83e\uddfd Gommer</button>\n      <button type="button" class="mini" data-tool="restore">\ud83d\udd8c Restaurer</button>\n      <label class="brush-size">Taille <input type="range" id="brushSize" min="8" max="80" value="30" /></label>\n    </div>\n    <div class="refine-wrap"><canvas id="refineCanvas"></canvas></div>\n    <div class="btn-row modal-actions">\n      <button type="button" class="secondary" data-close>Annuler</button>\n      <button type="button" class="primary" id="refineApply">Valider la retouche</button>\n    </div>\n  '),a=n.querySelector("#refineCanvas"),o=n.querySelector(".refine-wrap"),r=document.createElement("canvas");r.width=t.w,r.height=t.h;const s=r.getContext("2d");let i=null,d="erase";Promise.all([loadImageElement(t.src),loadImageElement(t.orig)]).then((([e,t])=>{i=t,s.drawImage(e,0,0);const n=Math.min(560,o.clientWidth||560),d=Math.min(1,n/r.width);a.width=Math.round(r.width*d),a.height=Math.round(r.height*d),l()}));const l=()=>{const e=a.getContext("2d");e.clearRect(0,0,a.width,a.height),e.drawImage(r,0,0,a.width,a.height)};n.querySelectorAll("#refineTools [data-tool]").forEach((e=>{e.addEventListener("click",(()=>{d=e.dataset.tool,n.querySelectorAll("#refineTools [data-tool]").forEach((t=>t.classList.toggle("active",t===e)))}))}));let c=!1;const u=e=>{if(!i)return;const t=a.getBoundingClientRect(),o=(e.clientX-t.left)/t.width,c=(e.clientY-t.top)/t.height,u=o*r.width,p=c*r.height,m=Number(n.querySelector("#brushSize").value)/t.width*r.width;s.save(),s.beginPath(),s.arc(u,p,m,0,2*Math.PI),"erase"===d?(s.globalCompositeOperation="destination-out",s.fill()):(s.clip(),s.globalCompositeOperation="source-over",s.drawImage(i,0,0,r.width,r.height)),s.restore(),l()};a.addEventListener("pointerdown",(e=>{c=!0,capturePointer(a,e.pointerId),u(e)})),a.addEventListener("pointermove",(e=>c&&u(e))),a.addEventListener("pointerup",(()=>c=!1)),a.addEventListener("pointercancel",(()=>c=!1)),n.querySelector("#refineApply").addEventListener("click",(async()=>{await updateImageSrc(e.imageId,r),requestRender(),pushHistory(),closeModal()}))}function showModal(e){modalRoot.innerHTML=`<div class="modal-backdrop"><div class="modal">${e}</div></div>`,modalRoot.hidden=!1;const t=modalRoot.querySelector(".modal-backdrop");return t.addEventListener("pointerdown",(e=>{e.target===t&&closeModal()})),modalRoot.querySelectorAll("[data-close]").forEach((e=>e.addEventListener("click",closeModal))),modalRoot.querySelector(".modal")}function closeModal(){modalRoot.hidden=!0,modalRoot.innerHTML=""}function openWizard({firstRun:e=!1}={}){const t=showModal(`\n    <h2>Nouvelle affiche</h2>\n    <p class="hint">1. Choisissez un mod\xe8le \u2014 vous pourrez tout modifier ensuite.</p>\n    <div class="card-grid" id="wizardTemplates"></div>\n    ${e?"":'<div class="btn-row modal-actions"><button type="button" class="secondary" data-close>Annuler</button></div>'}\n  `).querySelector("#wizardTemplates"),n=state?.themeId||THEMES[0].id;TEMPLATES.forEach((a=>{const o=document.createElement("button");o.type="button",o.className="pick-card";const r=buildState(a.id,"a4-portrait",n),s=renderToCanvas(r,assets,240,{placeholders:!0});s.className="pick-thumb",o.appendChild(s);const i=document.createElement("div");i.innerHTML=`<b>${a.label}</b><small>${a.desc}</small>`,o.appendChild(i),o.addEventListener("click",(()=>openWizardFormatStep(a.id,e))),t.appendChild(o)}))}function openWizardFormatStep(e,t){const n=showModal('\n    <h2>Nouvelle affiche</h2>\n    <p class="hint">2. Choisissez le format.</p>\n    <div class="card-grid" id="wizardFormats"></div>\n    <div class="btn-row modal-actions"><button type="button" class="secondary" id="wizardBack">\u2190 Retour aux mod\xe8les</button></div>\n  '),a=n.querySelector("#wizardFormats"),o=state?.themeId||THEMES[0].id;FORMATS.forEach((t=>{const n=document.createElement("button");n.type="button",n.className="pick-card";const r=buildState(e,t.id,o),s=t.ratio>=1?150:210,i=renderToCanvas(r,assets,s,{placeholders:!0});i.className="pick-thumb",n.appendChild(i);const d=document.createElement("div");d.innerHTML=`<b>${t.label}</b><small>${t.sub}</small>`,n.appendChild(d),n.addEventListener("click",(()=>{applyNewState(buildState(e,t.id,o)),closeModal()})),a.appendChild(n)})),n.querySelector("#wizardBack").addEventListener("click",(()=>openWizard({firstRun:t})))}function openFormatModal(){const e=showModal('\n    <h2>Format de l\'affiche</h2>\n    <p class="hint">Votre contenu est conserv\xe9 : les \xe9l\xe9ments ancr\xe9s en haut et en bas suivent le nouveau format.</p>\n    <div class="card-grid" id="formatCards"></div>\n    <div class="btn-row modal-actions"><button type="button" class="secondary" data-close>Annuler</button></div>\n  ').querySelector("#formatCards");FORMATS.forEach((t=>{const n=document.createElement("button");n.type="button",n.className="pick-card"+(t.id===state.formatId?" active":"");const a=JSON.parse(JSON.stringify(state));a.formatId=t.id;const o=t.ratio>=1?150:210,r=renderToCanvas(a,assets,o,{placeholders:!0});r.className="pick-thumb",n.appendChild(r);const s=document.createElement("div");s.innerHTML=`<b>${t.label}</b><small>${t.sub}</small>`,n.appendChild(s),n.addEventListener("click",(()=>{state.formatId=t.id,requestRender(),pushHistory(),closeModal()})),e.appendChild(n)}))}function applyNewState(e){if(state?.images){const t=state.images,n=Object.entries(t).filter((([,e])=>"product"===e.kind)),a=Object.entries(t).filter((([,e])=>"logo"===e.kind));e.images={...t};let o=0;for(const t of e.elements)"image"===t.type&&"product"===t.kind&&n[o]?(t.imageId=n[o][0],o+=1):"image"===t.type&&"logo"===t.kind&&a[0]&&(t.imageId=a[0][0])}state=e,selectedId=null,history=[],historyIndex=-1,syncAssets().then(requestRender),renderPanel(),requestRender(),pushHistory()}function emptySlotCount(){return state.elements.filter((e=>"image"===e.type&&!e.imageId)).length}async function buildExportCanvas(){await document.fonts.ready;const e=getFormat(state.formatId);return renderToCanvas(state,assets,e.exportW,{placeholders:!1})}async function exportPNG(){if(emptySlotCount()>0&&!confirm("Certains emplacements photo sont encore vides : ils n'appara\xeetront pas sur l'affiche. Continuer ?"))return;(await buildExportCanvas()).toBlob((e=>{if(!e)return void alert("Export impossible sur ce navigateur.");const t=document.createElement("a");t.href=URL.createObjectURL(e);const n=(new Date).toISOString().slice(0,10);t.download=`affiche-${state.templateId}-${n}.png`,document.body.appendChild(t),t.click(),t.remove(),setTimeout((()=>URL.revokeObjectURL(t.href)),3e4)}),"image/png")}async function printPoster(){if(emptySlotCount()>0&&!confirm("Certains emplacements photo sont encore vides : ils n'appara\xeetront pas sur l'affiche. Continuer ?"))return;const e=(await buildExportCanvas()).toDataURL("image/png"),t=getFormat(state.formatId),n=t.print?.paper||"A4",a=t.print?.orientation||(t.ratio>=1?"portrait":"landscape"),o=document.createElement("iframe");o.style.position="fixed",o.style.right="0",o.style.bottom="0",o.style.width="0",o.style.height="0",o.style.border="0",o.srcdoc=`<!doctype html><html lang="fr"><head><meta charset="utf-8" /><title>Impression</title>\n    <style>@page{size:${n} ${a};margin:0}html,body{margin:0;height:100%}img{display:block;width:100%;height:100%;object-fit:contain}</style>\n    </head><body><img src="${e}" alt="Affiche" /></body></html>`,document.body.appendChild(o),o.onload=()=>{setTimeout((()=>{o.contentWindow.focus(),o.contentWindow.print(),setTimeout((()=>o.remove()),6e4)}),200)}}async function boot(){try{await Promise.allSettled([document.fonts.load('400 40px "Poppins"'),document.fonts.load('600 40px "Poppins"'),document.fonts.load('700 40px "Poppins"'),document.fonts.load('700 40px "Playfair Display"')])}catch(e){}let e=null;try{e=await Promise.race([idbGet("current"),new Promise((e=>setTimeout((()=>e(null)),1500)))])}catch(e){}2===e?.version&&Array.isArray(e.elements)?(state=e,await syncAssets(),history=[snapshot()],historyIndex=0,updateUndoButtons(),renderPanel(),requestRender(),restoreBanner.hidden=!1,$("restoreDismiss").addEventListener("click",(()=>{restoreBanner.hidden=!0})),$("restoreNew").addEventListener("click",(()=>{restoreBanner.hidden=!0,openWizard({})}))):(state=buildState("promo-produit","a4-portrait",THEMES[0].id),history=[snapshot()],historyIndex=0,updateUndoButtons(),renderPanel(),requestRender(),openWizard({firstRun:!0})),prepareDetour().catch((()=>{}))}import{FORMATS,THEMES,TEMPLATES,UNIT_W,buildState,getFormat,getTheme,getTemplate,posterHeight,uid,makeText,makeBadge,makeBand,makeImage}from"./templates.js";import{renderPoster,renderToCanvas,resolveColor,contrastRatio,resolveTop,withAlpha}from"./render.js";import{removeBackground,prepareDetour,onModelProgress,fileToImage,downscaleToCanvas}from"./detour.js";const $=e=>document.getElementById(e),posterCanvas=$("posterCanvas"),posterWrap=$("posterWrap"),overlay=$("selectionOverlay"),selBox=$("selBox"),selHandle=$("selHandle"),panel=$("panel"),detourStatus=$("detourStatus"),detourProgress=$("detourProgress"),modalRoot=$("modalRoot"),restoreBanner=$("restoreBanner"),hiddenFileInput=$("hiddenFileInput");let state=null;const assets=new Map;let layout=new Map,selectedId=null,history=[],historyIndex=-1,renderQueued=!1,saveTimer=null,pendingImport=null;const HISTORY_MAX=60,posterArea=$("posterArea"),unitsPerCssPx=()=>UNIT_W/posterCanvas.getBoundingClientRect().width;let dragging=null;overlay.addEventListener("pointerdown",(e=>{if(e.target===selHandle)return;const t=pointerUnits(e),n=hitTest(t.x,t.y);if(select(n?n.id:null),!n)return;e.preventDefault(),capturePointer(overlay,e.pointerId);const a=layout.get(n.id);dragging={el:n,startP:t,startX:n.x,startTop:a.y,moved:!1}})),overlay.addEventListener("pointermove",(e=>{if(!dragging)return;const t=pointerUnits(e),n=t.x-dragging.startP.x,a=t.y-dragging.startP.y;Math.abs(n)+Math.abs(a)>2&&(dragging.moved=!0),dragging.el.x=Math.round(dragging.startX+n),setElementTop(dragging.el,Math.round(dragging.startTop+a)),requestRender()}));const endDrag=e=>{dragging&&(overlay.hasPointerCapture?.(e.pointerId)&&overlay.releasePointerCapture(e.pointerId),dragging.moved&&pushHistory(),dragging=null)};overlay.addEventListener("pointerup",endDrag),overlay.addEventListener("pointercancel",endDrag),overlay.addEventListener("dblclick",(e=>{const t=pointerUnits(e),n=hitTest(t.x,t.y);if(n)if(select(n.id),"text"===n.type||"badge"===n.type){const e=panel.querySelector("[data-autofocus]");e&&(e.focus(),e.select?.())}else"image"!==n.type||n.imageId?"image"===n.type&&startImport(n.id,n.kind):startImport(n.id,n.kind)}));let resizing=null;selHandle.addEventListener("pointerdown",(e=>{const t=getSelected();t&&(e.preventDefault(),e.stopPropagation(),capturePointer(selHandle,e.pointerId),resizing={el:t,startP:pointerUnits(e),startW:t.w,startH:t.h})})),selHandle.addEventListener("pointermove",(e=>{if(!resizing)return;const t=pointerUnits(e),n=t.x-resizing.startP.x,a=t.y-resizing.startP.y,o=resizing.el,r=60;if("text"===o.type)o.w=Math.max(r,Math.round(resizing.startW+n));else if("band"===o.type)o.h=Math.max(40,Math.round(resizing.startH+a));else{const e=Math.max(.15,(resizing.startW+n)/resizing.startW);o.w=Math.max(r,Math.round(resizing.startW*e)),o.h=Math.max(r,Math.round(resizing.startH*e))}requestRender()}));const endResize=e=>{resizing&&(selHandle.hasPointerCapture?.(e.pointerId)&&selHandle.releasePointerCapture(e.pointerId),pushHistory(),resizing=null)};selHandle.addEventListener("pointerup",endResize),selHandle.addEventListener("pointercancel",endResize),overlay.addEventListener("wheel",(e=>{const t=getSelected();if(!t||"band"===t.type)return;e.preventDefault();const n=e.deltaY<0?1.05:.95;t.w=Math.max(40,Math.round(t.w*n)),"text"!==t.type&&(t.h=Math.max(40,Math.round(t.h*n))),requestRender(),clearTimeout(overlay._wheelTimer),overlay._wheelTimer=setTimeout(pushHistory,400)}),{passive:!1}),document.addEventListener("keydown",(e=>{const t=/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName||"");if((e.ctrlKey||e.metaKey)&&"z"===e.key.toLowerCase()&&!t)return e.preventDefault(),void(e.shiftKey?redo():undo());if((e.ctrlKey||e.metaKey)&&"y"===e.key.toLowerCase()&&!t)return e.preventDefault(),void redo();const n=getSelected();if(!n||t)return;if((e.ctrlKey||e.metaKey)&&"d"===e.key.toLowerCase())return e.preventDefault(),void duplicateSelected();if("Delete"===e.key||"Backspace"===e.key)return e.preventDefault(),void deleteSelected();if("Escape"===e.key)return void select(null);const a=e.shiftKey?20:5,o=layout.get(n.id);if(!o)return;let r=!0;"ArrowLeft"===e.key?n.x-=a:"ArrowRight"===e.key?n.x+=a:"ArrowUp"===e.key?setElementTop(n,o.y-a):"ArrowDown"===e.key?setElementTop(n,o.y+a):r=!1,r&&(e.preventDefault(),requestRender(),clearTimeout(document._nudgeTimer),document._nudgeTimer=setTimeout(pushHistory,500))})),onModelProgress((({pct:e,phase:t})=>{"cache"!==t?(detourProgress.hidden=!1,detourProgress.value=e,setDetourStatus(`T\xe9l\xe9chargement du mod\xe8le IA\u2026 ${e}%`,!0),e>=100&&(detourProgress.hidden=!0,setDetourStatus(""))):detourProgress.hidden=!0})),hiddenFileInput.addEventListener("change",(async()=>{const e=hiddenFileInput.files?.[0],t=pendingImport;pendingImport=null,e&&t&&(e.type.startsWith("image/")?e.size>12582912?alert("Image trop lourde (plus de 12 Mo). R\xe9duisez-la ou prenez une photo moins grande."):await importFileInto(e,t.elementId,t.kind):alert("Choisissez un fichier image (photo JPEG ou PNG)."))})),$("addPhotoBtn").addEventListener("click",(()=>{const e=state.elements.find((e=>"image"===e.type&&"product"===e.kind&&!e.imageId));startImport(e?e.id:null,"product")})),$("addLogoBtn").addEventListener("click",(()=>{const e=state.elements.find((e=>"image"===e.type&&"logo"===e.kind&&!e.imageId));if(e)startImport(e.id,"logo");else{const e=makeImage({kind:"logo",anchor:"top",x:740,y:26,w:230,h:110,z:8});state.elements.push(e),startImport(e.id,"logo")}})),$("addTextBtn").addEventListener("click",(()=>{const e=makeText({anchor:"center",x:200,y:0,w:600,text:"Nouveau texte",align:"center"});state.elements.push(e),select(e.id),requestRender(),pushHistory()})),$("addBadgeBtn").addEventListener("click",(()=>{const e=makeBadge({anchor:"center",x:380,y:0,w:240,h:240});state.elements.push(e),select(e.id),requestRender(),pushHistory()})),$("addBandBtn").addEventListener("click",(()=>{const e=makeBand({anchor:"center",x:0,y:0,w:1e3,h:140,z:2});state.elements.push(e),select(e.id),requestRender(),pushHistory()})),$("newBtn").addEventListener("click",(()=>openWizard({}))),$("formatBtn").addEventListener("click",openFormatModal),$("undoBtn").addEventListener("click",undo),$("redoBtn").addEventListener("click",redo),$("downloadBtn").addEventListener("click",exportPNG),$("printBtn").addEventListener("click",printPoster),$("templateBtn").addEventListener("click",(()=>openWizard({}))),window.addEventListener("resize",requestRender),boot();
+/**
+ * Éditeur d'affiches pour officine — moteur principal.
+ *
+ * Architecture : l'affiche est une LISTE D'ÉLÉMENTS (state.elements) rendue
+ * sur canvas par render.js. L'éditeur ne fait que modifier cet état puis
+ * redemander un rendu. Sélection, déplacement, redimensionnement, clavier,
+ * annuler/rétablir et sauvegarde automatique opèrent tous sur ce même état.
+ *
+ * © 2025-2026 Edimah SYNESIUS SONGO — Licence MIT.
+ */
+
+import {
+  FORMATS,
+  THEMES,
+  TEMPLATES,
+  UNIT_W,
+  buildState,
+  getFormat,
+  getTheme,
+  getTemplate,
+  posterHeight,
+  uid,
+  makeText,
+  makeBadge,
+  makeBand,
+  makeImage,
+} from "./templates.js";
+import { renderPoster, renderToCanvas, resolveColor, contrastRatio, resolveTop, withAlpha } from "./render.js";
+import { removeBackground, prepareDetour, onModelProgress, fileToImage, downscaleToCanvas } from "./detour.js";
+
+const $ = (id) => document.getElementById(id);
+
+// --- Références DOM -----------------------------------------------------------
+const posterCanvas = $("posterCanvas");
+const posterWrap = $("posterWrap");
+const overlay = $("selectionOverlay");
+const selBox = $("selBox");
+const selHandle = $("selHandle");
+const panel = $("panel");
+const detourStatus = $("detourStatus");
+const detourProgress = $("detourProgress");
+const modalRoot = $("modalRoot");
+const restoreBanner = $("restoreBanner");
+const hiddenFileInput = $("hiddenFileInput");
+
+// --- État global ----------------------------------------------------------------
+let state = null;
+const assets = new Map(); // imageId -> HTMLImageElement (décodée)
+let layout = new Map(); // id -> géométrie résolue en unités (dernier rendu)
+let selectedId = null;
+let history = [];
+let historyIndex = -1;
+let renderQueued = false;
+let saveTimer = null;
+let pendingImport = null; // { elementId } quand on remplace la photo d'un emplacement
+
+const HISTORY_MAX = 60;
+
+// =================================================================================
+// Rendu
+// =================================================================================
+const posterArea = $("posterArea");
+
+// Largeur d'affichage : tient dans la colonne ET dans la hauteur de l'écran
+// (les formats très hauts comme la story 9:16 sont réduits en conséquence).
+function previewCssWidth() {
+  const ratio = getFormat(state.formatId).ratio;
+  const availW = Math.max(240, posterArea.clientWidth - 8);
+  const availH = Math.max(320, window.innerHeight - 200);
+  return Math.round(Math.min(availW, availH / ratio, 720));
+}
+
+function requestRender() {
+  if (renderQueued) return;
+  renderQueued = true;
+  requestAnimationFrame(() => {
+    renderQueued = false;
+    if (!state) return;
+    const cssW = previewCssWidth();
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    layout = renderPoster(posterCanvas, state, Math.round(cssW * dpr), assets, { placeholders: true });
+    posterCanvas.style.width = `${cssW}px`;
+    posterCanvas.style.height = "auto";
+    updateSelectionOverlay();
+  });
+}
+
+const unitsPerCssPx = () => UNIT_W / posterCanvas.getBoundingClientRect().width;
+
+function updateSelectionOverlay() {
+  const box = selectedId ? layout.get(selectedId) : null;
+  if (!box) {
+    selBox.style.display = "none";
+    return;
+  }
+  const s = 1 / unitsPerCssPx();
+  selBox.style.display = "block";
+  selBox.style.left = `${box.x * s - 3}px`;
+  selBox.style.top = `${box.y * s - 3}px`;
+  selBox.style.width = `${box.w * s + 6}px`;
+  selBox.style.height = `${box.h * s + 6}px`;
+}
+
+// =================================================================================
+// Historique + sauvegarde automatique (IndexedDB)
+// =================================================================================
+function snapshot() {
+  return JSON.parse(JSON.stringify(state));
+}
+
+function pushHistory() {
+  history = history.slice(0, historyIndex + 1);
+  history.push(snapshot());
+  if (history.length > HISTORY_MAX) history.shift();
+  historyIndex = history.length - 1;
+  updateUndoButtons();
+  scheduleSave();
+}
+
+function applySnapshot(snap) {
+  state = JSON.parse(JSON.stringify(snap));
+  if (!state.elements.some((el) => el.id === selectedId)) selectedId = null;
+  syncAssets().then(requestRender);
+  renderPanel();
+  requestRender();
+}
+
+function undo() {
+  if (historyIndex <= 0) return;
+  historyIndex -= 1;
+  applySnapshot(history[historyIndex]);
+  updateUndoButtons();
+  scheduleSave();
+}
+
+function redo() {
+  if (historyIndex >= history.length - 1) return;
+  historyIndex += 1;
+  applySnapshot(history[historyIndex]);
+  updateUndoButtons();
+  scheduleSave();
+}
+
+function updateUndoButtons() {
+  $("undoBtn").disabled = historyIndex <= 0;
+  $("redoBtn").disabled = historyIndex >= history.length - 1;
+}
+
+// IndexedDB minimaliste : un seul enregistrement « affiche en cours ».
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open("affiche-officine", 1);
+    req.onupgradeneeded = () => req.result.createObjectStore("kv");
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function idbSet(key, value) {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction("kv", "readwrite");
+    tx.objectStore("kv").put(value, key);
+    tx.oncomplete = resolve;
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+async function idbGet(key) {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const req = db.transaction("kv", "readonly").objectStore("kv").get(key);
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+function scheduleSave() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    // Purge des images orphelines avant sauvegarde.
+    const used = new Set(state.elements.map((el) => el.imageId).filter(Boolean));
+    if (state.bg.imageId) used.add(state.bg.imageId);
+    for (const id of Object.keys(state.images)) {
+      if (!used.has(id)) delete state.images[id];
+    }
+    idbSet("current", snapshot()).catch(() => {});
+  }, 800);
+}
+
+// =================================================================================
+// Images (assets)
+// =================================================================================
+function loadImageElement(src) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = src;
+  });
+}
+
+async function syncAssets() {
+  const jobs = [];
+  for (const [id, entry] of Object.entries(state.images)) {
+    if (!assets.has(id)) {
+      jobs.push(
+        loadImageElement(entry.src)
+          .then((img) => assets.set(id, img))
+          .catch(() => {})
+      );
+    }
+  }
+  await Promise.all(jobs);
+}
+
+function registerImage(canvas, origDataURL, kind) {
+  const id = uid();
+  const src = canvas.toDataURL("image/png");
+  state.images[id] = { src, orig: origDataURL, kind, w: canvas.width, h: canvas.height };
+  const img = new Image();
+  img.src = src;
+  assets.set(id, img);
+  return new Promise((resolve) => {
+    img.onload = () => resolve(id);
+    img.onerror = () => resolve(id);
+  });
+}
+
+async function updateImageSrc(imageId, canvas) {
+  state.images[imageId].src = canvas.toDataURL("image/png");
+  state.images[imageId].w = canvas.width;
+  state.images[imageId].h = canvas.height;
+  assets.set(imageId, await loadImageElement(state.images[imageId].src));
+}
+
+// =================================================================================
+// Sélection & manipulation à la souris / au doigt
+// =================================================================================
+function getSelected() {
+  return state?.elements.find((el) => el.id === selectedId) || null;
+}
+
+// setPointerCapture peut lever une exception (pointeur déjà relâché,
+// événement synthétique) : la capture est un confort, jamais bloquante.
+function capturePointer(element, pointerId) {
+  try {
+    element.setPointerCapture(pointerId);
+  } catch (e) {
+    /* sans gravité */
+  }
+}
+
+function setElementTop(el, topUnits) {
+  const H = posterHeight(state.formatId);
+  const h = layout.get(el.id)?.h ?? el.h;
+  if (el.anchor === "bottom") el.y = H - topUnits - h;
+  else if (el.anchor === "center") el.y = topUnits + h / 2 - H / 2;
+  else el.y = topUnits;
+}
+
+function hitTest(ux, uy) {
+  const sorted = [...state.elements].sort((a, b) => (b.z || 0) - (a.z || 0));
+  for (const el of sorted) {
+    const box = layout.get(el.id);
+    if (box && ux >= box.x && ux <= box.x + box.w && uy >= box.y && uy <= box.y + box.h) return el;
+  }
+  return null;
+}
+
+function select(id) {
+  selectedId = id;
+  updateSelectionOverlay();
+  renderPanel();
+}
+
+// Conversion pointeur → unités affiche.
+function pointerUnits(event) {
+  const rect = posterCanvas.getBoundingClientRect();
+  return {
+    x: ((event.clientX - rect.left) / rect.width) * UNIT_W,
+    y: ((event.clientY - rect.top) / rect.height) * posterHeight(state.formatId),
+  };
+}
+
+let dragging = null;
+
+overlay.addEventListener("pointerdown", (event) => {
+  if (event.target === selHandle) return; // géré par le redimensionnement
+  const p = pointerUnits(event);
+  const el = hitTest(p.x, p.y);
+  select(el ? el.id : null);
+  if (!el) return;
+  event.preventDefault();
+  capturePointer(overlay, event.pointerId);
+  const box = layout.get(el.id);
+  dragging = { el, startP: p, startX: el.x, startTop: box.y, moved: false };
+});
+
+overlay.addEventListener("pointermove", (event) => {
+  if (!dragging) return;
+  const p = pointerUnits(event);
+  const dx = p.x - dragging.startP.x;
+  const dy = p.y - dragging.startP.y;
+  if (Math.abs(dx) + Math.abs(dy) > 2) dragging.moved = true;
+  dragging.el.x = Math.round(dragging.startX + dx);
+  setElementTop(dragging.el, Math.round(dragging.startTop + dy));
+  requestRender();
+});
+
+const endDrag = (event) => {
+  if (!dragging) return;
+  if (overlay.hasPointerCapture?.(event.pointerId)) overlay.releasePointerCapture(event.pointerId);
+  if (dragging.moved) pushHistory();
+  dragging = null;
+};
+overlay.addEventListener("pointerup", endDrag);
+overlay.addEventListener("pointercancel", endDrag);
+
+// Double-clic : ouvrir directement l'édition adaptée à l'élément.
+overlay.addEventListener("dblclick", (event) => {
+  const p = pointerUnits(event);
+  const el = hitTest(p.x, p.y);
+  if (!el) return;
+  select(el.id);
+  if (el.type === "text" || el.type === "badge") {
+    const field = panel.querySelector("[data-autofocus]");
+    if (field) {
+      field.focus();
+      field.select?.();
+    }
+  } else if (el.type === "image" && !el.imageId) {
+    startImport(el.id, el.kind);
+  } else if (el.type === "image") {
+    startImport(el.id, el.kind); // remplacer la photo
+  }
+});
+
+// Poignée de redimensionnement (coin bas-droit de la sélection).
+let resizing = null;
+selHandle.addEventListener("pointerdown", (event) => {
+  const el = getSelected();
+  if (!el) return;
+  event.preventDefault();
+  event.stopPropagation();
+  capturePointer(selHandle, event.pointerId);
+  resizing = { el, startP: pointerUnits(event), startW: el.w, startH: el.h };
+});
+
+selHandle.addEventListener("pointermove", (event) => {
+  if (!resizing) return;
+  const p = pointerUnits(event);
+  const dx = p.x - resizing.startP.x;
+  const dy = p.y - resizing.startP.y;
+  const el = resizing.el;
+  const minW = 60;
+  if (el.type === "text") {
+    el.w = Math.max(minW, Math.round(resizing.startW + dx));
+  } else if (el.type === "band") {
+    el.h = Math.max(40, Math.round(resizing.startH + dy));
+  } else {
+    // image, badge : proportionnel
+    const factor = Math.max(0.15, (resizing.startW + dx) / resizing.startW);
+    el.w = Math.max(minW, Math.round(resizing.startW * factor));
+    el.h = Math.max(minW, Math.round(resizing.startH * factor));
+  }
+  requestRender();
+});
+
+const endResize = (event) => {
+  if (!resizing) return;
+  if (selHandle.hasPointerCapture?.(event.pointerId)) selHandle.releasePointerCapture(event.pointerId);
+  pushHistory();
+  resizing = null;
+};
+selHandle.addEventListener("pointerup", endResize);
+selHandle.addEventListener("pointercancel", endResize);
+
+// Molette sur un élément sélectionné : agrandir / réduire.
+overlay.addEventListener(
+  "wheel",
+  (event) => {
+    const el = getSelected();
+    if (!el || el.type === "band") return;
+    event.preventDefault();
+    const factor = event.deltaY < 0 ? 1.05 : 0.95;
+    el.w = Math.max(40, Math.round(el.w * factor));
+    if (el.type !== "text") el.h = Math.max(40, Math.round(el.h * factor));
+    requestRender();
+    clearTimeout(overlay._wheelTimer);
+    overlay._wheelTimer = setTimeout(pushHistory, 400);
+  },
+  { passive: false }
+);
+
+// Clavier : flèches pour déplacer, Suppr pour retirer, Ctrl+Z/Y, Ctrl+D.
+document.addEventListener("keydown", (event) => {
+  const inField = /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName || "");
+  if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "z" && !inField) {
+    event.preventDefault();
+    event.shiftKey ? redo() : undo();
+    return;
+  }
+  if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "y" && !inField) {
+    event.preventDefault();
+    redo();
+    return;
+  }
+  const el = getSelected();
+  if (!el || inField) return;
+  if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "d") {
+    event.preventDefault();
+    duplicateSelected();
+    return;
+  }
+  if (event.key === "Delete" || event.key === "Backspace") {
+    event.preventDefault();
+    deleteSelected();
+    return;
+  }
+  if (event.key === "Escape") {
+    select(null);
+    return;
+  }
+  const step = event.shiftKey ? 20 : 5;
+  const box = layout.get(el.id);
+  if (!box) return;
+  let handled = true;
+  if (event.key === "ArrowLeft") el.x -= step;
+  else if (event.key === "ArrowRight") el.x += step;
+  else if (event.key === "ArrowUp") setElementTop(el, box.y - step);
+  else if (event.key === "ArrowDown") setElementTop(el, box.y + step);
+  else handled = false;
+  if (handled) {
+    event.preventDefault();
+    requestRender();
+    clearTimeout(document._nudgeTimer);
+    document._nudgeTimer = setTimeout(pushHistory, 500);
+  }
+});
+
+function deleteSelected() {
+  const el = getSelected();
+  if (!el) return;
+  state.elements = state.elements.filter((e) => e.id !== el.id);
+  select(null);
+  requestRender();
+  pushHistory();
+}
+
+function duplicateSelected() {
+  const el = getSelected();
+  if (!el) return;
+  const copy = JSON.parse(JSON.stringify(el));
+  copy.id = uid();
+  copy.x += 30;
+  copy.y += el.anchor === "bottom" ? -30 : 30;
+  state.elements.push(copy);
+  select(copy.id);
+  requestRender();
+  pushHistory();
+}
+
+// =================================================================================
+// Import de photos + détourage
+// =================================================================================
+function setDetourStatus(text, spinning = false) {
+  detourStatus.textContent = text;
+  detourStatus.classList.toggle("busy", spinning);
+  detourStatus.classList.toggle("is-visible", Boolean(text));
+}
+
+onModelProgress(({ pct, phase }) => {
+  if (phase === "cache") {
+    detourProgress.hidden = true;
+    return;
+  }
+  detourProgress.hidden = false;
+  detourProgress.value = pct;
+  setDetourStatus(`Téléchargement du modèle IA… ${pct}%`, true);
+  if (pct >= 100) {
+    detourProgress.hidden = true;
+    setDetourStatus("");
+  }
+});
+
+function startImport(elementId, kind) {
+  pendingImport = { elementId, kind };
+  hiddenFileInput.value = "";
+  hiddenFileInput.click();
+}
+
+hiddenFileInput.addEventListener("change", async () => {
+  const file = hiddenFileInput.files?.[0];
+  const target = pendingImport;
+  pendingImport = null;
+  if (!file || !target) return;
+  if (!file.type.startsWith("image/")) {
+    alert("Choisissez un fichier image (photo JPEG ou PNG).");
+    return;
+  }
+  if (file.size > 12 * 1024 * 1024) {
+    alert("Image trop lourde (plus de 12 Mo). Réduisez-la ou prenez une photo moins grande.");
+    return;
+  }
+  await importFileInto(file, target.elementId, target.kind);
+});
+
+async function importFileInto(file, elementId, kind) {
+  setDetourStatus("Préparation de la photo…", true);
+  try {
+    const img = await fileToImage(file);
+    const origCanvas = downscaleToCanvas(img);
+    const origDataURL = origCanvas.toDataURL("image/png");
+
+    const mode = kind === "logo" ? "auto" : "auto";
+    const { canvas, modeUsed } = await removeBackground(file, { kind, mode, onStatus: (m) => setDetourStatus(m, true) });
+    const imageId = await registerImage(canvas, origDataURL, kind);
+
+    let el = state.elements.find((e) => e.id === elementId);
+    if (!el) {
+      el = makeImage({ kind, anchor: "center", x: 250, y: 0, w: 500, h: 500 });
+      state.elements.push(el);
+    }
+    el.imageId = imageId;
+    select(el.id);
+    requestRender();
+    pushHistory();
+    setDetourStatus(modeUsed === "ia" ? "Fond retiré par IA ✅" : "Fond retiré ✅");
+    setTimeout(() => setDetourStatus(""), 3500);
+  } catch (err) {
+    console.error("Import échoué", err);
+    setDetourStatus("Impossible de traiter cette photo. Réessayez avec une autre.", false);
+    setTimeout(() => setDetourStatus(""), 5000);
+  }
+}
+
+/** Re-détoure la photo d'un élément avec un mode imposé. */
+async function retryDetour(el, mode) {
+  const entry = state.images[el.imageId];
+  if (!entry?.orig) return;
+  setDetourStatus("Nouveau détourage…", true);
+  try {
+    const blob = await (await fetch(entry.orig)).blob();
+    const { canvas, modeUsed } = await removeBackground(blob, { kind: el.kind, mode, onStatus: (m) => setDetourStatus(m, true) });
+    await updateImageSrc(el.imageId, canvas);
+    requestRender();
+    pushHistory();
+    setDetourStatus(mode === "aucun" ? "Photo d'origine restaurée ✅" : modeUsed === "ia" ? "Fond retiré par IA ✅" : "Fond retiré ✅");
+    setTimeout(() => setDetourStatus(""), 3500);
+  } catch (err) {
+    console.error(err);
+    setDetourStatus("Le détourage a échoué.", false);
+    setTimeout(() => setDetourStatus(""), 4000);
+  }
+}
+
+// =================================================================================
+// Panneau contextuel (colonne de droite)
+// =================================================================================
+function ctl(html) {
+  const div = document.createElement("div");
+  div.className = "ctl";
+  div.innerHTML = html;
+  return div;
+}
+
+function colorSwatchRow(current, onPick) {
+  const theme = getTheme(state.themeId);
+  const row = document.createElement("div");
+  row.className = "swatch-row";
+  const options = [
+    ["auto", null],
+    ["#ffffff", "#ffffff"],
+    ["#1c2b28", "#1c2b28"],
+    [theme.band, theme.band],
+    [theme.accent, theme.accent],
+  ];
+  options.forEach(([value, hex]) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "swatch";
+    b.title = value === "auto" ? "Couleur automatique (thème)" : value;
+    b.style.background = hex || `linear-gradient(135deg, ${theme.band}, ${theme.accent})`;
+    if (value === "auto") b.classList.add("swatch-auto");
+    b.addEventListener("click", () => onPick(value));
+    row.appendChild(b);
+  });
+  const custom = document.createElement("input");
+  custom.type = "color";
+  custom.value = /^#/.test(current) ? current : "#333333";
+  custom.title = "Couleur personnalisée";
+  custom.addEventListener("input", () => onPick(custom.value));
+  row.appendChild(custom);
+  return row;
+}
+
+function commonButtons(el) {
+  const wrap = document.createElement("div");
+  wrap.className = "btn-row";
+  const mk = (label, cls, fn) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = `mini ${cls || ""}`;
+    b.textContent = label;
+    b.addEventListener("click", fn);
+    wrap.appendChild(b);
+  };
+  mk("⬆ Devant", "", () => {
+    el.z = (el.z || 0) + 1;
+    requestRender();
+    pushHistory();
+  });
+  mk("⬇ Derrière", "", () => {
+    el.z = Math.max(0, (el.z || 0) - 1);
+    requestRender();
+    pushHistory();
+  });
+  mk("⧉ Dupliquer", "", duplicateSelected);
+  mk("🗑 Retirer", "danger", deleteSelected);
+  return wrap;
+}
+
+function renderPanel() {
+  panel.innerHTML = "";
+  const el = getSelected();
+  const theme = getTheme(state.themeId);
+
+  if (!el) {
+    panel.appendChild(
+      ctl(`<h3>Affiche</h3><p class="hint">Cliquez sur un élément de l'affiche pour le modifier, ou utilisez les boutons « Ajouter ».</p>`)
+    );
+
+    // Thèmes de couleurs
+    const themeBlock = ctl(`<label>Couleurs du thème</label>`);
+    const row = document.createElement("div");
+    row.className = "swatch-row";
+    THEMES.forEach((t) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "swatch theme-swatch" + (t.id === state.themeId ? " active" : "");
+      b.style.background = `linear-gradient(135deg, ${t.band} 55%, ${t.accent} 55%)`;
+      b.title = t.label;
+      b.addEventListener("click", () => {
+        state.themeId = t.id;
+        requestRender();
+        renderPanel();
+        pushHistory();
+      });
+      row.appendChild(b);
+    });
+    themeBlock.appendChild(row);
+    panel.appendChild(themeBlock);
+
+    // Fond
+    const bgBlock = ctl(`<label>Fond de l'affiche</label>`);
+    const sel = document.createElement("select");
+    [
+      ["none", "Uni (couleur du thème)"],
+      ["bubbles", "Bulles"],
+      ["waves", "Vagues"],
+      ["dots", "Pois"],
+    ].forEach(([v, l]) => {
+      const o = document.createElement("option");
+      o.value = v;
+      o.textContent = l;
+      if (state.bg.pattern === v && state.bg.mode === "theme") o.selected = true;
+      sel.appendChild(o);
+    });
+    sel.addEventListener("change", () => {
+      state.bg.mode = "theme";
+      state.bg.pattern = sel.value;
+      requestRender();
+      pushHistory();
+    });
+    bgBlock.appendChild(sel);
+    const regen = document.createElement("button");
+    regen.type = "button";
+    regen.className = "mini";
+    regen.textContent = "🎲 Varier le motif";
+    regen.addEventListener("click", () => {
+      state.bg.seed = Math.floor(Math.random() * 1e9);
+      requestRender();
+      pushHistory();
+    });
+    bgBlock.appendChild(regen);
+    panel.appendChild(bgBlock);
+
+    const solidBlock = ctl(`<label>Ou une couleur unie personnalisée</label>`);
+    const colorInput = document.createElement("input");
+    colorInput.type = "color";
+    colorInput.value = state.bg.mode === "solid" && state.bg.color ? state.bg.color : "#eef7f2";
+    colorInput.addEventListener("input", () => {
+      state.bg.mode = "solid";
+      state.bg.color = colorInput.value;
+      requestRender();
+    });
+    colorInput.addEventListener("change", pushHistory);
+    solidBlock.appendChild(colorInput);
+    panel.appendChild(solidBlock);
+    return;
+  }
+
+  if (el.type === "text") {
+    const block = ctl(`<h3>Texte</h3>`);
+    const ta = document.createElement("textarea");
+    ta.value = el.text;
+    ta.rows = 3;
+    ta.setAttribute("data-autofocus", "");
+    ta.addEventListener("input", () => {
+      el.text = ta.value;
+      requestRender();
+    });
+    ta.addEventListener("change", pushHistory);
+    block.appendChild(ta);
+    panel.appendChild(block);
+
+    const styleBlock = ctl(`<label>Style</label>`);
+    const fontSel = document.createElement("select");
+    [
+      ["sans", "Moderne (Poppins)"],
+      ["serif", "Élégante (Playfair)"],
+    ].forEach(([v, l]) => {
+      const o = document.createElement("option");
+      o.value = v;
+      o.textContent = l;
+      if (el.font === v) o.selected = true;
+      fontSel.appendChild(o);
+    });
+    fontSel.addEventListener("change", () => {
+      el.font = fontSel.value;
+      requestRender();
+      pushHistory();
+    });
+    styleBlock.appendChild(fontSel);
+
+    const sizeRow = document.createElement("div");
+    sizeRow.className = "btn-row";
+    const mkSize = (label, delta) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "mini";
+      b.textContent = label;
+      b.addEventListener("click", () => {
+        el.size = Math.max(14, Math.min(320, el.size + delta));
+        requestRender();
+        pushHistory();
+      });
+      sizeRow.appendChild(b);
+    };
+    mkSize("A−", -4);
+    mkSize("A+", +4);
+    const boldBtn = document.createElement("button");
+    boldBtn.type = "button";
+    boldBtn.className = "mini" + (el.weight >= 700 ? " active" : "");
+    boldBtn.textContent = "Gras";
+    boldBtn.addEventListener("click", () => {
+      el.weight = el.weight >= 700 ? 400 : 700;
+      requestRender();
+      renderPanel();
+      pushHistory();
+    });
+    sizeRow.appendChild(boldBtn);
+    ["left", "center", "right"].forEach((align) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "mini" + (el.align === align ? " active" : "");
+      b.textContent = align === "left" ? "Gauche" : align === "center" ? "Centré" : "Droite";
+      b.title = "Alignement du texte";
+      b.addEventListener("click", () => {
+        el.align = align;
+        requestRender();
+        renderPanel();
+        pushHistory();
+      });
+      sizeRow.appendChild(b);
+    });
+    styleBlock.appendChild(sizeRow);
+
+    const colorBlock = ctl(`<label>Couleur du texte</label>`);
+    colorBlock.appendChild(
+      colorSwatchRow(resolveColor(el.color, theme), (value) => {
+        el.color = value === "auto" ? "text" : value;
+        requestRender();
+        renderPanel();
+        pushHistory();
+      })
+    );
+    panel.appendChild(styleBlock);
+    panel.appendChild(colorBlock);
+
+    // Contrôle de lisibilité : texte vs surface située dessous.
+    const box = layout.get(el.id);
+    if (box) {
+      const under = state.elements.find((band) => {
+        if (band.type !== "band") return false;
+        const bb = layout.get(band.id);
+        if (!bb) return false;
+        const overlapY = Math.min(box.y + box.h, bb.y + bb.h) - Math.max(box.y, bb.y);
+        return overlapY > box.h * 0.5;
+      });
+      const bgHex = under ? resolveColor(under.fill, theme) : theme.bg;
+      const fgHex = resolveColor(el.color, theme);
+      if (contrastRatio(fgHex, bgHex) < 3) {
+        const warn = ctl(`<div class="warn">⚠️ Ce texte risque d'être peu lisible sur ce fond.</div>`);
+        const fix = document.createElement("button");
+        fix.type = "button";
+        fix.className = "mini";
+        fix.textContent = "Corriger automatiquement";
+        fix.addEventListener("click", () => {
+          el.color = contrastRatio("#ffffff", bgHex) >= contrastRatio("#1c2b28", bgHex) ? "#ffffff" : "#1c2b28";
+          requestRender();
+          renderPanel();
+          pushHistory();
+        });
+        warn.appendChild(fix);
+        panel.appendChild(warn);
+      }
+    }
+  } else if (el.type === "image") {
+    const block = ctl(`<h3>${el.kind === "logo" ? "Logo" : "Photo produit"}</h3>`);
+    const replaceBtn = document.createElement("button");
+    replaceBtn.type = "button";
+    replaceBtn.className = "primary";
+    replaceBtn.textContent = el.imageId ? "Remplacer la photo" : "Choisir une photo";
+    replaceBtn.addEventListener("click", () => startImport(el.id, el.kind));
+    block.appendChild(replaceBtn);
+    panel.appendChild(block);
+
+    if (el.imageId) {
+      const detourBlock = ctl(`<label>Détourage (fond retiré)</label><p class="hint">Le fond n'est pas bien retiré ? Essayez :</p>`);
+      const row = document.createElement("div");
+      row.className = "btn-row";
+      [
+        ["auto", "Auto"],
+        ["ia", "IA"],
+        ["couleur", "Fond uni"],
+        ["aucun", "Garder l'original"],
+      ].forEach(([mode, label]) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "mini";
+        b.textContent = label;
+        b.addEventListener("click", () => retryDetour(el, mode));
+        row.appendChild(b);
+      });
+      detourBlock.appendChild(row);
+      const brushBtn = document.createElement("button");
+      brushBtn.type = "button";
+      brushBtn.textContent = "🖌 Retoucher à la main";
+      brushBtn.addEventListener("click", () => openRefineModal(el));
+      detourBlock.appendChild(brushBtn);
+      panel.appendChild(detourBlock);
+    }
+  } else if (el.type === "badge") {
+    const block = ctl(`<h3>Pastille promo</h3>`);
+    const input = document.createElement("textarea");
+    input.rows = 2;
+    input.value = el.text;
+    input.setAttribute("data-autofocus", "");
+    input.addEventListener("input", () => {
+      el.text = input.value;
+      requestRender();
+    });
+    input.addEventListener("change", pushHistory);
+    block.appendChild(input);
+    panel.appendChild(block);
+
+    const shapeBlock = ctl(`<label>Forme</label>`);
+    const row = document.createElement("div");
+    row.className = "btn-row";
+    [
+      ["star", "★ Étoile"],
+      ["circle", "● Rond"],
+      ["pill", "▬ Bandeau"],
+    ].forEach(([shape, label]) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "mini" + (el.shape === shape ? " active" : "");
+      b.textContent = label;
+      b.addEventListener("click", () => {
+        el.shape = shape;
+        if (shape === "pill" && el.h > el.w * 0.5) el.h = Math.round(el.w * 0.4);
+        if (shape !== "pill") el.h = el.w;
+        requestRender();
+        renderPanel();
+        pushHistory();
+      });
+      row.appendChild(b);
+    });
+    shapeBlock.appendChild(row);
+    panel.appendChild(shapeBlock);
+
+    const colorBlock = ctl(`<label>Couleur</label>`);
+    colorBlock.appendChild(
+      colorSwatchRow(resolveColor(el.fill, theme), (value) => {
+        el.fill = value === "auto" ? "accent" : value;
+        requestRender();
+        pushHistory();
+      })
+    );
+    panel.appendChild(colorBlock);
+  } else if (el.type === "band") {
+    const block = ctl(`<h3>Bandeau</h3><label>Couleur</label>`);
+    block.appendChild(
+      colorSwatchRow(resolveColor(el.fill, theme), (value) => {
+        el.fill = value === "auto" ? "band" : value;
+        requestRender();
+        pushHistory();
+      })
+    );
+    const alphaLabel = ctl(`<label>Transparence</label>`);
+    const range = document.createElement("input");
+    range.type = "range";
+    range.min = 30;
+    range.max = 100;
+    range.value = Math.round((el.alpha ?? 1) * 100);
+    range.addEventListener("input", () => {
+      el.alpha = Number(range.value) / 100;
+      requestRender();
+    });
+    range.addEventListener("change", pushHistory);
+    alphaLabel.appendChild(range);
+    const shapeRow = document.createElement("div");
+    shapeRow.className = "btn-row";
+    [
+      ["rect", "Droit"],
+      ["slant", "Incliné"],
+      ["pill", "Arrondi"],
+    ].forEach(([shape, label]) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "mini" + (el.shape === shape ? " active" : "");
+      b.textContent = label;
+      b.addEventListener("click", () => {
+        el.shape = shape;
+        requestRender();
+        renderPanel();
+        pushHistory();
+      });
+      shapeRow.appendChild(b);
+    });
+    panel.appendChild(block);
+    panel.appendChild(alphaLabel);
+    const shapeBlock = ctl(`<label>Forme</label>`);
+    shapeBlock.appendChild(shapeRow);
+    panel.appendChild(shapeBlock);
+  }
+
+  panel.appendChild(commonButtons(el));
+  panel.appendChild(
+    ctl(`<p class="hint">Astuce : glissez pour déplacer · coin bleu pour la taille · flèches du clavier pour ajuster · Suppr pour retirer.</p>`)
+  );
+}
+
+// =================================================================================
+// Retouche manuelle du détourage (gomme / restauration)
+// =================================================================================
+function openRefineModal(el) {
+  const entry = state.images[el.imageId];
+  if (!entry) return;
+  const modal = showModal(`
+    <h2>Retoucher le détourage</h2>
+    <p class="hint">🧽 <b>Gommer</b> efface le fond restant · 🖌 <b>Restaurer</b> fait réapparaître ce que l'IA a trop effacé. Dessinez directement sur l'image.</p>
+    <div class="btn-row" id="refineTools">
+      <button type="button" class="mini active" data-tool="erase">🧽 Gommer</button>
+      <button type="button" class="mini" data-tool="restore">🖌 Restaurer</button>
+      <label class="brush-size">Taille <input type="range" id="brushSize" min="8" max="80" value="30" /></label>
+    </div>
+    <div class="refine-wrap"><canvas id="refineCanvas"></canvas></div>
+    <div class="btn-row modal-actions">
+      <button type="button" class="secondary" data-close>Annuler</button>
+      <button type="button" class="primary" id="refineApply">Valider la retouche</button>
+    </div>
+  `);
+
+  const canvas = modal.querySelector("#refineCanvas");
+  const wrap = modal.querySelector(".refine-wrap");
+  const work = document.createElement("canvas"); // pleine résolution
+  work.width = entry.w;
+  work.height = entry.h;
+  const workCtx = work.getContext("2d");
+  let origImg = null;
+  let tool = "erase";
+
+  Promise.all([loadImageElement(entry.src), loadImageElement(entry.orig)]).then(([cut, orig]) => {
+    origImg = orig;
+    workCtx.drawImage(cut, 0, 0);
+    const maxW = Math.min(560, wrap.clientWidth || 560);
+    const scale = Math.min(1, maxW / work.width);
+    canvas.width = Math.round(work.width * scale);
+    canvas.height = Math.round(work.height * scale);
+    redraw();
+  });
+
+  const redraw = () => {
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(work, 0, 0, canvas.width, canvas.height);
+  };
+
+  modal.querySelectorAll("#refineTools [data-tool]").forEach((b) => {
+    b.addEventListener("click", () => {
+      tool = b.dataset.tool;
+      modal.querySelectorAll("#refineTools [data-tool]").forEach((x) => x.classList.toggle("active", x === b));
+    });
+  });
+
+  let painting = false;
+  const paint = (event) => {
+    if (!origImg) return;
+    const rect = canvas.getBoundingClientRect();
+    const fx = (event.clientX - rect.left) / rect.width;
+    const fy = (event.clientY - rect.top) / rect.height;
+    const x = fx * work.width;
+    const y = fy * work.height;
+    const r = (Number(modal.querySelector("#brushSize").value) / rect.width) * work.width;
+    workCtx.save();
+    workCtx.beginPath();
+    workCtx.arc(x, y, r, 0, Math.PI * 2);
+    if (tool === "erase") {
+      workCtx.globalCompositeOperation = "destination-out";
+      workCtx.fill();
+    } else {
+      workCtx.clip();
+      workCtx.globalCompositeOperation = "source-over";
+      workCtx.drawImage(origImg, 0, 0, work.width, work.height);
+    }
+    workCtx.restore();
+    redraw();
+  };
+  canvas.addEventListener("pointerdown", (e) => {
+    painting = true;
+    capturePointer(canvas, e.pointerId);
+    paint(e);
+  });
+  canvas.addEventListener("pointermove", (e) => painting && paint(e));
+  canvas.addEventListener("pointerup", () => (painting = false));
+  canvas.addEventListener("pointercancel", () => (painting = false));
+
+  modal.querySelector("#refineApply").addEventListener("click", async () => {
+    await updateImageSrc(el.imageId, work);
+    requestRender();
+    pushHistory();
+    closeModal();
+  });
+}
+
+// =================================================================================
+// Fenêtres modales génériques
+// =================================================================================
+function showModal(html) {
+  modalRoot.innerHTML = `<div class="modal-backdrop"><div class="modal">${html}</div></div>`;
+  modalRoot.hidden = false;
+  const backdrop = modalRoot.querySelector(".modal-backdrop");
+  backdrop.addEventListener("pointerdown", (e) => {
+    if (e.target === backdrop) closeModal();
+  });
+  modalRoot.querySelectorAll("[data-close]").forEach((b) => b.addEventListener("click", closeModal));
+  return modalRoot.querySelector(".modal");
+}
+
+function closeModal() {
+  modalRoot.hidden = true;
+  modalRoot.innerHTML = "";
+}
+
+// --- Assistant « Nouvelle affiche » : modèle puis format, avec aperçus. -----------
+function openWizard({ firstRun = false } = {}) {
+  const modal = showModal(`
+    <h2>Nouvelle affiche</h2>
+    <p class="hint">1. Choisissez un modèle — vous pourrez tout modifier ensuite.</p>
+    <div class="card-grid" id="wizardTemplates"></div>
+    ${firstRun ? "" : '<div class="btn-row modal-actions"><button type="button" class="secondary" data-close>Annuler</button></div>'}
+  `);
+  const grid = modal.querySelector("#wizardTemplates");
+  const themeId = state?.themeId || THEMES[0].id;
+
+  TEMPLATES.forEach((tpl) => {
+    const card = document.createElement("button");
+    card.type = "button";
+    card.className = "pick-card";
+    const demo = buildState(tpl.id, "a4-portrait", themeId);
+    const thumb = renderToCanvas(demo, assets, 240, { placeholders: true });
+    thumb.className = "pick-thumb";
+    card.appendChild(thumb);
+    const label = document.createElement("div");
+    label.innerHTML = `<b>${tpl.label}</b><small>${tpl.desc}</small>`;
+    card.appendChild(label);
+    card.addEventListener("click", () => openWizardFormatStep(tpl.id, firstRun));
+    grid.appendChild(card);
+  });
+}
+
+function openWizardFormatStep(templateId, firstRun) {
+  const modal = showModal(`
+    <h2>Nouvelle affiche</h2>
+    <p class="hint">2. Choisissez le format.</p>
+    <div class="card-grid" id="wizardFormats"></div>
+    <div class="btn-row modal-actions"><button type="button" class="secondary" id="wizardBack">← Retour aux modèles</button></div>
+  `);
+  const grid = modal.querySelector("#wizardFormats");
+  const themeId = state?.themeId || THEMES[0].id;
+
+  FORMATS.forEach((fmt) => {
+    const card = document.createElement("button");
+    card.type = "button";
+    card.className = "pick-card";
+    const demo = buildState(templateId, fmt.id, themeId);
+    const thumbW = fmt.ratio >= 1 ? 150 : 210;
+    const thumb = renderToCanvas(demo, assets, thumbW, { placeholders: true });
+    thumb.className = "pick-thumb";
+    card.appendChild(thumb);
+    const label = document.createElement("div");
+    label.innerHTML = `<b>${fmt.label}</b><small>${fmt.sub}</small>`;
+    card.appendChild(label);
+    card.addEventListener("click", () => {
+      applyNewState(buildState(templateId, fmt.id, themeId));
+      closeModal();
+    });
+    grid.appendChild(card);
+  });
+  modal.querySelector("#wizardBack").addEventListener("click", () => openWizard({ firstRun }));
+}
+
+// --- Changement de format seul (conserve le contenu actuel). ----------------------
+function openFormatModal() {
+  const modal = showModal(`
+    <h2>Format de l'affiche</h2>
+    <p class="hint">Votre contenu est conservé : les éléments ancrés en haut et en bas suivent le nouveau format.</p>
+    <div class="card-grid" id="formatCards"></div>
+    <div class="btn-row modal-actions"><button type="button" class="secondary" data-close>Annuler</button></div>
+  `);
+  const grid = modal.querySelector("#formatCards");
+  FORMATS.forEach((fmt) => {
+    const card = document.createElement("button");
+    card.type = "button";
+    card.className = "pick-card" + (fmt.id === state.formatId ? " active" : "");
+    const preview = JSON.parse(JSON.stringify(state));
+    preview.formatId = fmt.id;
+    const thumbW = fmt.ratio >= 1 ? 150 : 210;
+    const thumb = renderToCanvas(preview, assets, thumbW, { placeholders: true });
+    thumb.className = "pick-thumb";
+    card.appendChild(thumb);
+    const label = document.createElement("div");
+    label.innerHTML = `<b>${fmt.label}</b><small>${fmt.sub}</small>`;
+    card.appendChild(label);
+    card.addEventListener("click", () => {
+      state.formatId = fmt.id;
+      requestRender();
+      pushHistory();
+      closeModal();
+    });
+    grid.appendChild(card);
+  });
+}
+
+function applyNewState(next) {
+  // Ré-attache les photos déjà importées aux emplacements du nouveau modèle.
+  if (state?.images) {
+    const oldImages = state.images;
+    const products = Object.entries(oldImages).filter(([, v]) => v.kind === "product");
+    const logos = Object.entries(oldImages).filter(([, v]) => v.kind === "logo");
+    next.images = { ...oldImages };
+    let pi = 0;
+    for (const el of next.elements) {
+      if (el.type === "image" && el.kind === "product" && products[pi]) {
+        el.imageId = products[pi][0];
+        pi += 1;
+      } else if (el.type === "image" && el.kind === "logo" && logos[0]) {
+        el.imageId = logos[0][0];
+      }
+    }
+  }
+  state = next;
+  selectedId = null;
+  history = [];
+  historyIndex = -1;
+  syncAssets().then(requestRender);
+  renderPanel();
+  requestRender();
+  pushHistory();
+}
+
+// =================================================================================
+// Export PNG & impression
+// =================================================================================
+function emptySlotCount() {
+  return state.elements.filter((el) => el.type === "image" && !el.imageId).length;
+}
+
+async function buildExportCanvas() {
+  await document.fonts.ready;
+  const fmt = getFormat(state.formatId);
+  return renderToCanvas(state, assets, fmt.exportW, { placeholders: false });
+}
+
+async function exportPNG() {
+  if (emptySlotCount() > 0 && !confirm("Certains emplacements photo sont encore vides : ils n'apparaîtront pas sur l'affiche. Continuer ?")) return;
+  const canvas = await buildExportCanvas();
+  canvas.toBlob((blob) => {
+    if (!blob) {
+      alert("Export impossible sur ce navigateur.");
+      return;
+    }
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    const date = new Date().toISOString().slice(0, 10);
+    link.download = `affiche-${state.templateId}-${date}.png`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(link.href), 30000);
+  }, "image/png");
+}
+
+async function printPoster() {
+  if (emptySlotCount() > 0 && !confirm("Certains emplacements photo sont encore vides : ils n'apparaîtront pas sur l'affiche. Continuer ?")) return;
+  const canvas = await buildExportCanvas();
+  const dataURL = canvas.toDataURL("image/png");
+  const fmt = getFormat(state.formatId);
+  const paper = fmt.print?.paper || "A4";
+  const orientation = fmt.print?.orientation || (fmt.ratio >= 1 ? "portrait" : "landscape");
+
+  // Impression via iframe caché : pas de fenêtre pop-up à autoriser.
+  const iframe = document.createElement("iframe");
+  iframe.style.position = "fixed";
+  iframe.style.right = "0";
+  iframe.style.bottom = "0";
+  iframe.style.width = "0";
+  iframe.style.height = "0";
+  iframe.style.border = "0";
+  iframe.srcdoc = `<!doctype html><html lang="fr"><head><meta charset="utf-8" /><title>Impression</title>
+    <style>@page{size:${paper} ${orientation};margin:0}html,body{margin:0;height:100%}img{display:block;width:100%;height:100%;object-fit:contain}</style>
+    </head><body><img src="${dataURL}" alt="Affiche" /></body></html>`;
+  document.body.appendChild(iframe);
+  iframe.onload = () => {
+    setTimeout(() => {
+      iframe.contentWindow.focus();
+      iframe.contentWindow.print();
+      setTimeout(() => iframe.remove(), 60000);
+    }, 200);
+  };
+}
+
+// =================================================================================
+// Barre latérale « Ajouter » + barre du haut
+// =================================================================================
+$("addPhotoBtn").addEventListener("click", () => {
+  // S'il reste un emplacement produit vide, on le remplit ; sinon on en crée un.
+  const slot = state.elements.find((el) => el.type === "image" && el.kind === "product" && !el.imageId);
+  if (slot) {
+    startImport(slot.id, "product");
+  } else {
+    startImport(null, "product");
+  }
+});
+
+$("addLogoBtn").addEventListener("click", () => {
+  const slot = state.elements.find((el) => el.type === "image" && el.kind === "logo" && !el.imageId);
+  if (slot) startImport(slot.id, "logo");
+  else {
+    const el = makeImage({ kind: "logo", anchor: "top", x: 740, y: 26, w: 230, h: 110, z: 8 });
+    state.elements.push(el);
+    startImport(el.id, "logo");
+  }
+});
+
+$("addTextBtn").addEventListener("click", () => {
+  const el = makeText({ anchor: "center", x: 200, y: 0, w: 600, text: "Nouveau texte", align: "center" });
+  state.elements.push(el);
+  select(el.id);
+  requestRender();
+  pushHistory();
+});
+
+$("addBadgeBtn").addEventListener("click", () => {
+  const el = makeBadge({ anchor: "center", x: 380, y: 0, w: 240, h: 240 });
+  state.elements.push(el);
+  select(el.id);
+  requestRender();
+  pushHistory();
+});
+
+$("addBandBtn").addEventListener("click", () => {
+  const el = makeBand({ anchor: "center", x: 0, y: 0, w: 1000, h: 140, z: 2 });
+  state.elements.push(el);
+  select(el.id);
+  requestRender();
+  pushHistory();
+});
+
+$("newBtn").addEventListener("click", () => openWizard({}));
+$("formatBtn").addEventListener("click", openFormatModal);
+$("undoBtn").addEventListener("click", undo);
+$("redoBtn").addEventListener("click", redo);
+$("downloadBtn").addEventListener("click", exportPNG);
+$("printBtn").addEventListener("click", printPoster);
+$("templateBtn").addEventListener("click", () => openWizard({}));
+
+window.addEventListener("resize", requestRender);
+
+// =================================================================================
+// Démarrage
+// =================================================================================
+async function boot() {
+  // Charge les polices avant le premier rendu pour des mesures de texte justes.
+  try {
+    await Promise.allSettled([
+      document.fonts.load('400 40px "Poppins"'),
+      document.fonts.load('600 40px "Poppins"'),
+      document.fonts.load('700 40px "Poppins"'),
+      document.fonts.load('700 40px "Playfair Display"'),
+    ]);
+  } catch (e) {
+    /* les polices de secours feront l'affaire */
+  }
+
+  // La sauvegarde locale ne doit JAMAIS bloquer le démarrage : certains
+  // navigateurs (navigation privée, IndexedDB verrouillé) ne répondent pas.
+  let saved = null;
+  try {
+    saved = await Promise.race([idbGet("current"), new Promise((resolve) => setTimeout(() => resolve(null), 1500))]);
+  } catch (e) {
+    /* IndexedDB indisponible : démarrage normal */
+  }
+
+  if (saved?.version === 2 && Array.isArray(saved.elements)) {
+    state = saved;
+    await syncAssets();
+    history = [snapshot()];
+    historyIndex = 0;
+    updateUndoButtons();
+    renderPanel();
+    requestRender();
+    restoreBanner.hidden = false;
+    $("restoreDismiss").addEventListener("click", () => {
+      restoreBanner.hidden = true;
+    });
+    $("restoreNew").addEventListener("click", () => {
+      restoreBanner.hidden = true;
+      openWizard({});
+    });
+  } else {
+    state = buildState("promo-produit", "a4-portrait", THEMES[0].id);
+    history = [snapshot()];
+    historyIndex = 0;
+    updateUndoButtons();
+    renderPanel();
+    requestRender();
+    openWizard({ firstRun: true });
+  }
+
+  // Précharge le modèle IA en tâche de fond (sans bloquer l'interface).
+  prepareDetour().catch(() => {});
+}
+
+boot();
