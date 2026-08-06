@@ -1,127 +1,214 @@
 ---
 layout: default
 ---
-{% unless site.data.resume %}
-  <div class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        {{ page.title }}
-        {% if page.cv_pdf %}
-          <a
-            {% if page.cv_pdf contains '://' %}
-              href="{{ page.cv_pdf }}"
-            {% else %}
-              href="{{ page.cv_pdf | prepend: 'assets/pdf/' | relative_url }}"
-            {% endif %}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="float-right"
-          >
-            <i class="fa-solid fa-file-pdf"></i>
-          </a>
-        {% endif %}
-      </h1>
-      {% if page.description %}
-        <p class="post-description">{{ page.description }}</p>
-      {% endif %}
-    </header>
+{% assign r = site.data.resume %}
 
-    <article>
-      <div class="cv">
-        {% for entry in site.data.cv %}
-          <a class="anchor" id="{{ entry.title }}"></a>
-          <div class="card mt-3 p-3">
-            <h3 class="card-title font-weight-medium">{{ entry.title }}</h3>
-            <div>
-              {% if entry.type == 'list' %}
-                {% include cv/list.liquid %}
-              {% elsif entry.type == 'map' %}
-                {% include cv/map.liquid %}
-              {% elsif entry.type == 'nested_list' %}
-                {% include cv/nested_list.liquid %}
-              {% elsif entry.type == 'time_table' %}
-                {% include cv/time_table.liquid %}
-              {% elsif entry.type == 'list_groups' %}
-                {% include cv/list_groups.liquid %}
-              {% else %}
-                {{ entry.contents }}
-              {% endif %}
-            </div>
-          </div>
-        {% endfor %}
-      </div>
-    </article>
-  </div>
-{% else %}
-  <div class="post">
-    <header class="post-header">
-      <h1 class="post-title">
-        {{ page.title }}
-        {% if page.cv_pdf %}
-          <a
-            {% if page.cv_pdf contains '://' %}
-              href="{{ page.cv_pdf }}"
-            {% else %}
-              href="{{ page.cv_pdf | prepend: 'assets/pdf/' | relative_url }}"
-            {% endif %}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="float-right"
-          >
-            <i class="fa-solid fa-file-pdf"></i>
-          </a>
-        {% endif %}
-      </h1>
-      {% if page.description %}
-        <p class="post-description">{{ page.description }}</p>
+<div class="prose">
+  <header class="post-header">
+    <h1>{{ page.title }}</h1>
+    {% if r.basics.label %}
+      <p class="description">{{ r.basics.label }}</p>
+    {% endif %}
+    <p class="meta">
+      {% if r.basics.location.city %}
+        {{ r.basics.location.city -}}
+        {%- if r.basics.location.countryCode %}, {{ r.basics.location.countryCode }}{% endif %}
+        <span class="sep">·</span>
       {% endif %}
-    </header>
+      {% if r.basics.email %}
+        <a href="mailto:{{ r.basics.email }}">{{ r.basics.email }}</a>
+      {% endif %}
+      {% for profile in r.basics.profiles %}
+        <span class="sep">·</span><a href="{{ profile.url }}" rel="noopener" target="_blank">{{ profile.network }}</a>
+      {% endfor %}
+      {% if page.cv_pdf %}
+        <span class="sep">·</span>
+        <a
+          href="{% if page.cv_pdf contains '://' %}{{ page.cv_pdf }}{% else %}{{ page.cv_pdf | prepend: '/assets/pdf/' | relative_url }}{% endif %}"
+          rel="noopener"
+          target="_blank"
+        >
+          PDF
+        </a>
+      {% endif %}
+    </p>
+  </header>
 
-    <article>
-      <div class="cv">
-        {% for data in site.data.resume %}
-          {% if site.jsonresume and site.jsonresume.size > 0 %}
-            {% unless site.jsonresume contains data[0] %}
-              {% continue %}
-            {% endunless %}
+  {% if r.basics.summary %}
+    <p>{{ r.basics.summary }}</p>
+  {% endif %}
+</div>
+
+{% if r.work.size > 0 %}
+  <section class="cv-section">
+    <h2 class="section-heading">Experience</h2>
+    {% for job in r.work %}
+      <div class="cv-entry">
+        <h3>{{ job.position }}</h3>
+        <p class="where">
+          {% if job.url != '' %}
+            <a href="{{ job.url }}" rel="noopener" target="_blank">{{ job.name }}</a>
+          {% else %}
+            {{ job.name }}
           {% endif %}
-          {% if data[0] == 'meta' or data[1].size == 0 %} {% continue %} {% endif %}
-          <a class="anchor" id="{{ data[0] }}"></a>
-          <div class="card mt-3 p-3">
-            <h3 class="card-title font-weight-medium">{{ data[0] | capitalize }}</h3>
-            <div>
-              {% case data[0] %}
-                {% when 'basics' %}
-                  {% include resume/basics.liquid %}
-                {% when 'education' %}
-                  {% include resume/education.liquid %}
-                {% when 'work' %}
-                  {% include resume/work.liquid %}
-                {% when 'volunteer' %}
-                  {% include resume/volunteer.liquid %}
-                {% when 'projects' %}
-                  {% include resume/projects.liquid %}
-                {% when 'awards' %}
-                  {% include resume/awards.liquid %}
-                {% when 'skills' %}
-                  {% include resume/skills.liquid %}
-                {% when 'publications' %}
-                  {% include resume/publications.liquid %}
-                {% when 'languages' %}
-                  {% include resume/languages.liquid %}
-                {% when 'interests' %}
-                  {% include resume/interests.liquid %}
-                {% when 'certificates' %}
-                  {% include resume/certificates.liquid %}
-                {% when 'references' %}
-                  {% include resume/references.liquid %}
-                {% else %}
-
-              {% endcase %}
-            </div>
-          </div>
-        {% endfor %}
+          <span class="sep">·</span>
+          <span class="when">
+            {% include cv_dates.liquid start=job.startDate end=job.endDate %}
+          </span>
+        </p>
+        {% if job.summary != '' %}
+          <p>{{ job.summary }}</p>
+        {% endif %}
+        {% if job.highlights.size > 0 %}
+          <ul>
+            {% for highlight in job.highlights %}
+              <li>{{ highlight }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
       </div>
-    </article>
-  </div>
-{% endunless %}
+    {% endfor %}
+  </section>
+{% endif %}
+
+{% if r.education.size > 0 %}
+  <section class="cv-section">
+    <h2 class="section-heading">Education</h2>
+    {% for school in r.education %}
+      <div class="cv-entry">
+        <h3>
+          {{ school.studyType -}}
+          {%- if school.area != '' %}, {{ school.area }}{% endif %}
+        </h3>
+        <p class="where">
+          {% if school.url != '' %}
+            <a href="{{ school.url }}" rel="noopener" target="_blank">{{ school.institution }}</a>
+          {% else %}
+            {{ school.institution }}
+          {% endif %}
+          <span class="sep">·</span>
+          <span class="when">
+            {% include cv_dates.liquid start=school.startDate end=school.endDate %}
+          </span>
+        </p>
+        {% if school.score != '' %}
+          <p class="meta">{{ school.score }}</p>
+        {% endif %}
+        {% if school.courses.size > 0 %}
+          <ul class="cv-keywords">
+            {% for course in school.courses %}
+              <li>{{ course }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </section>
+{% endif %}
+
+{% if r.skills.size > 0 %}
+  <section class="cv-section">
+    <h2 class="section-heading">Skills</h2>
+    {% for skill in r.skills %}
+      <div class="cv-entry">
+        <h3>{{ skill.name }}</h3>
+        {% if skill.keywords.size > 0 %}
+          <ul class="cv-keywords">
+            {% for keyword in skill.keywords %}
+              <li>{{ keyword }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </section>
+{% endif %}
+
+{% if r.certificates.size > 0 %}
+  <section class="cv-section">
+    <h2 class="section-heading">Certificates</h2>
+    {% for certificate in r.certificates %}
+      <div class="cv-entry">
+        <h3>
+          {% if certificate.url != '' %}
+            <a href="{{ certificate.url }}" rel="noopener" target="_blank">{{ certificate.name }}</a>
+          {% else %}
+            {{ certificate.name }}
+          {% endif %}
+        </h3>
+        <p class="where">
+          {{ certificate.issuer }}
+          {% if certificate.date != '' %}
+            <span class="sep">·</span><span class="when">{{ certificate.date }}</span>
+          {% endif %}
+        </p>
+      </div>
+    {% endfor %}
+  </section>
+{% endif %}
+
+{% if r.awards.size > 0 %}
+  <section class="cv-section">
+    <h2 class="section-heading">Awards</h2>
+    {% for award in r.awards %}
+      <div class="cv-entry">
+        <h3>{{ award.title }}</h3>
+        <p class="where">
+          {{ award.awarder }}
+          {% if award.date != '' %}
+            <span class="sep">·</span><span class="when">{{ award.date }}</span>
+          {% endif %}
+        </p>
+        {% if award.summary != '' %}
+          <p>{{ award.summary }}</p>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </section>
+{% endif %}
+
+{% if r.publications.size > 0 %}
+  <section class="cv-section">
+    <h2 class="section-heading">Publications</h2>
+    {% for publication in r.publications %}
+      <div class="cv-entry">
+        <h3>
+          {% if publication.url != '' %}
+            <a href="{{ publication.url }}" rel="noopener" target="_blank">{{ publication.name }}</a>
+          {% else %}
+            {{ publication.name }}
+          {% endif %}
+        </h3>
+        <p class="where">
+          {{ publication.publisher }}
+          {% if publication.releaseDate != '' %}
+            <span class="sep">·</span><span class="when">{{ publication.releaseDate }}</span>
+          {% endif %}
+        </p>
+        {% if publication.summary != '' %}
+          <p>{{ publication.summary }}</p>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </section>
+{% endif %}
+
+{% if r.languages.size > 0 or r.interests.size > 0 %}
+  <section class="cv-section">
+    <h2 class="section-heading">Languages and interests</h2>
+    <dl>
+      {% for language in r.languages %}
+        <div class="cv-pair">
+          <dt>{{ language.language }}</dt>
+          <dd>{{ language.fluency }}</dd>
+        </div>
+      {% endfor %}
+      {% for interest in r.interests %}
+        <div class="cv-pair">
+          <dt>{{ interest.name }}</dt>
+          <dd>{{ interest.keywords | join: ', ' }}</dd>
+        </div>
+      {% endfor %}
+    </dl>
+  </section>
+{% endif %}

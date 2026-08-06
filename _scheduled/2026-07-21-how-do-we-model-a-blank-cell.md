@@ -31,7 +31,7 @@ Where the previous post left it: 65 withheld cells, 61 of them in one départeme
 Partial pooling in words before any formula. A territory with little data borrows strength from the others. A territory with plenty does not need to. Say what the dial is and what turns it.
 
 <figure>
-  <img src="/assets/img/shrinkage-dotplot.png" class="img-fluid rounded z-depth-1" alt="Each département's own estimate, and the same estimate after partial pooling" loading="lazy">
+  <img src="/assets/img/shrinkage-dotplot.png" alt="Each département's own estimate, and the same estimate after partial pooling" loading="lazy">
   <figcaption><strong>Figure 1.</strong> EDIT. On the left, each département on its own data. On the right, the same estimates after pooling. Mayotte (976) moves from 0.73% to 1.04%, Guyane (973) from 1.31% to 1.70%, and Nord (59) barely moves at all.</figcaption>
 </figure>
 
@@ -49,7 +49,7 @@ The shared prior on $$\alpha_d$$ is the whole mechanism, one line of notation fo
 The second decision, and the one this series is really about: what a withheld cell contributes.
 
 <figure>
-  <img src="/assets/img/censoring-numberline.png" class="img-fluid rounded z-depth-1" alt="A published cell has one value; a withheld cell has eleven still-possible values" loading="lazy">
+  <img src="/assets/img/censoring-numberline.png" alt="A published cell has one value; a withheld cell has eleven still-possible values" loading="lazy">
   <figcaption><strong>Figure 2.</strong> EDIT. A published cell carries one number. A withheld cell rules out nothing below the threshold.</figcaption>
 </figure>
 

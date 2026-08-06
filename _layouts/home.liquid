@@ -1,0 +1,46 @@
+---
+layout: default
+---
+<div class="intro">
+  <div class="prose">
+    <h1>
+      {{ site.first_name }}
+      {{ site.last_name }}
+    </h1>
+    {% if page.subtitle %}
+      <p class="label">{{ page.subtitle }}</p>
+    {% endif %}
+    {{ content }}
+  </div>
+
+  {% if page.profile.image %}
+    <img
+      class="intro-portrait"
+      src="{{ page.profile.image | prepend: '/assets/img/' | relative_url }}"
+      alt="{{ site.first_name }} {{ site.last_name }}"
+      width="152"
+      height="152"
+    >
+  {% endif %}
+</div>
+
+{% assign recent = site.posts | slice: 0, 3 %}
+{% if recent.size > 0 %}
+  <h2 class="section-heading">Recent writing</h2>
+  <ul class="post-list">
+    {% for post in recent %}
+      <li>
+        <h3>
+          <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+        </h3>
+        {% if post.description %}
+          <p>{{ post.description }}</p>
+        {% endif %}
+        <p class="meta">
+          <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: '%-d %B %Y' }}</time>
+        </p>
+      </li>
+    {% endfor %}
+  </ul>
+  <p class="meta" style="margin-top: 1.5rem"><a href="{{ '/blog/' | relative_url }}">All writing</a></p>
+{% endif %}
