@@ -7,29 +7,6 @@ tags: mnar censoring screening dataviz
 categories: posts
 ---
 
-<!--
-  PLACEHOLDER PROSE, v1. Written to be rewritten.
-  MESSAGE (one): where suppression concentrates decides which question is honest.
-  Post 2 of 5. Previous: why is this cell blank. Next: how we model one.
-
-  SCOPE, the thing to keep straight:
-    all «Autres cancers» cells, every age and both sexes -> 12.1% withheld.
-    the worked example, women 40 to 74 only              ->  0.34% withheld,
-      65 cells, 61 of them Mayotte, 4 Lozère.
-
-  FIGURES BEHIND THE MAP READING (2022, computed from the data, not recalled):
-    Mayotte      128,920 people   8.3% aged 60+   68.3% withheld
-    Guyane       206,070         13.2%            35.0%
-    Lozère        74,000         34.4%            39.2%
-    Creuse       112,010         39.9%            33.3%
-    Belfort      138,350         27.7%            30.8%
-    Guadeloupe   400,730         29.0%            19.2%
-    La Réunion   953,110         18.8%             0.8%
-    Nord       2,591,690         24.2%             0.0%
-    across all départements: withheld vs log10(population) r = -0.90
-                             withheld vs share aged 60+    r = +0.26
--->
-
 The data is the Cnam Cartographie des pathologies, published on data.ameli.fr under an open licence. It gives, for each pathology group, the number of people treated and the resulting prevalence, broken down by département, by sex, by five-year age band, for each year from 2015 to 2023. It is a large and unusually fine-grained table, and it is that fineness which makes the suppression visible at all.
 
 The worked example throughout is the group Cnam calls «Autres cancers», in women aged 40 to 74.
@@ -38,7 +15,7 @@ Two words on why. Cervical cancer is not broken out anywhere in this dataset. Cn
 
 <figure>
   <img src="/assets/img/ns-rate-map.png" alt="Share of withheld cells by département for Autres cancers" loading="lazy">
-  <figcaption><strong>Figure 1.</strong> EDIT. Share of withheld cells by département, across all «Autres cancers» cells, every age band and both sexes. Mayotte 73%, Lozère 38%, Guyane 38%.</figcaption>
+  <figcaption><strong>Figure 1.</strong> Share of withheld cells by département, across all «Autres cancers» cells, every age band and both sexes. Mayotte 73%, Lozère 38%, Guyane 38%.</figcaption>
 </figure>
 
 The first reading of the map is the obvious one, and it holds. Small territories lose more cells. Across the hundred départements the share withheld tracks population closely, and Nord, with two and a half million people, loses none at all.

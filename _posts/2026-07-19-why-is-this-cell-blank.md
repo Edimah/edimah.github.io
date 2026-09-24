@@ -7,14 +7,6 @@ tags: mnar censoring screening bayesian
 categories: posts
 ---
 
-<!--
-  PLACEHOLDER PROSE, v1. Written to be rewritten.
-  MESSAGE (one): a blank is a decision that depends on the count, which is
-  what makes the missingness not-at-random.
-  Figures are final. Captions marked EDIT are placeholders.
-  Post 1 of 5. Next: where the blanks cluster.
--->
-
 Working with cancer screening data, I kept meeting the same thing. A prevalence table, and no value anywhere below eleven. The cell was not empty because nobody had counted. It was empty because someone had counted, found fewer than eleven people, and judged that publishing the number would expose them.
 
 I thought it was clever. Three women in one age band in one small territory is close to naming them.
@@ -23,7 +15,7 @@ What I wanted to know was what it does to a model.
 
 <figure>
   <img src="/assets/img/redacted-table.png" alt="An excerpt of the published table, with suppressed counts shown as NS" loading="lazy">
-  <figcaption><strong>Figure 1.</strong> EDIT. An excerpt of the table as published. The withheld cells carry no number at all.</figcaption>
+  <figcaption><strong>Figure 1.</strong> An excerpt of the table as published. The withheld cells carry no number at all.</figcaption>
 </figure>
 
 The rule is simple to state. If the count is too small, no count is published. What is left behind is not a zero, and it is not an oversight. It is a decision, and the decision was taken by looking at the very number we would like to have.
@@ -36,7 +28,7 @@ The reason is in the arithmetic. The threshold is applied to a count, and a coun
 
 <figure>
   <img src="/assets/img/ns-threshold-floor.png" alt="Share of cells withheld across deciles of population and of expected case count" loading="lazy">
-  <figcaption><strong>Figure 2.</strong> EDIT. Share of cells withheld, across tenths of population on the left and tenths of expected case count on the right. By expected count the share runs from 93% to 0%. By population it runs only from 13% to 1%, and not even in order.</figcaption>
+  <figcaption><strong>Figure 2.</strong> Share of cells withheld, across tenths of population on the left and tenths of expected case count on the right. By expected count the share runs from 93% to 0%. By population it runs only from 13% to 1%, and not even in order.</figcaption>
 </figure>
 
 The right panel sorts cells by how many cases we would expect them to contain. It separates them almost perfectly. The left panel sorts the same cells by how many people they contain, and it barely separates them at all. The very smallest populations are in fact less affected than the tenth just above them.
