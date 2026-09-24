@@ -12,3 +12,11 @@ node_modules/
 vendor
 .idea
 models/u2net.onnx
+
+# Drafts and working notes live in ../website-drafts (private, local).
+# These paths are local links to it, for `jekyll serve --drafts`.
+_drafts
+HANDOFF.md
+CLAUDE.md
+assets/img/secret-loyalties
+assets/img/agent-swarm
