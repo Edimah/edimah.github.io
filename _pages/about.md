@@ -4,7 +4,6 @@ title: about
 permalink: /
 nav: true
 nav_order: 0
-subtitle: Aspiring AI safety researcher · Learning and testing things out
 
 profile:
   image: prof_pic.jpg

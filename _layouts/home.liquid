@@ -3,13 +3,10 @@ layout: default
 ---
 <div class="intro">
   <div class="prose">
-    <h1>
+    <h1 class="visually-hidden">
       {{ site.first_name }}
       {{ site.last_name }}
     </h1>
-    {% if page.subtitle %}
-      <p class="label">{{ page.subtitle }}</p>
-    {% endif %}
     {{ content }}
   </div>
 
