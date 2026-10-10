@@ -6,8 +6,8 @@ first_name: Edimah
 last_name: SYNESIUS SONGO
 
 description: >
-  Applied mathematician building reliable, mathematically grounded AI systems for regulated environments — Bayesian inference, optimisation, kernel methods, deep learning, signal processing.
-keywords: applied mathematics, bayesian inference, statistical modelling, machine learning, AI evaluation, EU AI Act, uncertainty quantification, kernel methods, signal processing, public health, regulated systems
+  Aspiring AI safety researcher, learning and testing things out.
+keywords: AI safety, technical AI safety, model evaluation, applied mathematics, statistics, Bayesian inference, calibration, uncertainty quantification, data science, public health data
 lang: en
 icon: 🎶 # emoji used as the favicon
 
@@ -20,7 +20,6 @@ timezone: Europe/Paris
 # -----------------------------------------------------------------------------
 
 blog_name: Blog
-blog_description: Statistical methods across domains, with one recurring question — how would I know whether to trust this?
 permalink: /blog/:year/:title/
 future: false # _scheduled/ plus the schedule-posts workflow publish future-dated posts on the day
 

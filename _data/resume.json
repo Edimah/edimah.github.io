@@ -37,15 +37,12 @@
     },
     {
       "name": "Freelance",
-      "position": "Independent Consultant — AI Reliability, Statistical Modelling & EU AI Act Readiness",
+      "position": "Independent Consultant — Applied Statistics & AI Implementation",
       "url": "",
       "startDate": "2025-10-01",
       "endDate": "",
       "summary": "Statistical modelling and AI reliability consulting for regulated environments.",
-      "highlights": [
-        "Public health data chain audit and automation, anomaly detection frameworks, model evaluation methodology",
-        "Building toward EU AI Act readiness assessments for healthcare and financial services clients"
-      ]
+      "highlights": ["Public health data chain audit and automation, anomaly detection frameworks, model evaluation methodology"]
     },
     {
       "name": "IFP Energies Nouvelles & ONERA",

@@ -32,6 +32,32 @@
       </svg>
     </a>
   {% endif %}
+  {% if site.data.socials.lesswrong_username %}
+    <a
+      href="https://www.lesswrong.com/users/{{ site.data.socials.lesswrong_username }}"
+      title="LessWrong"
+      aria-label="LessWrong"
+      rel="me noopener"
+      target="_blank"
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <text x="12" y="17" text-anchor="middle" font-family="Georgia, serif" font-size="13" font-weight="700">LW</text>
+      </svg>
+    </a>
+  {% endif %}
+  {% if site.data.socials.eaforum_username %}
+    <a
+      href="https://forum.effectivealtruism.org/users/{{ site.data.socials.eaforum_username }}"
+      title="EA Forum"
+      aria-label="EA Forum"
+      rel="me noopener"
+      target="_blank"
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <text x="12" y="17" text-anchor="middle" font-family="Georgia, serif" font-size="13" font-weight="700">EA</text>
+      </svg>
+    </a>
+  {% endif %}
   <a href="{{ '/feed.xml' | relative_url }}" title="RSS feed" aria-label="RSS feed">
     <svg viewBox="0 0 24 24" aria-hidden="true">
       <circle cx="5.5" cy="18.5" r="2.5"></circle>
