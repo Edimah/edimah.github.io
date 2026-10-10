@@ -2,7 +2,6 @@
 layout: post
 title: "The impact of a base-level AI risk course on an aspiring technical AI safety researcher"
 description: "Why keep trying in the age of AI"
-date: 2026-10-10 09:00:00
 lang: en
 tags: ai-safety perso
 categories: posts
