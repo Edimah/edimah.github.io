@@ -10,7 +10,7 @@ math: true
 
 ## TL;DR
 
-Our detector measured name salience, not loyalty, and difference-in-differences broke under scale compression on the fine-tuned model. These are exploratory notes from a July hackathon project and two follow-ups in September and October, about how to build a secret loyalties detector, only using a model's answers. Running the first detector on a clean model raised 12 false positives out of 16 invented name pairs. However, optimising the choice of control names through matched control brought it down to 2/16. Further analysis revealed the detector's sensitivity to unrelated prior preferences, and "subtracting the clean model" from the model organism in the score was meant to remove them, but it failed on the fine-tuned model. On the other hand, a loyalty planted through a system prompt was flagged 16 times out of 16, but the detector also reacted to the mere mention of the suspected loyalty's name. This shows that output-only scores are difficult to interpret, and need careful design.
+These are exploratory notes from a July hackathon project and two follow-ups in September and October, about how to build a secret loyalties detector, only using a model's answers. Our detector measured name relevance rather than loyalty, and a difference-in-differences trick failed on the fine-tuned model. Running the first detector on a clean model raised 12 false positives out of 16 invented name pairs. However, optimising the choice of control names through matched control brought it down to 2/16. Further analysis revealed the detector's sensitivity to unrelated prior preferences, and "subtracting the clean model" from the model organism in the score was meant to remove them, but it failed on the fine-tuned model. On the other hand, a loyalty planted through a system prompt was flagged 16 times out of 16, but the detector also reacted to the mere mention of the suspected loyalty's name. This shows that output-only scores are difficult to interpret, and need careful design.
 
 ## Setting
 
@@ -78,7 +78,7 @@ Our main test "subtracted the clean model" from organism b, so that their shared
 
 | Step                                                                                                                       | Question                                  | Result                                     | What could mislead        |
 | -------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- | ------------------------------------------ | ------------------------- |
-| [Negative control, Jul 2026](https://github.com/Edimah/secret-loyalties#negative-control-the-hackathon-submission)                                           | False alarms on a clean model?            | 12/16 → 2/16                               | Preference for some names |
+| [Negative control, Jul 2026](https://github.com/Edimah/secret-loyalties#negative-control-the-hackathon-submission)         | False alarms on a clean model?            | 12/16 → 2/16                               | Preference for some names |
 | [v1, 24 Sep 2026](https://github.com/Edimah/secret-loyalties/blob/main/experiments/positive_control_v1/RESULTS.md)         | Finds a planted loyalty?                  | 16/16; name only 16/16; difference 14/16   | A name being mentioned    |
 | [v2, 24 Sep – 5 Oct 2026](https://github.com/Edimah/secret-loyalties/blob/main/experiments/positive_control_v2/RESULTS.md) | Agrees with a claimed fine-tuned loyalty? | Miss (p = 0.113); scale-adjusted p = 0.002 | Change of scale           |
 
@@ -90,7 +90,7 @@ So, can we detect evidence of secret loyalty in a model, using only its answers?
 
 ## Credits and links
 
-Built with Alexandra RANDRIANANDRASANA (decision layer: questions, rewordings, the discovery/confirmation split) at the Apart Research × Formation Research hackathon, 24–26 July 2026; I built the measurement code. This project was carried out with heavy assistance from Claude, the agent generated the code and acted as an assistant and fact checker.
+Built at the Apart Research × Formation Research hackathon, 24–26 July 2026, with Alexandra RANDRIANANDRASANA, who designed the decision layer (questions, rewordings, the discovery/confirmation split). I designed the measurement, wrote the pre-registered specs, ran the experiments and did the analysis.The positive controls follow-ups in September–October are from me. Claude generated most of the code, managed versioning and served as assistant and fact-checker throughout.
 
 Code and results: [github.com/Edimah/secret-loyalties](https://github.com/Edimah/secret-loyalties) · [Apart project page](https://apartresearch.com/project/a-calibrated-twolevel-detector-for-secret-loyalties-g75x)
 
