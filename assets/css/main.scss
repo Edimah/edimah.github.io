@@ -538,6 +538,19 @@ figure img {
   border-radius: 2px;
 }
 
+/* Dark text on a transparent background: keep a white box in both themes. */
+.fig-light img {
+  /* natural size, so text has the same scale in every figure */
+  width: auto;
+  max-width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+  background: #fff;
+  padding: 1rem;
+  border-radius: 8px;
+  color-scheme: light; /* draw.io SVGs use light-dark() colours */
+}
+
 figcaption {
   font-size: 0.88rem;
   line-height: 1.55;

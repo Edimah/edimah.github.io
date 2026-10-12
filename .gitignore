@@ -20,3 +20,11 @@ HANDOFF.md
 CLAUDE.md
 assets/img/secret-loyalties
 assets/img/agent-swarm
+
+# Editor (pdfLaTeX) build files; figures are built with make figs.
+assets/img/dag-src/*.aux
+assets/img/dag-src/*.log
+assets/img/dag-src/*.pdf
+assets/img/dag-src/*.fls
+assets/img/dag-src/*.fdb_latexmk
+assets/img/dag-src/*.synctex.gz
