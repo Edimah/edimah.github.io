@@ -8,9 +8,11 @@ categories: posts
 math: true
 ---
 
+_These are exploratory notes from a July hackathon project and two follow-ups in September and October, about how to build a secret loyalties detector, only using a model's answers._
+
 ## TL;DR
 
-These are exploratory notes from a July hackathon project and two follow-ups in September and October, about how to build a secret loyalties detector, only using a model's answers. Our detector measured name relevance rather than loyalty, and a difference-in-differences trick failed on the fine-tuned model. Running the first detector on a clean model raised 12 false positives out of 16 invented name pairs. However, optimising the choice of control names through matched control brought it down to 2/16. Further analysis revealed the detector's sensitivity to unrelated prior preferences, and "subtracting the clean model" from the model organism in the score was meant to remove them, but it failed on the fine-tuned model. On the other hand, a loyalty planted through a system prompt was flagged 16 times out of 16, but the detector also reacted to the mere mention of the suspected loyalty's name. This shows that output-only scores are difficult to interpret, and need careful design.
+Our detector measured name relevance rather than loyalty, and a difference-in-differences trick failed on the fine-tuned model. Running the first detector on a clean model raised 12 false positives out of 16 invented name pairs. However, optimising the choice of control names through matched control brought it down to 2/16. Further analysis revealed the detector's sensitivity to unrelated prior preferences, and "subtracting the clean model" from the model organism in the score was meant to remove them, but it failed on the fine-tuned model. On the other hand, a loyalty planted through a system prompt was flagged 16 times out of 16, but the detector also reacted to the mere mention of the suspected loyalty's name. This shows that output-only scores are difficult to interpret, and need careful design.
 
 ## Setting
 
