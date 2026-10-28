@@ -1,0 +1,11 @@
+# Shown on /reading/. status: reading | read | next. note is optional.
+# isbn: the cover comes from Open Library (covers.openlibrary.org).
+- title: Human Compatible
+  author: Stuart Russell
+  status: reading
+  isbn: 9780525558613
+
+- title: If Anyone Builds It, Everyone Dies
+  author: Eliezer Yudkowsky and Nate Soares
+  status: read
+  isbn: 9780316595643

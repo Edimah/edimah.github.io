@@ -1,0 +1,26 @@
+---
+layout: page
+permalink: /reading/
+title: reading
+nav: true
+nav_order: 3
+---
+
+{% assign groups = "reading:Now reading,next:Up next,read:Read" | split: "," %}
+{% for g in groups %}
+{% assign key = g | split: ":" | first %}
+{% assign books = site.data.reading | where: "status", key %}
+{% if books.size > 0 %}
+<h2>{{ g | split: ":" | last }}</h2>
+<ul class="bookshelf">
+  {% for b in books %}
+  <li>
+    {% if b.isbn %}
+    <img src="https://covers.openlibrary.org/b/isbn/{{ b.isbn }}-M.jpg" alt="Cover of {{ b.title }}" loading="lazy" />
+    {% endif %}
+    <em>{{ b.title }}</em><br />{{ b.author }}{% if b.note %}<br /><span class="meta">{{ b.note }}</span>{% endif %}
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% endfor %}
