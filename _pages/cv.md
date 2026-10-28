@@ -8,11 +8,7 @@ nav_order: 2
 
 <!-- Mirror of cv.tex (LaTeX CV folder), 28 October 2026. The PDF is the reference version; update both together. -->
 
-[CV PDF](/assets/pdf/edimah-synesius-songo-cv.pdf)
-
-Applied mathematician · statistical reliability of AI evaluations and monitors
-
-Paris · [edimah.synesius-songo@proton.me](mailto:edimah.synesius-songo@proton.me) · [GitHub](https://github.com/Edimah) · [LinkedIn](https://www.linkedin.com/in/edimah-synesius)
+[PDF](/assets/pdf/edimah-synesius-songo-cv.pdf)
 
 ## Projects
 
@@ -93,7 +89,7 @@ R, Python, Sensitivity Analysis, Uncertainty Quantification
 
 EDF R&D · Chatou · April 2023 – September 2023
 
-- **M2 Thesis**: *Advanced methods for model calibration with uncertain inputs* (see Projects).
+- **M2 Thesis**: _Advanced methods for model calibration with uncertain inputs_ (see Projects).
 
 Python, OpenTURNS, Bayesian Inference, Computational Statistics, MCMC
 
@@ -107,7 +103,7 @@ Tableau, Data Analysis, Data Visualisation, R, SQL
 
 ## Education
 
-- **2023** · **Master 2 – MASH** (Mathematics, Machine Learning, Sciences, Humanities) at **Université PSL** (Dauphine & ENS), with Merit (mention Bien). Research thesis at EDF R&D: *Advanced methods for model calibration with uncertain inputs*.
+- **2023** · **Master 2 – MASH** (Mathematics, Machine Learning, Sciences, Humanities) at **Université PSL** (Dauphine & ENS), with Merit (mention Bien). Research thesis at EDF R&D: _Advanced methods for model calibration with uncertain inputs_.
 - **2022** · **Master 1 – Applied Mathematics**, Statistics track, at **Paris Dauphine-PSL**.
 - **2021** · **Bachelor's – MEFA** (Mathematics, Economics, Finance, Actuarial Science) at **Paris Dauphine-PSL**.
 - **2025** · TOEFL iBT (112/120).
