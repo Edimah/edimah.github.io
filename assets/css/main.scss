@@ -888,3 +888,10 @@ pre code {
     break-inside: avoid;
   }
 }
+
+.cv-pdf {
+  display: block;
+  width: 100%;
+  height: 85vh;
+  border: 1px solid var(--rule);
+}
