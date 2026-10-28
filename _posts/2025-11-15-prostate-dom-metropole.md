@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "Incidence du cancer de la prostate en France d'Outre Mer et Métropolitaine"
+thumbnail: /assets/img/santepub/prostate_dom_metropole.png
 description: "Visualiser l'écart d'incidence entre des territoires français ultramarins et l'Hexagone en 2022."
 date: 2025-11-15 09:00:00
 lang: fr

@@ -1,6 +1,7 @@
 ---
 layout: post
 title: How to import and use Apple Health data with R
+thumbnail: /assets/img/apple_health_export_folder.png
 date: 2025-09-26 22:34:16
 description: I imported 20 months of Apple Health data 🏃🏿‍♀️ to get a broader view of how I trained.
 tags: dataviz fitness health
