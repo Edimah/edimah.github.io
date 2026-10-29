@@ -1,0 +1,29 @@
+---
+layout: default
+permalink: /projects/
+title: projects
+nav: true
+nav_order: 2
+---
+
+<div class="prose">
+  <header class="post-header">
+    <h1>Projects</h1>
+  </header>
+</div>
+
+<ul class="post-list">
+  {% for p in site.data.projects %}
+  <li>
+    <h3>{% if p.writeup %}<a href="{{ p.writeup | relative_url }}">{{ p.title }}</a>{% else %}{{ p.title }}{% endif %}</h3>
+    <p>{{ p.summary }}</p>
+    <p class="meta">
+      {{ p.event }}<span class="sep">·</span>{{ p.date }}
+    </p>
+    <p class="meta">
+      {% if p.writeup %}<a href="{{ p.writeup | relative_url }}">Write-up</a><span class="sep">·</span>{% endif %}
+      <a href="{{ p.apart }}">Apart page</a><span class="sep">·</span><a href="{{ p.code }}">Code</a>
+    </p>
+  </li>
+  {% endfor %}
+</ul>

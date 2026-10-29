@@ -1,0 +1,22 @@
+# Shown on /projects/, newest first. writeup is optional (a blog post URL).
+- title: Predicting false collusion alerts under incomplete information
+  event: AI Collusion Research Sprint, Apart Research, solo
+  date: October 2026
+  summary: Simulated a market where a standard screen's false-accusation rate for collusion rises 5.8% → 100% as auditor information degrades. Built a simple analytical model that predicts these rates closely, without being fitted to them.
+  apart: https://apartresearch.com/sprints/projects/predicting-false-collusion-alerts-under-incomplete-information-evidence-from-a-simulated-market-and-an-exploratory-reasking-of-llm-agents-ue2d
+  code: https://github.com/Edimah/hackathon-ai-collusion
+
+- title: Detecting agentic collusion in public logs with statistical methods
+  event: AI Incident Response Sprint, Apart Research × CeSIA, Track 2, solo
+  date: September 2026
+  summary: Used statistical methods to detect an LLM-agent swarm from public edit logs alone. The weekly check flags the three largest incident weeks and none of the 2,236 earlier wiki-weeks (2016–2025).
+  apart: https://apartresearch.com/sprints/projects/detecting-agentic-collusion-in-public-logs-with-statistical-methods-4rdi
+  code: https://github.com/Edimah/agentic-collusion-detector-in-public-logs
+
+- title: A Calibrated Two-Level Detector for Secret Loyalties – Application to an LLM
+  event: '"Secret Loyalties" hackathon, Apart Research × Formation Research, team of 2'
+  date: July 2026
+  summary: Designed an evaluation framework, then measured its false-positive rate on a clean model. Using matched-control calibration, cut false positives from 12/16 to 2/16.
+  apart: https://apartresearch.com/project/a-calibrated-twolevel-detector-for-secret-loyalties-g75x
+  code: https://github.com/edimah/secret-loyalties
+  writeup: /blog/2026/secret-loyalties-outputs-only/

@@ -3,7 +3,7 @@ layout: page
 permalink: /cv/
 title: CV
 nav: true
-nav_order: 2
+nav_order: 3
 ---
 
 {% assign cv_pdf = '/assets/pdf/edimah-synesius-songo-cv.pdf' | relative_url %}
