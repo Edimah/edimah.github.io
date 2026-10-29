@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Can we detect evidence of secret loyalty in a model using only its answers? Not without careful design"
+title: "Detecting evidence of secret loyalty in a model using only its answers requires careful design"
 thumbnail: /assets/img/sl-thumb-delta.svg
 description: "An exploration of statistical methods for secret loyalties detection."
 lang: en
