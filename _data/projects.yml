@@ -1,5 +1,5 @@
 # Shown on /projects/, newest first. writeup is optional (a blog post URL).
-- title: Predicting false financialcollusion alerts under incomplete information
+- title: Predicting false-alarms for price collusion of seller agents under incomplete information
   event: AI Collusion Research Sprint, Apart Research, solo
   date: October 2026
   summary: Simulated a market where a standard screen's false-accusation rate for collusion rises 5.8% → 100% as auditor information degrades. Built a simple analytical model that predicts these rates closely, without being fitted to them.
