@@ -45,4 +45,4 @@ More recently, on November 9, Anthropic joined other organisations and governmen
 
 In future independent evaluations, what can be disclosed to make assessments more credible, even under confidentiality constraints?
 
-The processes are bound to change,
+Thank you for reading.
