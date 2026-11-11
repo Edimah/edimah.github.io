@@ -8,9 +8,12 @@ categories: posts
 math: true
 ---
 
-_Disclaimer: I am a newcomer to AI safety, not an evaluator. The figures and conclusions are from METR's reports, and the questions and reflections about evaluation are my own._
+_Disclaimer: I am a newcomer to AI safety, not an evaluator. The figures and report conclusions are METR's, and the rest is my own reflection._
 
-In the wake of all the talk about Recursive Self Improvement (RSI) we’ve been hearing more and more about AI’s role in AI research, and I was curious about the way this is being tracked.
+**_TL;DR_
+In a recent report, METR has assessed Anthropic's AI R&D acceleration, and given a highly uncertain estimate of that rate at 1.9x. They also disclosed that most informative evidence was redacted by Anthropic before public release, citing sensitive data. This essentially made the report's credibility rest on our trust in METR's judgement. In this context, a way to increase credibility would be to publicly detail the evaluation methodology and reasoning used by assessors. How else can we back up assessments when the evidence is based on redacted/held-out information?**
+
+In the wake of all the talk about Recursive Self Improvement (or RSI), I’ve been hearing more and more about AI’s role in AI research, and I was curious about the way this is being tracked.
 
 Lucky for me, on November 5, METR (an independent AI evaluator) published [an assessment of AI R&D acceleration at Anthropic](https://metr.org/blog/2026-11-05-anthropic-ai-rd-acceleration-assessment/) from internal data and interviews with employees taking place from August 12 to October 29. Alongside it, they released [a review of the lab’s own August risk report](https://metr.org/blog/2026-11-05-rd-section-anthropic-risk-report-august-2026-review/), assessing the situation up to July 15th.
 
