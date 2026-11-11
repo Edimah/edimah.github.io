@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "How to evaluate AI progress when the evidence is confidential"
+title: "How to evaluate AI R&D acceleration without transparency"
 description: "Thoughts about an independent evaluator's access"
 lang: en
 tags: ai-safety evals news
