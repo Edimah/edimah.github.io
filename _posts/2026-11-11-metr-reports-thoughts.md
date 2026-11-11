@@ -8,6 +8,8 @@ categories: posts
 math: true
 ---
 
+_Disclaimer: I am a newcomer to AI safety, not an evaluator. The figures and conclusions are METR's; the questions and reflections about evaluation are my own._
+
 In the wake of all the talk about Recursive Self Improvement (RSI) we’ve been hearing more and more about AI’s role in AI research, and I was curious about the way this is being tracked.
 
 Lucky for me on November 5, METR, an independent AI evaluator, published [an assessment of AI R&D acceleration at Anthropic](https://metr.org/blog/2026-11-05-anthropic-ai-rd-acceleration-assessment/) from internal data and interviews with employees taking place from August 12 to October 29. Alongside it, they released [a review of the lab’s own August risk report](https://metr.org/blog/2026-11-05-rd-section-anthropic-risk-report-august-2026-review/), assessing the situation up to July 15th.
