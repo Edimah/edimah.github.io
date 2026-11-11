@@ -18,7 +18,7 @@ AI’s ability to assist with AI R&D is important to measure, because **it affec
 
 But how can independent evaluators measure the impact of AI-assisted R&D with partial information? How can AI safety decisions be made with redacted evidence?
 
-METR used Anthropic internal measurements, including a measure called AECI (similar to [Epoch’s Capability Index](https://epoch.ai/eci?view=graph&tab=release-date)), which aggregates several test scores to estimate model capabilities trends. For example, the evaluators estimated that since October 2025, benchmark scores progressed at 1.9x the pace they had from March 2024 to October 2025. Meaning the progress previously made in 2 years could be just about done in a single year.
+METR used Anthropic's internal measurements, including a measure called AECI (similar to [Epoch’s Capability Index](https://epoch.ai/eci?view=graph&tab=release-date)), which aggregates several test scores to estimate model capabilities trends. For example, the evaluators estimated that since October 2025, benchmark scores progressed at 1.9x the pace they had from March 2024 to October 2025. Meaning the progress previously made in 2 years could be just about done in a single year.
 
 The 95% confidence interval for the estimated 1.9x rate is 1.5x-2.8x, and a majority of that acceleration likely stems from AI-assistance, though METR is very uncertain. The benchmark estimate also comes with significant uncertainty, which made me think about the current place of independent research at frontier labs.
 
@@ -33,7 +33,7 @@ METR was given unprecedented access to Anthropic’s internal data and staff int
 My take here isn't about evidence _having_ to be public, but more of a reflection on what would we need to trust an evaluation process without it.
 
 The obvious first solution would be full transparency from frontier labs during independent assessments, and limited redaction in public reports. However, pending binding regulation that would guarantee this, what else could increase credibility?
-A second solution would be making the exact evaluation methodology public: documenting exactly how metrics and analyses are constructed, and how the interviews were conducted and interpreted in the report. Opening the reasoning to scrutiny could be a way give more weight to the final assessments.
+A second solution would be making the exact evaluation methodology public: documenting exactly how metrics and analyses are constructed, and how the interviews were conducted and interpreted in the report. Opening the reasoning to scrutiny could be a way to give more weight to the final assessments.
 
 The fact that labs like Anthropic cooperate with outside assessors at all is a step towards transparency, but even with external reviews, there’s no guarantee of how much evidence will be accessible, and how actionable the findings will be.
 
@@ -44,5 +44,3 @@ Some laws have been passed. Since August 2025, the [EU AI Act](https://digital-s
 More recently, on November 9, Anthropic joined other organisations and governments in signing the [Paris Call for AI Safety and Security](https://www.elysee.fr/en/emmanuel-macron/2026/11/09/paris-call-for-ai-safety-and-security), a joint declaration including commitments to independent assessments. But these commitments are non-binding for now, with [the French Center for AI Safety (CeSIA) calling for them to be mandatory](https://cesia.org/en/publications/paris-call-ai-safety-cesia/) on November 10.
 
 In future independent evaluations, what can be disclosed to make assessments more credible, even under confidentiality constraints?
-
-Thank you for reading.
